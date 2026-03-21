@@ -51,11 +51,22 @@ const FORMATS = [
 
 const NAV_ITEMS = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '#/dashboard' },
-  { icon: FolderOpen, label: 'AfriVault', path: '#/afrivault' },
-  { icon: ShoppingBag, label: 'Ma Boutique', path: '#/my-store' },
-  { icon: BarChart2, label: 'Analytics', path: '#/analytics', soon: true },
+  { icon: FolderOpen, label: 'Campaigns', path: '#/campaigns', soon: true },
+  { icon: ShoppingBag, label: 'My Store', path: '#/my-store' },
+  { icon: BarChart2, label: 'Analytics', path: '#/analytics', badge: 'PRO' },
+  { icon: Sparkles, label: 'Insights', path: '#/insights', badge: 'PRO' },
+  { icon: Image, label: 'Creatives', path: '#/creatives', badge: 'PRO' },
+  { icon: MessageSquare, label: 'Comments', path: '#/comments', soon: true },
+];
+
+const TOOLS_ITEMS = [
+  { icon: FolderOpen, label: 'AfriVault', path: '#/afrivault', badge: 'PRO', count: 523 },
   { icon: Search, label: 'AdScout', path: '#/adscout', soon: true },
-  { icon: Video, label: 'UGC Studio', path: '#/ugc', soon: true },
+  { icon: Play, label: 'Guides', path: '#/guides' },
+];
+
+const SPECIAL_ITEMS = [
+  { icon: Video, label: 'UGC à 1€', path: '#/ugc', highlight: true, soon: true },
 ];
 
 const LANDING_FEATURES = [
@@ -131,51 +142,113 @@ function ToastContainer({ toasts, onDismiss }) {
 }
 
 // ============================================
-// SIDEBAR
+// SIDEBAR (AdStarter Style - Expanded)
 // ============================================
 function Sidebar({ currentPath, user, onLogout }) {
-  return (
-    <aside className="fixed left-0 top-0 h-screen w-16 bg-[#12121A] border-r border-white/[0.08] flex flex-col items-center py-4 z-50">
-      <a href="#/dashboard" className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand to-brand-dark flex items-center justify-center mb-8 hover:shadow-lg hover:shadow-brand/20 transition-all">
-        <Zap className="w-5 h-5 text-white" />
+  const [collapsed, setCollapsed] = useState(false);
+  
+  const NavItem = ({ item, isActive }) => {
+    const isDisabled = item.soon && !item.highlight;
+    return (
+      <a
+        href={isDisabled ? undefined : item.path}
+        onClick={isDisabled ? (e) => e.preventDefault() : undefined}
+        className={cn(
+          'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group relative',
+          isActive
+            ? 'bg-brand/15 text-brand'
+            : item.highlight
+            ? 'bg-brand text-white hover:bg-brand/90'
+            : isDisabled
+            ? 'text-gray-600 cursor-not-allowed'
+            : 'text-gray-400 hover:text-white hover:bg-white/5'
+        )}
+      >
+        <item.icon className="w-[18px] h-[18px] shrink-0" />
+        <span className="text-[13px] font-medium flex-1">{item.label}</span>
+        {item.badge === 'PRO' && (
+          <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-brand/20 text-brand">PRO</span>
+        )}
+        {item.soon && !item.highlight && (
+          <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-500/20 text-amber-400">SOON</span>
+        )}
+        {item.count && (
+          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-white/10 text-gray-400">{item.count}</span>
+        )}
       </a>
-      <div className="flex-1 flex flex-col items-center gap-1">
-        {NAV_ITEMS.map(item => (
-          <a
-            key={item.path}
-            href={item.soon ? undefined : item.path}
-            onClick={item.soon ? (e) => e.preventDefault() : undefined}
-            className={cn(
-              'relative w-10 h-10 rounded-xl flex items-center justify-center transition-all group',
-              currentPath === item.path
-                ? 'bg-brand/20 text-brand'
-                : item.soon
-                ? 'text-gray-600 cursor-not-allowed'
-                : 'text-gray-500 hover:text-white hover:bg-white/5'
-            )}
-          >
-            <item.icon className="w-5 h-5" />
-            {item.soon && <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-amber-400 border-2 border-[#12121A]" />}
-            <span className="absolute left-14 px-3 py-1.5 rounded-lg bg-[#1A1A26] border border-white/10 text-xs text-white whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity shadow-xl">
-              {item.label}{item.soon && ' (Bientôt)'}
-            </span>
-          </a>
-        ))}
-      </div>
-      <div className="flex flex-col items-center gap-2">
-        <a href="#/settings" className={cn(
-          'w-10 h-10 rounded-xl flex items-center justify-center transition-all group',
-          currentPath?.startsWith('#/settings') ? 'bg-brand/20 text-brand' : 'text-gray-500 hover:text-white hover:bg-white/5'
-        )}>
-          <Settings className="w-5 h-5" />
-          <span className="absolute left-14 px-3 py-1.5 rounded-lg bg-[#1A1A26] border border-white/10 text-xs text-white whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity shadow-xl">Paramètres</span>
+    );
+  };
+
+  return (
+    <aside className="fixed left-0 top-0 h-screen w-[200px] bg-[#0D0D14] border-r border-white/[0.06] flex flex-col z-50">
+      {/* Logo */}
+      <div className="px-4 h-16 flex items-center justify-between border-b border-white/[0.06]">
+        <a href="#/dashboard" className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand to-brand-dark flex items-center justify-center">
+            <Zap className="w-4 h-4 text-white" />
+          </div>
+          <span className="text-white font-bold text-[15px]">Easy-Ecom</span>
         </a>
-        <button onClick={onLogout} className="w-10 h-10 rounded-xl flex items-center justify-center text-gray-500 hover:text-red-400 hover:bg-red-400/10 transition-all group">
-          <LogOut className="w-5 h-5" />
-          <span className="absolute left-14 px-3 py-1.5 rounded-lg bg-[#1A1A26] border border-white/10 text-xs text-white whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity shadow-xl">Déconnexion</span>
+        <button className="w-7 h-7 rounded-md flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/5 transition-all">
+          <Layers className="w-4 h-4" />
         </button>
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand to-accent-gold flex items-center justify-center text-white font-semibold text-sm mt-1">
-          {user?.user_metadata?.full_name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U'}
+      </div>
+
+      {/* Main Navigation */}
+      <div className="flex-1 overflow-y-auto py-3 px-2">
+        <nav className="space-y-0.5">
+          {NAV_ITEMS.map(item => (
+            <NavItem key={item.path} item={item} isActive={currentPath === item.path} />
+          ))}
+        </nav>
+
+        {/* Tools Section */}
+        <div className="mt-6">
+          <p className="px-3 text-[10px] font-semibold text-gray-600 uppercase tracking-wider mb-2">Tools</p>
+          <nav className="space-y-0.5">
+            {TOOLS_ITEMS.map(item => (
+              <NavItem key={item.path} item={item} isActive={currentPath === item.path} />
+            ))}
+          </nav>
+        </div>
+
+        {/* Special Items */}
+        <div className="mt-4 space-y-0.5">
+          {SPECIAL_ITEMS.map(item => (
+            <NavItem key={item.path} item={item} isActive={currentPath === item.path} />
+          ))}
+        </div>
+      </div>
+
+      {/* Connections */}
+      <div className="border-t border-white/[0.06]">
+        <a href="#/settings" className={cn(
+          'flex items-center gap-3 px-4 py-3 transition-all',
+          currentPath?.startsWith('#/settings') ? 'text-brand' : 'text-gray-500 hover:text-white'
+        )}>
+          <div className="relative">
+            <Globe className="w-[18px] h-[18px]" />
+            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-red-500 border border-[#0D0D14]" />
+          </div>
+          <span className="text-[13px]">Connections</span>
+        </a>
+      </div>
+
+      {/* User Profile */}
+      <div className="border-t border-white/[0.06] p-3">
+        <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-all cursor-pointer group">
+          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-brand to-accent-gold flex items-center justify-center text-white font-semibold text-sm">
+            {user?.user_metadata?.full_name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U'}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm text-white font-medium truncate">
+              {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Utilisateur'}
+            </p>
+            <p className="text-[11px] text-gray-500 truncate">{user?.email || ''}</p>
+          </div>
+          <button onClick={onLogout} className="w-7 h-7 rounded-md flex items-center justify-center text-gray-500 hover:text-red-400 hover:bg-red-400/10 transition-all opacity-0 group-hover:opacity-100">
+            <LogOut className="w-4 h-4" />
+          </button>
         </div>
       </div>
     </aside>
@@ -183,37 +256,92 @@ function Sidebar({ currentPath, user, onLogout }) {
 }
 
 // ============================================
-// TOP NAV
+// TOP NAV (AdStarter Style)
 // ============================================
-function TopNav({ title, subtitle }) {
+function TopNav({ title, subtitle, showDatePicker = false }) {
+  const [selectedPeriod, setSelectedPeriod] = useState('7D');
+  const periods = ['TODAY', '7D', '14D', '30D'];
+  
   return (
-    <header className="sticky top-0 z-40 bg-[#0A0A0F]/80 backdrop-blur-xl border-b border-white/[0.08] px-6 py-4">
-      <h1 className="text-lg font-semibold text-white">{title}</h1>
-      {subtitle && <p className="text-sm text-gray-500 mt-0.5">{subtitle}</p>}
+    <header className="sticky top-0 z-40 bg-[#0A0A0F]/95 backdrop-blur-xl border-b border-white/[0.06]">
+      <div className="px-6 py-4 flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold text-white">{title}</h1>
+          {subtitle && <p className="text-sm text-gray-500 mt-0.5">{subtitle}</p>}
+        </div>
+        <div className="flex items-center gap-3">
+          {showDatePicker && (
+            <>
+              {/* Period Selector */}
+              <div className="flex items-center bg-[#12121A] rounded-lg border border-white/[0.06] p-0.5">
+                {periods.map(p => (
+                  <button
+                    key={p}
+                    onClick={() => setSelectedPeriod(p)}
+                    className={cn(
+                      'px-3 py-1.5 rounded-md text-xs font-medium transition-all',
+                      selectedPeriod === p
+                        ? 'bg-white/10 text-white'
+                        : 'text-gray-500 hover:text-gray-300'
+                    )}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
+              {/* Date Range */}
+              <button className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#12121A] border border-white/[0.06] text-sm text-gray-400 hover:border-white/[0.1] transition-all">
+                <Clock className="w-4 h-4" />
+                <span>Mar 14 - Mar 21, 2026</span>
+              </button>
+              {/* Location */}
+              <button className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#12121A] border border-white/[0.06] text-sm text-gray-400 hover:border-white/[0.1] transition-all">
+                <Globe className="w-4 h-4" />
+                <span>Afrique</span>
+              </button>
+            </>
+          )}
+          {/* Refresh */}
+          <button className="w-9 h-9 rounded-lg bg-[#12121A] border border-white/[0.06] flex items-center justify-center text-gray-500 hover:text-white hover:border-white/[0.1] transition-all">
+            <Repeat className="w-4 h-4" />
+          </button>
+          {/* Notifications */}
+          <button className="relative w-9 h-9 rounded-lg bg-[#12121A] border border-white/[0.06] flex items-center justify-center text-gray-500 hover:text-white hover:border-white/[0.1] transition-all">
+            <Bell className="w-4 h-4" />
+            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-[10px] font-bold text-white flex items-center justify-center">2</span>
+          </button>
+        </div>
+      </div>
     </header>
   );
 }
 
 // ============================================
-// DASHBOARD LAYOUT
+// DASHBOARD LAYOUT (AdStarter Style)
 // ============================================
 function DashboardLayout({ children, user, currentPath, onLogout }) {
-  const titles = {
-    '#/dashboard': { title: 'Dashboard', subtitle: `Bienvenue, ${user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'utilisateur'}` },
-    '#/afrivault': { title: 'AfriVault — Templates africains', subtitle: null },
-    '#/my-store': { title: 'Ma Boutique', subtitle: 'Gère ta connexion Shopify' },
-    '#/settings': { title: 'Paramètres', subtitle: 'Gère ton profil et tes préférences' },
-    '#/settings/billing': { title: 'Abonnement', subtitle: 'Gère ton plan Easy-Ecom' },
-    '#/analytics': { title: 'Analytics', subtitle: null },
-    '#/adscout': { title: 'AdScout', subtitle: null },
-    '#/ugc': { title: 'UGC Studio', subtitle: null },
+  const pageConfigs = {
+    '#/dashboard': { title: 'Dashboard', subtitle: 'Overview of your ad performance', showDatePicker: true },
+    '#/afrivault': { title: 'AfriVault', subtitle: 'Browse winning ad templates', showDatePicker: false },
+    '#/my-store': { title: 'My Store', subtitle: 'Manage your Shopify connection', showDatePicker: false },
+    '#/settings': { title: 'Settings', subtitle: 'Manage your profile and preferences', showDatePicker: false },
+    '#/settings/billing': { title: 'Subscription', subtitle: 'Manage your Easy-Ecom plan', showDatePicker: false },
+    '#/analytics': { title: 'Analytics', subtitle: 'Track your performance', showDatePicker: true },
+    '#/adscout': { title: 'AdScout', subtitle: 'Spy on competitor ads', showDatePicker: false },
+    '#/ugc': { title: 'UGC Studio', subtitle: 'Create UGC content', showDatePicker: false },
+    '#/campaigns': { title: 'Campaigns', subtitle: 'Manage your ad campaigns', showDatePicker: true },
+    '#/insights': { title: 'Insights', subtitle: 'AI-powered recommendations', showDatePicker: false },
+    '#/creatives': { title: 'Creatives', subtitle: 'Your ad library', showDatePicker: false },
+    '#/comments': { title: 'Comments', subtitle: 'Manage ad comments', showDatePicker: false },
+    '#/guides': { title: 'Guides', subtitle: 'Learn how to scale your ads', showDatePicker: false },
   };
-  const { title, subtitle } = titles[currentPath] || titles['#/dashboard'];
+  const config = pageConfigs[currentPath] || pageConfigs['#/dashboard'];
+  
   return (
     <div className="min-h-screen bg-[#0A0A0F]">
       <Sidebar currentPath={currentPath} user={user} onLogout={onLogout} />
-      <div className="ml-16">
-        <TopNav title={title} subtitle={subtitle} />
+      <div className="ml-[200px]">
+        <TopNav title={config.title} subtitle={config.subtitle} showDatePicker={config.showDatePicker} />
         <main className="p-6 animate-fade-in">{children}</main>
       </div>
     </div>
@@ -798,7 +926,7 @@ function RegisterPage({ onRegister, showToast }) {
 }
 
 // ============================================
-// DASHBOARD PAGE
+// DASHBOARD PAGE (AdStarter Style)
 // ============================================
 function DashboardPage({ user, session, showToast }) {
   const [store, setStore] = useState(null);
@@ -821,85 +949,161 @@ function DashboardPage({ user, session, showToast }) {
   }, [session]);
 
   const stats = [
-    { icon: DollarSign, label: 'Ad Spend', value: '—', sub: 'Meta Ads non connecté', color: 'text-brand' },
-    { icon: ShoppingCart, label: 'Achats', value: '—', sub: 'Données à venir', color: 'text-accent-gold' },
-    { icon: TrendingUp, label: 'ROAS', value: '—', sub: 'Phase 2', color: 'text-green-400' },
+    { icon: DollarSign, label: 'AD SPEND', value: '$0.00', color: 'text-brand', bgColor: 'bg-brand/15' },
+    { icon: ShoppingCart, label: 'PURCHASES', value: '0', color: 'text-purple-400', bgColor: 'bg-purple-500/15' },
   ];
 
   const checklist = [
-    { label: 'Boutique Shopify connectée', done: !!store, action: '#/my-store' },
-    { label: 'Premier template sauvegardé', done: savedCount > 0, action: '#/afrivault' },
-    { label: 'Abonnement actif', done: false, action: '#/settings/billing' },
-    { label: 'Premier design édité dans Canva', done: false },
+    { icon: Globe, label: 'Meta account connected', done: false, action: 'Connect', href: '#/settings' },
+    { icon: Sparkles, label: 'First campaign created', done: false, action: 'Create', href: '#/campaigns' },
+    { icon: Image, label: 'First creative uploaded', done: savedCount > 0, action: 'Upload', href: '#/afrivault' },
+    { icon: DollarSign, label: 'First $10 spent', done: false, action: 'View', href: '#/analytics' },
   ];
 
   return (
     <div className="space-y-6">
-      {/* Stats */}
+      {/* Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {stats.map(s => (
-          <div key={s.label} className="bg-[#12121A] rounded-2xl border border-white/[0.08] p-5 hover:border-white/[0.12] transition-all">
-            <div className="flex items-center gap-3 mb-3">
-              <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center', s.color === 'text-brand' ? 'bg-brand/15' : s.color === 'text-accent-gold' ? 'bg-amber-500/15' : 'bg-green-500/15')}>
-                <s.icon className={cn('w-5 h-5', s.color)} />
-              </div>
-              <span className="text-sm text-gray-400 font-medium">{s.label}</span>
+        {/* AD SPEND */}
+        <div className="bg-[#12121A] rounded-xl border border-white/[0.06] p-5 hover:border-white/[0.1] transition-all">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-brand/15 flex items-center justify-center">
+              <DollarSign className="w-5 h-5 text-brand" />
             </div>
-            <div className="text-2xl font-bold text-white">{s.value}</div>
-            <div className="text-xs text-gray-500 mt-1">{s.sub}</div>
+            <div>
+              <p className="text-[11px] text-gray-500 uppercase tracking-wider font-medium">AD SPEND</p>
+              <p className="text-2xl font-bold text-white mt-0.5">$0.00</p>
+            </div>
           </div>
-        ))}
+        </div>
+        
+        {/* PURCHASES */}
+        <div className="bg-[#12121A] rounded-xl border border-white/[0.06] p-5 hover:border-white/[0.1] transition-all">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-purple-500/15 flex items-center justify-center">
+              <ShoppingCart className="w-5 h-5 text-purple-400" />
+            </div>
+            <div>
+              <p className="text-[11px] text-gray-500 uppercase tracking-wider font-medium">PURCHASES</p>
+              <p className="text-2xl font-bold text-white mt-0.5">0</p>
+            </div>
+          </div>
+        </div>
+
+        {/* ROAS */}
+        <div className="bg-[#12121A] rounded-xl border border-white/[0.06] p-5 hover:border-white/[0.1] transition-all">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-green-500/15 flex items-center justify-center">
+              <Target className="w-5 h-5 text-green-400" />
+            </div>
+            <div>
+              <p className="text-[11px] text-gray-500 uppercase tracking-wider font-medium">ROAS</p>
+              <p className="text-2xl font-bold text-green-400 mt-0.5">0.00x</p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
+      {/* Quick Actions + Checklist */}
+      <div className="grid lg:grid-cols-3 gap-6">
         {/* Quick Actions */}
-        <div className="bg-[#12121A] rounded-2xl border border-white/[0.08] p-6">
-          <h2 className="text-white font-semibold mb-4">Actions rapides</h2>
-          <div className="space-y-3">
-            <a href="#/afrivault" className="flex items-center gap-4 p-4 rounded-xl bg-[#1A1A26] hover:bg-[#1A1A26]/80 border border-white/[0.05] hover:border-brand/30 transition-all group">
-              <div className="w-10 h-10 rounded-xl bg-brand/15 flex items-center justify-center group-hover:bg-brand/25 transition-colors">
-                <FolderOpen className="w-5 h-5 text-brand" />
+        <div className="lg:col-span-2 space-y-4">
+          {/* Browse Templates */}
+          <a href="#/afrivault" className="flex items-center justify-between p-5 rounded-xl bg-[#12121A] border border-white/[0.06] hover:border-brand/30 transition-all group">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-brand/15 flex items-center justify-center group-hover:bg-brand/25 transition-colors">
+                <Layers className="w-6 h-6 text-brand" />
               </div>
-              <div className="flex-1">
-                <div className="text-sm font-medium text-white">Explorer les templates</div>
-                <div className="text-xs text-gray-500">+500 templates pour tes pubs</div>
+              <div>
+                <h3 className="text-white font-semibold">Browse Winning Ad Templates</h3>
+                <p className="text-sm text-gray-500 mt-0.5">Get inspired by top-performing image ads</p>
               </div>
-              <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-brand transition-colors" />
-            </a>
-            <a href="#/my-store" className="flex items-center gap-4 p-4 rounded-xl bg-[#1A1A26] hover:bg-[#1A1A26]/80 border border-white/[0.05] hover:border-brand/30 transition-all group">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/15 flex items-center justify-center group-hover:bg-amber-500/25 transition-colors">
-                <Store className="w-5 h-5 text-amber-400" />
+            </div>
+            <ChevronRight className="w-5 h-5 text-gray-500 group-hover:text-brand transition-colors" />
+          </a>
+
+          {/* Create Campaign */}
+          <a href="#/campaigns" className="flex items-center justify-between p-5 rounded-xl bg-[#12121A] border border-white/[0.06] hover:border-brand/30 transition-all group">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-purple-500/15 flex items-center justify-center group-hover:bg-purple-500/25 transition-colors">
+                <Zap className="w-6 h-6 text-purple-400" />
               </div>
-              <div className="flex-1">
-                <div className="text-sm font-medium text-white">Connecter ta boutique</div>
-                <div className="text-xs text-gray-500">Lier ton Shopify en 1 clic</div>
+              <div>
+                <h3 className="text-white font-semibold">Create a Campaign</h3>
+                <p className="text-sm text-gray-500 mt-0.5">Launch your first ad in minutes</p>
               </div>
-              <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-brand transition-colors" />
-            </a>
+            </div>
+            <ChevronRight className="w-5 h-5 text-gray-500 group-hover:text-brand transition-colors" />
+          </a>
+
+          {/* Facebook Account Setup */}
+          <div className="p-5 rounded-xl bg-[#12121A] border border-white/[0.06]">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Play className="w-4 h-4 text-brand" />
+                <h3 className="text-white font-semibold">Facebook Account Setup</h3>
+              </div>
+              <a href="#/guides" className="text-sm text-gray-500 hover:text-brand transition-colors">All Guides</a>
+            </div>
+            <div className="relative aspect-video rounded-lg overflow-hidden bg-gradient-to-br from-pink-500/20 via-purple-500/20 to-blue-500/20 flex items-center justify-center group cursor-pointer">
+              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&h=450&fit=crop')] bg-cover bg-center opacity-40"></div>
+              <div className="relative w-16 h-16 rounded-full bg-brand/80 flex items-center justify-center group-hover:bg-brand transition-colors">
+                <Play className="w-7 h-7 text-white ml-1" />
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Launch Checklist */}
-        <div className="bg-[#12121A] rounded-2xl border border-white/[0.08] p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-white font-semibold">Liste de démarrage</h2>
-            <span className="text-xs text-gray-500">{checklist.filter(c => c.done).length}/{checklist.length} complété</span>
+        <div className="bg-[#12121A] rounded-xl border border-white/[0.06] p-5">
+          <div className="flex items-center gap-2 mb-1">
+            <Zap className="w-4 h-4 text-brand" />
+            <h3 className="text-white font-semibold">Launch Checklist</h3>
           </div>
+          <p className="text-sm text-gray-500 mb-5">Let's get you started!</p>
+          
+          {/* Progress Bar */}
+          <div className="h-1 rounded-full bg-white/10 mb-6">
+            <div 
+              className="h-full rounded-full bg-gradient-to-r from-brand to-purple-500 transition-all duration-500"
+              style={{ width: `${(checklist.filter(c => c.done).length / checklist.length) * 100}%` }}
+            />
+          </div>
+
           <div className="space-y-3">
-            {checklist.map(item => (
-              <div key={item.label} className="flex items-center gap-3">
-                {item.done
-                  ? <CheckCircle2 className="w-5 h-5 text-green-400 shrink-0" />
-                  : <Circle className="w-5 h-5 text-gray-600 shrink-0" />}
-                <span className={cn('text-sm flex-1', item.done ? 'text-gray-500 line-through' : 'text-gray-300')}>
-                  {item.label}
-                </span>
-                {!item.done && item.action && (
-                  <a href={item.action} className="text-xs text-brand hover:text-brand-light font-medium transition-colors">Faire →</a>
+            {checklist.map((item, i) => (
+              <div key={i} className="flex items-center justify-between py-2">
+                <div className="flex items-center gap-3">
+                  <div className={cn(
+                    'w-8 h-8 rounded-lg flex items-center justify-center',
+                    item.done ? 'bg-green-500/15' : 'bg-white/5'
+                  )}>
+                    {item.done 
+                      ? <CheckCircle2 className="w-4 h-4 text-green-400" />
+                      : <item.icon className="w-4 h-4 text-gray-500" />
+                    }
+                  </div>
+                  <span className={cn(
+                    'text-sm',
+                    item.done ? 'text-gray-500 line-through' : 'text-gray-300'
+                  )}>
+                    {item.label}
+                  </span>
+                </div>
+                {!item.done && (
+                  <a href={item.href} className="text-sm text-brand hover:text-brand-light font-medium flex items-center gap-1 transition-colors">
+                    {item.action} <ChevronRight className="w-3 h-3" />
+                  </a>
                 )}
               </div>
             ))}
           </div>
+
+          {/* Final CTA */}
+          <a href="#/afrivault" className="mt-6 flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-gradient-to-r from-brand to-purple-500 text-white text-sm font-medium hover:opacity-90 transition-all">
+            <Zap className="w-4 h-4" />
+            Create Your First Ad
+          </a>
         </div>
       </div>
     </div>
