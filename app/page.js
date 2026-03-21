@@ -180,14 +180,14 @@ function Sidebar({ currentPath, user, onLogout }) {
   };
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-[200px] bg-[#0D0D14] border-r border-white/[0.06] flex flex-col z-50">
+    <aside className="fixed left-0 top-0 h-screen w-[200px] bg-[#0D0D14] border-r border-white/[0.06] flex flex-col z-50 font-onest">
       {/* Logo */}
       <div className="px-4 h-16 flex items-center justify-between border-b border-white/[0.06]">
         <a href="#/dashboard" className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand to-brand-dark flex items-center justify-center">
             <Zap className="w-4 h-4 text-white" />
           </div>
-          <span className="text-white font-bold text-[15px]">Easy-Ecom</span>
+          <span className="text-white font-bold text-[15px] font-syne">Easy-Ecom</span>
         </a>
         <button className="w-7 h-7 rounded-md flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/5 transition-all">
           <Layers className="w-4 h-4" />
@@ -266,7 +266,7 @@ function TopNav({ title, subtitle, showDatePicker = false }) {
     <header className="sticky top-0 z-40 bg-[#0A0A0F]/95 backdrop-blur-xl border-b border-white/[0.06]">
       <div className="px-6 py-4 flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-white">{title}</h1>
+          <h1 className="text-xl font-bold text-white font-syne">{title}</h1>
           {subtitle && <p className="text-sm text-gray-500 mt-0.5">{subtitle}</p>}
         </div>
         <div className="flex items-center gap-3">
@@ -338,7 +338,7 @@ function DashboardLayout({ children, user, currentPath, onLogout }) {
   const config = pageConfigs[currentPath] || pageConfigs['#/dashboard'];
   
   return (
-    <div className="min-h-screen bg-[#0A0A0F]">
+    <div className="min-h-screen bg-[#0A0A0F] font-onest">
       <Sidebar currentPath={currentPath} user={user} onLogout={onLogout} />
       <div className="ml-[200px]">
         <TopNav title={config.title} subtitle={config.subtitle} showDatePicker={config.showDatePicker} />
@@ -972,7 +972,7 @@ function DashboardPage({ user, session, showToast }) {
             </div>
             <div>
               <p className="text-[11px] text-gray-500 uppercase tracking-wider font-medium">AD SPEND</p>
-              <p className="text-2xl font-bold text-white mt-0.5">$0.00</p>
+              <p className="text-2xl font-bold text-white mt-0.5 font-syne">$0.00</p>
             </div>
           </div>
         </div>
@@ -985,7 +985,7 @@ function DashboardPage({ user, session, showToast }) {
             </div>
             <div>
               <p className="text-[11px] text-gray-500 uppercase tracking-wider font-medium">PURCHASES</p>
-              <p className="text-2xl font-bold text-white mt-0.5">0</p>
+              <p className="text-2xl font-bold text-white mt-0.5 font-syne">0</p>
             </div>
           </div>
         </div>
@@ -998,7 +998,7 @@ function DashboardPage({ user, session, showToast }) {
             </div>
             <div>
               <p className="text-[11px] text-gray-500 uppercase tracking-wider font-medium">ROAS</p>
-              <p className="text-2xl font-bold text-green-400 mt-0.5">0.00x</p>
+              <p className="text-2xl font-bold text-green-400 mt-0.5 font-syne">0.00x</p>
             </div>
           </div>
         </div>
@@ -1015,7 +1015,7 @@ function DashboardPage({ user, session, showToast }) {
                 <Layers className="w-6 h-6 text-brand" />
               </div>
               <div>
-                <h3 className="text-white font-semibold">Browse Winning Ad Templates</h3>
+                <h3 className="text-white font-semibold font-syne">Browse Winning Ad Templates</h3>
                 <p className="text-sm text-gray-500 mt-0.5">Get inspired by top-performing image ads</p>
               </div>
             </div>
@@ -1029,7 +1029,7 @@ function DashboardPage({ user, session, showToast }) {
                 <Zap className="w-6 h-6 text-purple-400" />
               </div>
               <div>
-                <h3 className="text-white font-semibold">Create a Campaign</h3>
+                <h3 className="text-white font-semibold font-syne">Create a Campaign</h3>
                 <p className="text-sm text-gray-500 mt-0.5">Launch your first ad in minutes</p>
               </div>
             </div>
@@ -1041,7 +1041,7 @@ function DashboardPage({ user, session, showToast }) {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <Play className="w-4 h-4 text-brand" />
-                <h3 className="text-white font-semibold">Facebook Account Setup</h3>
+                <h3 className="text-white font-semibold font-syne">Facebook Account Setup</h3>
               </div>
               <a href="#/guides" className="text-sm text-gray-500 hover:text-brand transition-colors">All Guides</a>
             </div>
@@ -1058,7 +1058,7 @@ function DashboardPage({ user, session, showToast }) {
         <div className="bg-[#12121A] rounded-xl border border-white/[0.06] p-5">
           <div className="flex items-center gap-2 mb-1">
             <Zap className="w-4 h-4 text-brand" />
-            <h3 className="text-white font-semibold">Launch Checklist</h3>
+            <h3 className="text-white font-semibold font-syne">Launch Checklist</h3>
           </div>
           <p className="text-sm text-gray-500 mb-5">Let's get you started!</p>
           
@@ -1100,7 +1100,7 @@ function DashboardPage({ user, session, showToast }) {
           </div>
 
           {/* Final CTA */}
-          <a href="#/afrivault" className="mt-6 flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-gradient-to-r from-brand to-purple-500 text-white text-sm font-medium hover:opacity-90 transition-all">
+          <a href="#/afrivault" className="mt-6 flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-gradient-to-r from-brand to-purple-500 text-white text-sm font-medium hover:opacity-90 transition-all font-syne">
             <Zap className="w-4 h-4" />
             Create Your First Ad
           </a>
