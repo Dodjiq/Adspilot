@@ -51,12 +51,12 @@ const FORMATS = [
 
 const NAV_ITEMS = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '#/dashboard' },
-  { icon: FolderOpen, label: 'Campaigns', path: '#/campaigns', soon: true },
-  { icon: ShoppingBag, label: 'My Store', path: '#/my-store' },
+  { icon: FolderOpen, label: 'Campagnes', path: '#/campaigns', soon: true },
+  { icon: ShoppingBag, label: 'Ma Boutique', path: '#/my-store' },
   { icon: BarChart2, label: 'Analytics', path: '#/analytics', badge: 'PRO' },
   { icon: Sparkles, label: 'Insights', path: '#/insights', badge: 'PRO' },
-  { icon: Image, label: 'Creatives', path: '#/creatives', badge: 'PRO' },
-  { icon: MessageSquare, label: 'Comments', path: '#/comments', soon: true },
+  { icon: Image, label: 'Créatifs', path: '#/creatives', badge: 'PRO' },
+  { icon: MessageSquare, label: 'Commentaires', path: '#/comments', soon: true },
 ];
 
 const TOOLS_ITEMS = [
@@ -204,7 +204,7 @@ function Sidebar({ currentPath, user, onLogout }) {
 
         {/* Tools Section */}
         <div className="mt-6">
-          <p className="px-3 text-[10px] font-semibold text-gray-600 uppercase tracking-wider mb-2">Tools</p>
+          <p className="px-3 text-[10px] font-semibold text-gray-600 uppercase tracking-wider mb-2">Outils</p>
           <nav className="space-y-0.5">
             {TOOLS_ITEMS.map(item => (
               <NavItem key={item.path} item={item} isActive={currentPath === item.path} />
@@ -230,7 +230,7 @@ function Sidebar({ currentPath, user, onLogout }) {
             <Globe className="w-[18px] h-[18px]" />
             <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-red-500 border border-[#0D0D14]" />
           </div>
-          <span className="text-[13px]">Connections</span>
+          <span className="text-[13px]">Connexions</span>
         </a>
       </div>
 
@@ -256,11 +256,11 @@ function Sidebar({ currentPath, user, onLogout }) {
 }
 
 // ============================================
-// TOP NAV (AdStarter Style)
+// TOP NAV (AdStarter Style - French)
 // ============================================
 function TopNav({ title, subtitle, showDatePicker = false }) {
-  const [selectedPeriod, setSelectedPeriod] = useState('7D');
-  const periods = ['TODAY', '7D', '14D', '30D'];
+  const [selectedPeriod, setSelectedPeriod] = useState('7J');
+  const periods = ['AUJOURD\'HUI', '7J', '14J', '30J'];
   
   return (
     <header className="sticky top-0 z-40 bg-[#0A0A0F]/95 backdrop-blur-xl border-b border-white/[0.06]">
@@ -292,7 +292,7 @@ function TopNav({ title, subtitle, showDatePicker = false }) {
               {/* Date Range */}
               <button className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#12121A] border border-white/[0.06] text-sm text-gray-400 hover:border-white/[0.1] transition-all">
                 <Clock className="w-4 h-4" />
-                <span>Mar 14 - Mar 21, 2026</span>
+                <span>14 Mars - 21 Mars 2026</span>
               </button>
               {/* Location */}
               <button className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#12121A] border border-white/[0.06] text-sm text-gray-400 hover:border-white/[0.1] transition-all">
@@ -321,19 +321,19 @@ function TopNav({ title, subtitle, showDatePicker = false }) {
 // ============================================
 function DashboardLayout({ children, user, currentPath, onLogout }) {
   const pageConfigs = {
-    '#/dashboard': { title: 'Dashboard', subtitle: 'Overview of your ad performance', showDatePicker: true },
-    '#/afrivault': { title: 'AfriVault', subtitle: 'Browse winning ad templates', showDatePicker: false },
-    '#/my-store': { title: 'My Store', subtitle: 'Manage your Shopify connection', showDatePicker: false },
-    '#/settings': { title: 'Settings', subtitle: 'Manage your profile and preferences', showDatePicker: false },
-    '#/settings/billing': { title: 'Subscription', subtitle: 'Manage your Easy-Ecom plan', showDatePicker: false },
-    '#/analytics': { title: 'Analytics', subtitle: 'Track your performance', showDatePicker: true },
-    '#/adscout': { title: 'AdScout', subtitle: 'Spy on competitor ads', showDatePicker: false },
-    '#/ugc': { title: 'UGC Studio', subtitle: 'Create UGC content', showDatePicker: false },
-    '#/campaigns': { title: 'Campaigns', subtitle: 'Manage your ad campaigns', showDatePicker: true },
-    '#/insights': { title: 'Insights', subtitle: 'AI-powered recommendations', showDatePicker: false },
-    '#/creatives': { title: 'Creatives', subtitle: 'Your ad library', showDatePicker: false },
-    '#/comments': { title: 'Comments', subtitle: 'Manage ad comments', showDatePicker: false },
-    '#/guides': { title: 'Guides', subtitle: 'Learn how to scale your ads', showDatePicker: false },
+    '#/dashboard': { title: 'Dashboard', subtitle: 'Vue d\'ensemble de tes performances publicitaires', showDatePicker: true },
+    '#/afrivault': { title: 'AfriVault', subtitle: 'Parcours les templates gagnants', showDatePicker: false },
+    '#/my-store': { title: 'Ma Boutique', subtitle: 'Gère ta connexion Shopify', showDatePicker: false },
+    '#/settings': { title: 'Paramètres', subtitle: 'Gère ton profil et tes préférences', showDatePicker: false },
+    '#/settings/billing': { title: 'Abonnement', subtitle: 'Gère ton plan Easy-Ecom', showDatePicker: false },
+    '#/analytics': { title: 'Analytics', subtitle: 'Suis tes performances', showDatePicker: true },
+    '#/adscout': { title: 'AdScout', subtitle: 'Espionne les pubs des concurrents', showDatePicker: false },
+    '#/ugc': { title: 'UGC Studio', subtitle: 'Crée du contenu UGC', showDatePicker: false },
+    '#/campaigns': { title: 'Campagnes', subtitle: 'Gère tes campagnes publicitaires', showDatePicker: true },
+    '#/insights': { title: 'Insights', subtitle: 'Recommandations IA', showDatePicker: false },
+    '#/creatives': { title: 'Créatifs', subtitle: 'Ta bibliothèque de pubs', showDatePicker: false },
+    '#/comments': { title: 'Commentaires', subtitle: 'Gère les commentaires de tes pubs', showDatePicker: false },
+    '#/guides': { title: 'Guides', subtitle: 'Apprends à scaler tes pubs', showDatePicker: false },
   };
   const config = pageConfigs[currentPath] || pageConfigs['#/dashboard'];
   
@@ -926,7 +926,7 @@ function RegisterPage({ onRegister, showToast }) {
 }
 
 // ============================================
-// DASHBOARD PAGE (AdStarter Style)
+// DASHBOARD PAGE (AdStarter Style - French)
 // ============================================
 function DashboardPage({ user, session, showToast }) {
   const [store, setStore] = useState(null);
@@ -948,50 +948,45 @@ function DashboardPage({ user, session, showToast }) {
     fetchData();
   }, [session]);
 
-  const stats = [
-    { icon: DollarSign, label: 'AD SPEND', value: '$0.00', color: 'text-brand', bgColor: 'bg-brand/15' },
-    { icon: ShoppingCart, label: 'PURCHASES', value: '0', color: 'text-purple-400', bgColor: 'bg-purple-500/15' },
-  ];
-
   const checklist = [
-    { icon: Globe, label: 'Meta account connected', done: false, action: 'Connect', href: '#/settings' },
-    { icon: Sparkles, label: 'First campaign created', done: false, action: 'Create', href: '#/campaigns' },
-    { icon: Image, label: 'First creative uploaded', done: savedCount > 0, action: 'Upload', href: '#/afrivault' },
-    { icon: DollarSign, label: 'First $10 spent', done: false, action: 'View', href: '#/analytics' },
+    { icon: Globe, label: 'Compte Meta connecté', done: false, action: 'Connecter', href: '#/settings' },
+    { icon: Sparkles, label: 'Première campagne créée', done: false, action: 'Créer', href: '#/campaigns' },
+    { icon: Image, label: 'Premier créatif uploadé', done: savedCount > 0, action: 'Uploader', href: '#/afrivault' },
+    { icon: DollarSign, label: 'Premiers 10€ dépensés', done: false, action: 'Voir', href: '#/analytics' },
   ];
 
   return (
     <div className="space-y-6">
       {/* Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* AD SPEND */}
-        <div className="bg-[#12121A] rounded-xl border border-white/[0.06] p-5 hover:border-white/[0.1] transition-all">
+        {/* DÉPENSES PUB */}
+        <div className="bg-[#12121A] rounded-xl border border-white/[0.06] p-5 hover:border-white/[0.1] transition-all cursor-pointer" onClick={() => window.location.hash = '#/analytics'}>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-brand/15 flex items-center justify-center">
               <DollarSign className="w-5 h-5 text-brand" />
             </div>
             <div>
-              <p className="text-[11px] text-gray-500 uppercase tracking-wider font-medium">AD SPEND</p>
-              <p className="text-2xl font-bold text-white mt-0.5 font-syne">$0.00</p>
+              <p className="text-[11px] text-gray-500 uppercase tracking-wider font-medium">DÉPENSES PUB</p>
+              <p className="text-2xl font-bold text-white mt-0.5 font-syne">0,00€</p>
             </div>
           </div>
         </div>
         
-        {/* PURCHASES */}
-        <div className="bg-[#12121A] rounded-xl border border-white/[0.06] p-5 hover:border-white/[0.1] transition-all">
+        {/* ACHATS */}
+        <div className="bg-[#12121A] rounded-xl border border-white/[0.06] p-5 hover:border-white/[0.1] transition-all cursor-pointer" onClick={() => window.location.hash = '#/analytics'}>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-purple-500/15 flex items-center justify-center">
               <ShoppingCart className="w-5 h-5 text-purple-400" />
             </div>
             <div>
-              <p className="text-[11px] text-gray-500 uppercase tracking-wider font-medium">PURCHASES</p>
+              <p className="text-[11px] text-gray-500 uppercase tracking-wider font-medium">ACHATS</p>
               <p className="text-2xl font-bold text-white mt-0.5 font-syne">0</p>
             </div>
           </div>
         </div>
 
         {/* ROAS */}
-        <div className="bg-[#12121A] rounded-xl border border-white/[0.06] p-5 hover:border-white/[0.1] transition-all">
+        <div className="bg-[#12121A] rounded-xl border border-white/[0.06] p-5 hover:border-white/[0.1] transition-all cursor-pointer" onClick={() => window.location.hash = '#/analytics'}>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-green-500/15 flex items-center justify-center">
               <Target className="w-5 h-5 text-green-400" />
@@ -1015,22 +1010,22 @@ function DashboardPage({ user, session, showToast }) {
                 <Layers className="w-6 h-6 text-brand" />
               </div>
               <div>
-                <h3 className="text-white font-semibold font-syne">Browse Winning Ad Templates</h3>
-                <p className="text-sm text-gray-500 mt-0.5">Get inspired by top-performing image ads</p>
+                <h3 className="text-white font-semibold font-syne">Parcourir les templates gagnants</h3>
+                <p className="text-sm text-gray-500 mt-0.5">Inspire-toi des meilleures pubs</p>
               </div>
             </div>
             <ChevronRight className="w-5 h-5 text-gray-500 group-hover:text-brand transition-colors" />
           </a>
 
           {/* Create Campaign */}
-          <a href="#/campaigns" className="flex items-center justify-between p-5 rounded-xl bg-[#12121A] border border-white/[0.06] hover:border-brand/30 transition-all group">
+          <a href="#/my-store" className="flex items-center justify-between p-5 rounded-xl bg-[#12121A] border border-white/[0.06] hover:border-brand/30 transition-all group">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-purple-500/15 flex items-center justify-center group-hover:bg-purple-500/25 transition-colors">
-                <Zap className="w-6 h-6 text-purple-400" />
+                <Store className="w-6 h-6 text-purple-400" />
               </div>
               <div>
-                <h3 className="text-white font-semibold font-syne">Create a Campaign</h3>
-                <p className="text-sm text-gray-500 mt-0.5">Launch your first ad in minutes</p>
+                <h3 className="text-white font-semibold font-syne">Connecter ma boutique</h3>
+                <p className="text-sm text-gray-500 mt-0.5">Lie ta boutique Shopify en 1 clic</p>
               </div>
             </div>
             <ChevronRight className="w-5 h-5 text-gray-500 group-hover:text-brand transition-colors" />
@@ -1041,9 +1036,9 @@ function DashboardPage({ user, session, showToast }) {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <Play className="w-4 h-4 text-brand" />
-                <h3 className="text-white font-semibold font-syne">Facebook Account Setup</h3>
+                <h3 className="text-white font-semibold font-syne">Configuration Facebook Ads</h3>
               </div>
-              <a href="#/guides" className="text-sm text-gray-500 hover:text-brand transition-colors">All Guides</a>
+              <a href="#/guides" className="text-sm text-gray-500 hover:text-brand transition-colors">Tous les guides</a>
             </div>
             <div className="relative aspect-video rounded-lg overflow-hidden bg-gradient-to-br from-pink-500/20 via-purple-500/20 to-blue-500/20 flex items-center justify-center group cursor-pointer">
               <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&h=450&fit=crop')] bg-cover bg-center opacity-40"></div>
@@ -1058,9 +1053,9 @@ function DashboardPage({ user, session, showToast }) {
         <div className="bg-[#12121A] rounded-xl border border-white/[0.06] p-5">
           <div className="flex items-center gap-2 mb-1">
             <Zap className="w-4 h-4 text-brand" />
-            <h3 className="text-white font-semibold font-syne">Launch Checklist</h3>
+            <h3 className="text-white font-semibold font-syne">Liste de lancement</h3>
           </div>
-          <p className="text-sm text-gray-500 mb-5">Let's get you started!</p>
+          <p className="text-sm text-gray-500 mb-5">On te guide pas à pas !</p>
           
           {/* Progress Bar */}
           <div className="h-1 rounded-full bg-white/10 mb-6">
@@ -1102,7 +1097,7 @@ function DashboardPage({ user, session, showToast }) {
           {/* Final CTA */}
           <a href="#/afrivault" className="mt-6 flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-gradient-to-r from-brand to-purple-500 text-white text-sm font-medium hover:opacity-90 transition-all font-syne">
             <Zap className="w-4 h-4" />
-            Create Your First Ad
+            Créer ta première pub
           </a>
         </div>
       </div>
