@@ -291,7 +291,7 @@ function LandingPage() {
       {/* ===== HERO ===== */}
       <section className="relative overflow-hidden">
         <div className="absolute top-[-200px] left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full bg-[#5A5AFB]/[0.06] blur-[150px] pointer-events-none" />
-        <div className="max-w-[1200px] mx-auto px-6 pt-24 pb-20 md:pt-32 md:pb-28">
+        <div className="max-w-[1200px] mx-auto px-6 pt-20 pb-14 md:pt-24 md:pb-20">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div>
               <h1 className="font-syne font-bold text-white leading-[1.1] tracking-tight" style={{ fontSize: 'clamp(36px, 5vw, 55px)' }}>
@@ -333,7 +333,7 @@ function LandingPage() {
       </section>
 
       {/* ===== SOCIAL PROOF ===== */}
-      <div className="max-w-[1200px] mx-auto px-6 pb-16">
+      <div className="max-w-[1200px] mx-auto px-6 pb-10">
         <div className="flex items-center justify-center">
           <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border border-white/[0.06] bg-white/[0.02]">
             <div className="flex -space-x-2">
@@ -347,16 +347,16 @@ function LandingPage() {
       </div>
 
       {/* ===== LOGOS ===== */}
-      <div className="border-t border-b border-white/[0.04] py-7">
-        <div className="max-w-[1200px] mx-auto px-6 flex items-center justify-center gap-12 opacity-30 flex-wrap">
+      <div className="border-t border-b border-white/[0.04] py-10">
+        <div className="max-w-[1200px] mx-auto px-6 flex items-center justify-center gap-14 opacity-30 flex-wrap">
           {['Shopify', 'Canva', 'Meta Ads', 'Instagram', 'Facebook'].map(n => (
-            <span key={n} className="text-white font-syne font-bold text-base">{n}</span>
+            <span key={n} className="text-white font-syne font-bold text-lg">{n}</span>
           ))}
         </div>
       </div>
 
       {/* ===== STEPS ===== */}
-      <section className="py-28">
+      <section className="py-16">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-20 items-start">
             <div className="md:sticky md:top-32">
@@ -390,13 +390,13 @@ function LandingPage() {
       </section>
 
       {/* ===== STATS ===== */}
-      <section className="py-20">
+      <section className="py-14">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {stats.map(s => (
-              <div key={s.label} className="text-center py-8 rounded-xl border border-white/[0.06] bg-white/[0.01]">
-                <div className="font-syne font-bold text-3xl md:text-4xl text-white">{s.value}</div>
-                <div className="text-sm text-gray-500 mt-1">{s.label}</div>
+              <div key={s.label} className="text-center py-10 rounded-xl border border-white/[0.06] bg-white/[0.01]">
+                <div className="font-syne font-bold text-4xl md:text-5xl text-white">{s.value}</div>
+                <div className="text-sm text-gray-500 mt-2">{s.label}</div>
               </div>
             ))}
           </div>
@@ -404,7 +404,7 @@ function LandingPage() {
       </section>
 
       {/* ===== AFRIVAULT FEATURE ===== */}
-      <section className="py-28">
+      <section className="py-16">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div>
@@ -441,9 +441,9 @@ function LandingPage() {
       </section>
 
       {/* ===== COMPARISON ===== */}
-      <section className="py-28">
+      <section className="py-16">
         <div className="max-w-[900px] mx-auto px-6">
-          <div className="text-center mb-14">
+          <div className="text-center mb-10">
             <p className="text-[#5A5AFB] text-xs font-semibold uppercase tracking-[0.15em]">Comparaison</p>
             <h2 className="font-syne font-bold text-white mt-4 tracking-tight" style={{ fontSize: 'clamp(28px, 3.5vw, 40px)' }}>
               Pourquoi choisir{' '}
@@ -452,15 +452,15 @@ function LandingPage() {
           </div>
           <div className="rounded-xl border border-white/[0.06] overflow-hidden">
             <div className="grid grid-cols-4 text-xs font-semibold border-b border-white/[0.06]">
-              <div className="p-4 text-gray-500"></div>
-              <div className="p-4 text-center text-[#5A5AFB] bg-[#5A5AFB]/[0.05] border-x border-[#5A5AFB]/10">Easy-Ecom</div>
-              <div className="p-4 text-center text-gray-600">DIY</div>
-              <div className="p-4 text-center text-gray-600">Agence</div>
+              <div className="p-5 text-gray-500"></div>
+              <div className="p-5 text-center text-[#5A5AFB] bg-[#5A5AFB]/[0.05] border-x border-[#5A5AFB]/10">Easy-Ecom</div>
+              <div className="p-5 text-center text-gray-600">DIY</div>
+              <div className="p-5 text-center text-gray-600">Agence</div>
             </div>
             {compFeatures.map((f, i) => (
               <div key={f} className={cn("grid grid-cols-4 text-sm", i < compFeatures.length - 1 && "border-b border-white/[0.04]")}>
-                <div className="p-3.5 text-gray-400 text-xs">{f}</div>
-                <div className="p-3.5 flex justify-center bg-[#5A5AFB]/[0.03] border-x border-[#5A5AFB]/5">
+                <div className="p-4 text-gray-400 text-xs">{f}</div>
+                <div className="p-4 flex justify-center bg-[#5A5AFB]/[0.03] border-x border-[#5A5AFB]/5">
                   {compEE[i] ? <CheckCircle2 className="w-4 h-4 text-[#5A5AFB]" /> : <X className="w-4 h-4 text-gray-700" />}
                 </div>
                 <div className="p-3.5 flex justify-center">
@@ -476,9 +476,9 @@ function LandingPage() {
       </section>
 
       {/* ===== TESTIMONIALS ===== */}
-      <section className="py-28">
+      <section className="py-16">
         <div className="max-w-[1200px] mx-auto px-6">
-          <div className="text-center mb-14">
+          <div className="text-center mb-10">
             <p className="text-[#5A5AFB] text-xs font-semibold uppercase tracking-[0.15em]">Témoignages</p>
             <h2 className="font-syne font-bold text-white mt-4 tracking-tight" style={{ fontSize: 'clamp(28px, 3.5vw, 40px)' }}>
               Ils nous font{' '}
@@ -508,9 +508,9 @@ function LandingPage() {
       </section>
 
       {/* ===== PRICING ===== */}
-      <section className="py-28">
+      <section className="py-16">
         <div className="max-w-[1000px] mx-auto px-6">
-          <div className="text-center mb-14">
+          <div className="text-center mb-10">
             <p className="text-[#5A5AFB] text-xs font-semibold uppercase tracking-[0.15em]">Tarifs</p>
             <h2 className="font-syne font-bold text-white mt-4 tracking-tight" style={{ fontSize: 'clamp(28px, 3.5vw, 40px)' }}>
               Simple et{' '}
@@ -519,9 +519,9 @@ function LandingPage() {
           </div>
           <div className="grid md:grid-cols-3 gap-5 items-start">
             {/* Découverte */}
-            <div className="p-6 rounded-xl border border-white/[0.06] bg-white/[0.01]">
+            <div className="p-7 rounded-xl border border-white/[0.06] bg-white/[0.01]">
               <p className="text-gray-500 text-sm font-medium mb-4">Découverte</p>
-              <div className="flex items-baseline gap-1 mb-5"><span className="font-syne font-bold text-3xl text-white">0€</span><span className="text-gray-600 text-sm">/mois</span></div>
+              <div className="flex items-baseline gap-1 mb-5"><span className="font-syne font-bold text-4xl text-white">0€</span><span className="text-gray-600 text-sm">/mois</span></div>
               <ul className="space-y-2.5 mb-7 text-sm">
                 {['10 templates', 'Aperçu AfriVault', 'Connexion Shopify'].map(f => (
                   <li key={f} className="flex items-center gap-2 text-gray-400"><Check className="w-3.5 h-3.5 text-gray-600 shrink-0" />{f}</li>
@@ -535,10 +535,10 @@ function LandingPage() {
               </a>
             </div>
             {/* Pro */}
-            <div className="p-6 rounded-xl border-2 border-[#5A5AFB]/30 relative bg-[#5A5AFB]/[0.04]">
+            <div className="p-7 rounded-xl border-2 border-[#5A5AFB]/30 relative bg-[#5A5AFB]/[0.04]">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white text-[11px] font-semibold">Populaire</div>
               <p className="text-[#5A5AFB] text-sm font-medium mb-4 mt-1">Pro</p>
-              <div className="flex items-baseline gap-1 mb-5"><span className="font-syne font-bold text-3xl text-white">9,99€</span><span className="text-gray-600 text-sm">/mois</span></div>
+              <div className="flex items-baseline gap-1 mb-5"><span className="font-syne font-bold text-4xl text-white">9,99€</span><span className="text-gray-600 text-sm">/mois</span></div>
               <ul className="space-y-2.5 mb-7 text-sm">
                 {['Templates illimités', 'Édition Canva intégrée', 'Connexion Shopify', 'Dashboard analytics', 'Support prioritaire'].map(f => (
                   <li key={f} className="flex items-center gap-2 text-gray-300"><CheckCircle2 className="w-3.5 h-3.5 text-[#5A5AFB] shrink-0" />{f}</li>
@@ -549,9 +549,9 @@ function LandingPage() {
               </a>
             </div>
             {/* Business */}
-            <div className="p-6 rounded-xl border border-white/[0.06] bg-white/[0.01]">
+            <div className="p-7 rounded-xl border border-white/[0.06] bg-white/[0.01]">
               <p className="text-gray-500 text-sm font-medium mb-4">Business</p>
-              <div className="flex items-baseline gap-1 mb-5"><span className="font-syne font-bold text-3xl text-white">Sur mesure</span></div>
+              <div className="flex items-baseline gap-1 mb-5"><span className="font-syne font-bold text-4xl text-white">Sur mesure</span></div>
               <ul className="space-y-2.5 mb-7 text-sm">
                 {['Tout le plan Pro', 'Templates sur mesure', 'API Canva', 'Account manager', 'Onboarding dédié'].map(f => (
                   <li key={f} className="flex items-center gap-2 text-gray-400"><Check className="w-3.5 h-3.5 text-gray-600 shrink-0" />{f}</li>
@@ -566,9 +566,9 @@ function LandingPage() {
       </section>
 
       {/* ===== FAQ ===== */}
-      <section className="py-28">
+      <section className="py-16">
         <div className="max-w-[700px] mx-auto px-6">
-          <div className="text-center mb-14">
+          <div className="text-center mb-10">
             <p className="text-[#5A5AFB] text-xs font-semibold uppercase tracking-[0.15em]">FAQ</p>
             <h2 className="font-syne font-bold text-white mt-4 tracking-tight" style={{ fontSize: 'clamp(28px, 3.5vw, 36px)' }}>
               Questions fréquentes
@@ -594,7 +594,7 @@ function LandingPage() {
       </section>
 
       {/* ===== FINAL CTA ===== */}
-      <section className="py-28 relative overflow-hidden">
+      <section className="py-16 relative overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[#5A5AFB]/[0.04] blur-[120px] pointer-events-none" />
         <div className="max-w-[600px] mx-auto px-6 text-center relative">
           <h2 className="font-syne font-bold text-white tracking-tight" style={{ fontSize: 'clamp(28px, 4vw, 44px)' }}>

@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configuration
-BASE_URL = os.getenv('NEXT_PUBLIC_BASE_URL', 'https://easy-shop-templates.preview.emergentagent.com')
+BASE_URL = os.getenv('NEXT_PUBLIC_BASE_URL', 'https://easyecom-staging.preview.emergentagent.com')
 API_BASE = f"{BASE_URL}/api"
 SUPABASE_URL = os.getenv('NEXT_PUBLIC_SUPABASE_URL')
 SUPABASE_ANON_KEY = os.getenv('NEXT_PUBLIC_SUPABASE_ANON_KEY')
