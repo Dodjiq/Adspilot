@@ -7,7 +7,9 @@ import {
   Settings, Zap, Bell, Heart, Check, X, ChevronDown, Filter, ExternalLink,
   Loader2, Mail, Lock, User, ArrowRight, TrendingUp, DollarSign,
   ShoppingCart, LogOut, CreditCard, Sparkles, Clock, Eye, Store,
-  CheckCircle2, Circle, Palette, AlertCircle, Plus, ChevronRight
+  CheckCircle2, Circle, Palette, AlertCircle, Plus, ChevronRight,
+  Globe, Layers, Shield, Users, Star, MessageSquare, MousePointerClick,
+  Target, Image, Repeat, ChevronUp, Menu, Play
 } from 'lucide-react';
 
 // ============================================
@@ -219,106 +221,459 @@ function DashboardLayout({ children, user, currentPath, onLogout }) {
 }
 
 // ============================================
-// LANDING PAGE
+// LANDING PAGE (Kopy-style)
 // ============================================
 function LandingPage() {
+  const [openFaq, setOpenFaq] = useState(null);
+  const [heroEmail, setHeroEmail] = useState('');
+
+  const steps = [
+    { num: '01', icon: Store, title: 'Connecte ta boutique', desc: 'Lie ta boutique Shopify en un clic. On importe tes produits automatiquement.' },
+    { num: '02', icon: Layers, title: 'Choisis ton template', desc: 'Parcours +500 templates AfriVault optimisés pour le marché africain.' },
+    { num: '03', icon: ExternalLink, title: 'Lance ta publicité', desc: 'Édite dans Canva, personnalise et publie sur Meta en quelques minutes.' },
+  ];
+
+  const stats = [
+    { value: '+500', label: 'Templates disponibles', icon: Layers },
+    { value: '100%', label: 'Pensé pour l\'Afrique', icon: Globe },
+    { value: '5 min', label: 'Pour lancer ta pub', icon: Zap },
+    { value: '+12', label: 'Niches couvertes', icon: Target },
+  ];
+
+  const compFeatures = [
+    'Templates optimisés Afrique', 'Édition Canva intégrée', 'Connexion Shopify automatique',
+    'Analytics & suivi ROAS', 'Multi-niches (beauté, mode, food...)', 'Support en français',
+    'Prix abordable', 'Résultats immédiats',
+  ];
+  const compData = [true, true, true, true, true, true, true, true];
+  const compManual = [false, false, false, false, false, false, true, false];
+  const compAgency = [true, false, true, true, false, true, false, true];
+
+  const testimonials = [
+    { name: 'Sarah M.', role: 'Boutique beauté — Dakar', quote: 'Easy-Ecom m\'a permis de lancer mes premières pubs Meta en moins de 10 minutes. Les templates sont parfaitement adaptés à ma clientèle africaine.', avatar: 'S', time: '3 mois', color: 'from-pink-500 to-purple-500' },
+    { name: 'Kofi A.', role: 'E-commerce mode — Abidjan', quote: 'Je gagnais des heures chaque semaine grâce aux templates. Mon ROAS est passé de 1.2x à 2.8x dès les deux premières semaines.', avatar: 'K', time: '6 mois', color: 'from-blue-500 to-cyan-500' },
+    { name: 'Amara D.', role: 'Tech store — Lagos', quote: 'La connexion Shopify est magique. Mes produits sont importés et les pubs sont prêtes en quelques clics. Simple et terriblement efficace.', avatar: 'A', time: '1 mois', color: 'from-amber-500 to-orange-500' },
+  ];
+
+  const faqs = [
+    { q: "Qu'est-ce qu'Easy-Ecom exactement ?", a: "Easy-Ecom est une plateforme SaaS tout-en-un conçue pour les e-commerçants africains francophones. Elle combine des templates publicitaires optimisés pour l'Afrique, l'édition Canva intégrée, la connexion Shopify et un dashboard analytics pour scaler vos pubs Meta." },
+    { q: "Ai-je besoin d'expérience en publicité ?", a: "Pas du tout ! Easy-Ecom est conçu pour les débutants comme les experts. Nos templates sont prêts à l'emploi et optimisés pour le marché africain. Il suffit de choisir, personnaliser dans Canva et publier." },
+    { q: 'Quels types de templates sont disponibles ?', a: "Nous proposons +500 templates dans 12+ niches : beauté, mode, food, électronique, maison, santé et plus. Chaque template est disponible en format carré (1:1), story (9:16) et paysage (16:9)." },
+    { q: 'Comment fonctionne la connexion Shopify ?', a: "Il suffit de coller l'URL de ta boutique Shopify. On importe automatiquement tes produits avec images et prix. Tu peux ensuite créer des pubs directement depuis tes produits." },
+    { q: 'Puis-je annuler à tout moment ?', a: "Oui, absolument ! Pas d'engagement. Tu peux annuler ton abonnement à tout moment depuis ton dashboard. Aucun frais caché, aucune mauvaise surprise." },
+    { q: "Comment fonctionne l'édition dans Canva ?", a: "Quand tu choisis un template AfriVault, tu peux l'ouvrir directement dans Canva pour le personnaliser avec tes propres images, textes et couleurs. Puis tu exportes et publies sur Meta." },
+  ];
+
+  const handleHeroSubmit = (e) => {
+    e.preventDefault();
+    if (heroEmail) window.location.hash = '#/register';
+  };
+
   return (
-    <div className="min-h-screen bg-[#0A0A0F]">
-      <nav className="border-b border-white/[0.06] px-6 py-4">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
+    <div className="min-h-screen" style={{ backgroundColor: '#070B14' }}>
+      {/* ===== HEADER ===== */}
+      <header className="sticky top-0 z-50 border-b border-white/[0.06] backdrop-blur-xl" style={{ backgroundColor: 'rgba(7,11,20,0.85)' }}>
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand to-brand-dark flex items-center justify-center shadow-lg shadow-brand/20">
-              <Zap className="w-4.5 h-4.5 text-white" />
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#5A5AFB] to-[#9C5DFF] flex items-center justify-center shadow-lg shadow-[#5A5AFB]/20">
+              <Zap className="w-5 h-5 text-white" />
             </div>
-            <span className="text-white font-bold text-xl">Easy-Ecom</span>
+            <span className="text-white font-bold text-xl tracking-tight">Easy-Ecom</span>
           </div>
-          <div className="flex items-center gap-3">
-            <a href="#/login" className="text-gray-400 hover:text-white text-sm font-medium transition-colors px-4 py-2">Connexion</a>
-            <a href="#/register" className="px-5 py-2.5 rounded-xl bg-brand text-white text-sm font-semibold hover:bg-brand-light transition-all shadow-lg shadow-brand/25">Démarrer</a>
-          </div>
-        </div>
-      </nav>
-
-      <div className="max-w-6xl mx-auto px-6">
-        {/* Hero */}
-        <div className="py-24 md:py-32 text-center relative">
-          <div className="absolute inset-0 bg-gradient-to-b from-brand/5 via-transparent to-transparent rounded-3xl" />
-          <div className="relative">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-accent-gold/30 bg-accent-gold/10 text-accent-gold text-sm font-medium mb-8">
-              <Sparkles className="w-4 h-4" /> La plateforme pub #1 pour l'Afrique
-            </div>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-[1.1] tracking-tight">
-              Le SaaS pub pensé<br />
-              <span className="bg-gradient-to-r from-brand via-brand-light to-accent-gold bg-clip-text text-transparent">pour l'Afrique</span>
-            </h1>
-            <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Templates, Canva, Analytics — tout pour scaler tes pubs Meta.<br className="hidden sm:block" />
-              Lance tes premières publicités en 5 minutes.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <a href="#/register" className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-brand text-white font-semibold text-base hover:bg-brand-light transition-all shadow-xl shadow-brand/25 flex items-center justify-center gap-2">
-                Démarrer — 9,99€/mois <ArrowRight className="w-4 h-4" />
-              </a>
-              <a href="#/login" className="w-full sm:w-auto px-8 py-3.5 rounded-xl border border-white/10 text-white font-semibold text-base hover:bg-white/5 transition-all flex items-center justify-center">
-                Se connecter
-              </a>
-            </div>
-            <div className="flex items-center justify-center gap-6 mt-8 text-sm text-gray-500">
-              <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-green-400" /> Setup 5 min</span>
-              <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-green-400" /> Sans engagement</span>
-              <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-green-400" /> +500 templates</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Features */}
-        <div className="py-20 grid md:grid-cols-3 gap-6">
-          {LANDING_FEATURES.map(f => (
-            <div key={f.title} className="p-6 rounded-2xl bg-[#12121A] border border-white/[0.08] hover:border-white/[0.15] transition-all group">
-              <div className="w-12 h-12 rounded-xl bg-brand/15 flex items-center justify-center mb-4 group-hover:bg-brand/25 transition-colors">
-                <f.icon className="w-6 h-6 text-brand" />
-              </div>
-              <h3 className="text-white font-semibold text-lg mb-2">{f.title}</h3>
-              <p className="text-gray-400 text-sm leading-relaxed">{f.desc}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Pricing */}
-        <div className="py-20 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">Un seul plan, tout inclus</h2>
-          <p className="text-gray-400 mb-10">Pas de surprise, pas de frais cachés.</p>
-          <div className="max-w-md mx-auto p-8 rounded-2xl bg-[#12121A] border border-brand/30 relative overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand to-accent-gold" />
-            <div className="text-sm text-brand font-semibold mb-2">Easy-Ecom Pro</div>
-            <div className="flex items-baseline justify-center gap-1 mb-6">
-              <span className="text-5xl font-bold text-white">9,99€</span>
-              <span className="text-gray-400">/mois</span>
-            </div>
-            <ul className="space-y-3 text-left mb-8">
-              {['Templates illimités AfriVault', 'Édition Canva intégrée', 'Connexion Shopify', 'Dashboard analytics', 'Support prioritaire'].map(f => (
-                <li key={f} className="flex items-center gap-3 text-sm text-gray-300">
-                  <Check className="w-4 h-4 text-brand shrink-0" /> {f}
-                </li>
-              ))}
-            </ul>
-            <a href="#/register" className="block w-full py-3.5 rounded-xl bg-brand text-white font-semibold text-center hover:bg-brand-light transition-all shadow-lg shadow-brand/25">
-              Commencer maintenant
+          <div className="flex items-center gap-4">
+            <a href="#/login" className="text-gray-400 hover:text-white text-sm font-medium transition-colors hidden sm:block">Connexion</a>
+            <a href="#/register" className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white text-sm font-semibold hover:opacity-90 transition-all shadow-lg shadow-[#5A5AFB]/25">
+              Essayez-le gratuitement
             </a>
           </div>
         </div>
+      </header>
 
-        {/* Footer */}
-        <footer className="border-t border-white/[0.06] py-8 text-center">
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-brand to-brand-dark flex items-center justify-center">
-              <Zap className="w-3.5 h-3.5 text-white" />
+      {/* ===== HERO ===== */}
+      <section className="relative overflow-hidden">
+        <div className="absolute top-[-150px] left-1/2 -translate-x-1/2 w-[900px] h-[600px] rounded-full bg-[#5A5AFB]/[0.07] blur-[120px] pointer-events-none" />
+        <div className="absolute top-[100px] right-[-200px] w-[400px] h-[400px] rounded-full bg-[#9C5DFF]/[0.05] blur-[100px] pointer-events-none" />
+        <div className="max-w-6xl mx-auto px-6 py-20 md:py-28">
+          <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
+            {/* Left */}
+            <div>
+              <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-bold text-white leading-[1.1] tracking-tight mb-6">
+                Crée des publicités qui <span className="bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] bg-clip-text text-transparent">convertissent</span> pour le marché africain.
+              </h1>
+              <p className="text-lg text-gray-400 mb-8 leading-relaxed max-w-lg">
+                Templates optimisés, édition Canva, connexion Shopify — tout pour scaler tes pubs Meta en quelques minutes.
+              </p>
+              <div className="space-y-3 mb-8">
+                {[
+                  { icon: Layers, text: '+500 templates AfriVault' },
+                  { icon: Globe, text: 'Optimisé marché africain' },
+                  { icon: Palette, text: 'Édition Canva intégrée' },
+                  { icon: Zap, text: 'Résultats en 5 minutes' },
+                ].map(f => (
+                  <div key={f.text} className="flex items-center gap-3">
+                    <div className="w-5 h-5 rounded-full bg-[#5A5AFB]/20 flex items-center justify-center shrink-0">
+                      <Check className="w-3 h-3 text-[#5A5AFB]" />
+                    </div>
+                    <span className="text-gray-300 text-sm font-medium">{f.text}</span>
+                  </div>
+                ))}
+              </div>
+              <a href="#/register" className="hidden md:inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white font-semibold hover:opacity-90 transition-all shadow-xl shadow-[#5A5AFB]/25">
+                Essayez-le gratuitement <ArrowRight className="w-4 h-4" />
+              </a>
             </div>
-            <span className="text-white font-bold">Easy-Ecom</span>
+            {/* Right - Signup Card */}
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#5A5AFB]/10 to-[#9C5DFF]/10 rounded-3xl blur-xl" />
+              <div className="relative bg-white/[0.03] backdrop-blur-sm border border-white/[0.08] rounded-2xl p-8">
+                <h3 className="text-white font-semibold text-lg mb-1">Commence maintenant</h3>
+                <p className="text-gray-400 text-sm mb-6">Lance ta première pub en 5 minutes</p>
+                <form onSubmit={handleHeroSubmit} className="space-y-4">
+                  <input type="email" value={heroEmail} onChange={e => setHeroEmail(e.target.value)} placeholder="Ton adresse email" required
+                    className="w-full px-4 py-3.5 rounded-xl bg-white/[0.06] border border-white/[0.1] text-white placeholder-gray-500 focus:outline-none focus:border-[#5A5AFB]/50 focus:ring-1 focus:ring-[#5A5AFB]/30 text-sm transition-all" />
+                  <button type="submit" className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white font-semibold hover:opacity-90 transition-all shadow-lg shadow-[#5A5AFB]/25 flex items-center justify-center gap-2">
+                    Essayez-le gratuitement <ArrowRight className="w-4 h-4" />
+                  </button>
+                </form>
+                <p className="text-center text-xs text-gray-500 mt-4">Pas de carte bancaire requise. Annulez quand vous voulez.</p>
+              </div>
+            </div>
           </div>
-          <p className="text-gray-500 text-sm">© 2025 Easy-Ecom. Le SaaS pub pensé pour l'Afrique.</p>
-        </footer>
+        </div>
+      </section>
+
+      {/* ===== SOCIAL PROOF ===== */}
+      <div className="max-w-6xl mx-auto px-6 pb-12">
+        <div className="flex items-center justify-center">
+          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-white/[0.08] bg-white/[0.02]">
+            <div className="flex -space-x-2">
+              {['S', 'K', 'A', 'M'].map((l, i) => (
+                <div key={i} className="w-8 h-8 rounded-full bg-gradient-to-br from-[#5A5AFB] to-[#9C5DFF] flex items-center justify-center text-white text-xs font-bold border-2 border-[#070B14]">{l}</div>
+              ))}
+            </div>
+            <div className="flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-green-400" />
+              <span className="text-gray-300 text-sm font-medium">UTILISÉ PAR PLUS DE <span className="text-white font-bold">500+</span> E-COMMERÇANTS AFRICAINS</span>
+            </div>
+          </div>
+        </div>
       </div>
+
+      {/* ===== PLATFORM LOGOS ===== */}
+      <div className="border-t border-b border-white/[0.06] py-8">
+        <div className="max-w-6xl mx-auto px-6">
+          <p className="text-center text-xs text-gray-500 uppercase tracking-wider mb-6 font-medium">Intégrations compatibles</p>
+          <div className="flex items-center justify-center gap-10 md:gap-16 opacity-40 flex-wrap">
+            {['Shopify', 'Canva', 'Meta Ads', 'Instagram', 'Facebook', 'TikTok'].map(name => (
+              <span key={name} className="text-white font-bold text-lg tracking-tight">{name}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ===== STEPS SECTION ===== */}
+      <section className="py-24">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-16 items-start">
+            <div className="md:sticky md:top-32">
+              <span className="text-[#5A5AFB] text-sm font-semibold uppercase tracking-wider">Comment ça marche</span>
+              <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-bold text-white mt-4 leading-[1.15] tracking-tight">
+                Lance une nouvelle pub sur ta boutique en <span className="bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] bg-clip-text text-transparent">quelques secondes</span> grâce à nos templates.
+              </h2>
+              <p className="text-gray-400 mt-6 leading-relaxed max-w-md">
+                Easy-Ecom s'assure que chaque publicité correspond au style unique de ta marque et au goût de ta clientèle africaine.
+              </p>
+            </div>
+            <div className="space-y-5">
+              {steps.map((step, i) => (
+                <div key={step.num} className="group relative p-6 rounded-2xl bg-gradient-to-br from-[#5A5AFB]/[0.08] to-[#9C5DFF]/[0.04] border border-[#5A5AFB]/[0.15] hover:border-[#5A5AFB]/30 transition-all">
+                  <div className="flex items-start gap-5">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#5A5AFB] to-[#9C5DFF] flex items-center justify-center shrink-0 shadow-lg shadow-[#5A5AFB]/20">
+                      <step.icon className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <div className="text-[#5A5AFB] text-xs font-bold uppercase tracking-wider mb-1">Étape {step.num}</div>
+                      <h3 className="text-white font-semibold text-lg mb-2">{step.title}</h3>
+                      <p className="text-gray-400 text-sm leading-relaxed">{step.desc}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== STATS ===== */}
+      <section className="py-20 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#5A5AFB]/[0.03] to-transparent pointer-events-none" />
+        <div className="max-w-6xl mx-auto px-6 relative">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-bold text-white leading-tight tracking-tight">
+              Passe de zéro à <span className="bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] bg-clip-text text-transparent">prêt à vendre.</span><br />En quelques secondes.
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {stats.map(s => (
+              <div key={s.label} className="text-center p-6 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-[#5A5AFB]/20 transition-all">
+                <div className="w-12 h-12 rounded-xl bg-[#5A5AFB]/10 flex items-center justify-center mx-auto mb-4">
+                  <s.icon className="w-6 h-6 text-[#5A5AFB]" />
+                </div>
+                <div className="text-3xl md:text-4xl font-bold text-white mb-1">{s.value}</div>
+                <div className="text-sm text-gray-400">{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== FEATURE HIGHLIGHT ===== */}
+      <section className="py-24">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div>
+              <span className="text-[#5A5AFB] text-sm font-semibold uppercase tracking-wider">AfriVault</span>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mt-4 leading-tight tracking-tight">
+                +500 templates pub optimisés pour le <span className="bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] bg-clip-text text-transparent">marché africain</span>
+              </h2>
+              <p className="text-gray-400 mt-6 leading-relaxed">
+                Beauté, mode, food, électronique, maison — chaque niche a ses propres templates conçus pour maximiser les conversions auprès de ta clientèle.
+              </p>
+              <div className="mt-8 space-y-4">
+                {[
+                  { icon: Palette, text: '12+ niches spécialisées pour le marché africain' },
+                  { icon: Image, text: 'Formats carré, story et paysage disponibles' },
+                  { icon: ExternalLink, text: 'Édition directe dans Canva en un clic' },
+                  { icon: Heart, text: 'Sauvegarde tes templates favoris' },
+                ].map(f => (
+                  <div key={f.text} className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-[#5A5AFB]/10 flex items-center justify-center shrink-0">
+                      <f.icon className="w-4 h-4 text-[#5A5AFB]" />
+                    </div>
+                    <span className="text-gray-300 text-sm">{f.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#5A5AFB]/10 to-[#9C5DFF]/5 rounded-3xl blur-2xl" />
+              <div className="relative grid grid-cols-2 gap-3">
+                {MOCK_TEMPLATES.slice(0, 4).map(t => (
+                  <div key={t.id} className="rounded-xl overflow-hidden border border-white/[0.08] hover:border-[#5A5AFB]/30 transition-all">
+                    <img src={t.preview_url} alt={t.title} className="w-full aspect-square object-cover" loading="lazy" />
+                    <div className="p-2.5 bg-white/[0.03]">
+                      <span className={cn('text-[10px] font-semibold px-1.5 py-0.5 rounded', NICHE_CONFIG[t.niche]?.bg, NICHE_CONFIG[t.niche]?.text)}>{NICHE_CONFIG[t.niche]?.label}</span>
+                      <p className="text-white text-xs font-medium mt-1 truncate">{t.title}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== COMPARISON TABLE ===== */}
+      <section className="py-24 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#5A5AFB]/[0.02] to-transparent pointer-events-none" />
+        <div className="max-w-4xl mx-auto px-6 relative">
+          <div className="text-center mb-16">
+            <span className="text-[#5A5AFB] text-sm font-semibold uppercase tracking-wider">Comparaison</span>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mt-4 tracking-tight">
+              Comment Easy-Ecom <span className="bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] bg-clip-text text-transparent">se démarque</span>
+            </h2>
+          </div>
+          <div className="rounded-2xl border border-white/[0.08] overflow-hidden">
+            <div className="grid grid-cols-4 text-center text-sm font-semibold border-b border-white/[0.08]">
+              <div className="p-4 text-gray-400 text-left">Fonctionnalité</div>
+              <div className="p-4 text-white bg-gradient-to-b from-[#5A5AFB]/20 to-[#5A5AFB]/5 border-x border-[#5A5AFB]/20">
+                <span className="text-[#5A5AFB]">Easy-Ecom</span>
+              </div>
+              <div className="p-4 text-gray-500">Faire soi-même</div>
+              <div className="p-4 text-gray-500">Agence</div>
+            </div>
+            {compFeatures.map((feature, i) => (
+              <div key={feature} className={cn("grid grid-cols-4 text-center text-sm items-center", i < compFeatures.length - 1 && "border-b border-white/[0.06]")}>
+                <div className="p-4 text-gray-300 text-left text-xs sm:text-sm">{feature}</div>
+                <div className="p-4 bg-[#5A5AFB]/[0.05] border-x border-[#5A5AFB]/10">
+                  {compData[i] ? <CheckCircle2 className="w-5 h-5 text-[#5A5AFB] mx-auto" /> : <X className="w-5 h-5 text-gray-600 mx-auto" />}
+                </div>
+                <div className="p-4">
+                  {compManual[i] ? <Check className="w-5 h-5 text-gray-500 mx-auto" /> : <X className="w-5 h-5 text-gray-600 mx-auto" />}
+                </div>
+                <div className="p-4">
+                  {compAgency[i] ? <Check className="w-5 h-5 text-gray-500 mx-auto" /> : <X className="w-5 h-5 text-gray-600 mx-auto" />}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== TESTIMONIALS ===== */}
+      <section className="py-24">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <span className="text-[#5A5AFB] text-sm font-semibold uppercase tracking-wider">Témoignages</span>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mt-4 tracking-tight">
+              Des centaines d'entrepreneurs <span className="bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] bg-clip-text text-transparent">nous font confiance</span>
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {testimonials.map(t => (
+              <div key={t.name} className="p-6 rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:border-[#5A5AFB]/20 transition-all">
+                <div className="flex items-center gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />)}
+                </div>
+                <p className="text-gray-300 text-sm leading-relaxed mb-6">"{t.quote}"</p>
+                <div className="flex items-center gap-3 pt-4 border-t border-white/[0.06]">
+                  <div className={cn("w-10 h-10 rounded-full bg-gradient-to-br flex items-center justify-center text-white font-bold text-sm", t.color)}>
+                    {t.avatar}
+                  </div>
+                  <div>
+                    <div className="text-white font-semibold text-sm">{t.name}</div>
+                    <div className="text-gray-500 text-xs">{t.role}</div>
+                  </div>
+                  <div className="ml-auto text-xs text-gray-600">{t.time}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== PRICING ===== */}
+      <section className="py-24 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#5A5AFB]/[0.03] to-transparent pointer-events-none" />
+        <div className="max-w-5xl mx-auto px-6 relative">
+          <div className="text-center mb-16">
+            <span className="text-[#5A5AFB] text-sm font-semibold uppercase tracking-wider">Tarification</span>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mt-4 tracking-tight">
+              Abordable. <span className="bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] bg-clip-text text-transparent">Transparent.</span>
+            </h2>
+            <p className="text-gray-400 mt-4 max-w-xl mx-auto">Un plan pensé pour les entrepreneurs africains. Pas de frais cachés.</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6 items-start">
+            {/* Starter */}
+            <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.08]">
+              <div className="text-gray-400 text-sm font-semibold mb-1">Découverte</div>
+              <div className="flex items-baseline gap-1 mb-4"><span className="text-4xl font-bold text-white">0€</span><span className="text-gray-500">/mois</span></div>
+              <p className="text-gray-500 text-sm mb-6">Pour découvrir la plateforme</p>
+              <ul className="space-y-3 mb-8">
+                {['Accès à 10 templates', 'Aperçu AfriVault', 'Connexion Shopify'].map(f => (
+                  <li key={f} className="flex items-center gap-2.5 text-sm text-gray-400"><Check className="w-4 h-4 text-gray-600 shrink-0" />{f}</li>
+                ))}
+                {['Édition Canva', 'Analytics', 'Support prioritaire'].map(f => (
+                  <li key={f} className="flex items-center gap-2.5 text-sm text-gray-600"><X className="w-4 h-4 text-gray-700 shrink-0" />{f}</li>
+                ))}
+              </ul>
+              <a href="#/register" className="block w-full py-3 rounded-xl border border-white/[0.1] text-white text-sm font-semibold text-center hover:bg-white/5 transition-all">
+                Commencer gratuitement
+              </a>
+            </div>
+            {/* Pro - Highlighted */}
+            <div className="p-6 rounded-2xl border-2 border-[#5A5AFB]/40 relative bg-gradient-to-b from-[#5A5AFB]/[0.08] to-transparent shadow-xl shadow-[#5A5AFB]/10">
+              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white text-xs font-bold">Le plus populaire</div>
+              <div className="text-[#5A5AFB] text-sm font-semibold mb-1 mt-2">Pro</div>
+              <div className="flex items-baseline gap-1 mb-4"><span className="text-4xl font-bold text-white">9,99€</span><span className="text-gray-500">/mois</span></div>
+              <p className="text-gray-400 text-sm mb-6">Tout pour scaler tes pubs</p>
+              <ul className="space-y-3 mb-8">
+                {['Templates illimités AfriVault', 'Édition Canva intégrée', 'Connexion Shopify', 'Dashboard analytics', 'Multi-niches & formats', 'Support prioritaire'].map(f => (
+                  <li key={f} className="flex items-center gap-2.5 text-sm text-gray-300"><CheckCircle2 className="w-4 h-4 text-[#5A5AFB] shrink-0" />{f}</li>
+                ))}
+              </ul>
+              <a href="#/register" className="block w-full py-3.5 rounded-xl bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white text-sm font-semibold text-center hover:opacity-90 transition-all shadow-lg shadow-[#5A5AFB]/25">
+                Commencer — 9,99€/mois
+              </a>
+            </div>
+            {/* Business */}
+            <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.08]">
+              <div className="text-gray-400 text-sm font-semibold mb-1">Business</div>
+              <div className="flex items-baseline gap-1 mb-4"><span className="text-4xl font-bold text-white">Sur mesure</span></div>
+              <p className="text-gray-500 text-sm mb-6">Pour les agences & marques</p>
+              <ul className="space-y-3 mb-8">
+                {['Tout le plan Pro', 'Templates sur mesure', 'Intégration API Canva', 'Analytics avancés', 'Account manager dédié', 'Onboarding personnalisé'].map(f => (
+                  <li key={f} className="flex items-center gap-2.5 text-sm text-gray-400"><Check className="w-4 h-4 text-gray-600 shrink-0" />{f}</li>
+                ))}
+              </ul>
+              <button className="block w-full py-3 rounded-xl border border-white/[0.1] text-white text-sm font-semibold text-center hover:bg-white/5 transition-all opacity-60 cursor-not-allowed">
+                Bientôt disponible
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== FAQ ===== */}
+      <section className="py-24">
+        <div className="max-w-3xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <span className="text-[#5A5AFB] text-sm font-semibold uppercase tracking-wider">FAQ</span>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mt-4 tracking-tight">
+              Vous avez des questions ?<br /><span className="bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] bg-clip-text text-transparent">Nous avons les réponses</span>
+            </h2>
+          </div>
+          <div className="space-y-3">
+            {faqs.map((faq, i) => (
+              <div key={i} className="rounded-xl border border-white/[0.08] overflow-hidden hover:border-white/[0.12] transition-all">
+                <button onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  className="w-full flex items-center justify-between p-5 text-left">
+                  <span className="text-white font-medium text-sm pr-4">{faq.q}</span>
+                  <ChevronDown className={cn("w-5 h-5 text-gray-400 shrink-0 transition-transform duration-200", openFaq === i && "rotate-180")} />
+                </button>
+                {openFaq === i && (
+                  <div className="px-5 pb-5 -mt-1">
+                    <p className="text-gray-400 text-sm leading-relaxed">{faq.a}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== FINAL CTA ===== */}
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#5A5AFB]/[0.06] via-[#5A5AFB]/[0.03] to-transparent pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[#5A5AFB]/[0.05] blur-[120px] pointer-events-none" />
+        <div className="max-w-3xl mx-auto px-6 text-center relative">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight mb-6">
+            Commence à scaler tes pubs <span className="bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] bg-clip-text text-transparent">dès aujourd'hui</span>
+          </h2>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-8 text-sm text-gray-400">
+            <span className="flex items-center gap-2"><Zap className="w-4 h-4 text-[#5A5AFB]" /> Setup en 5 minutes</span>
+            <span className="flex items-center gap-2"><Layers className="w-4 h-4 text-[#5A5AFB]" /> +500 templates AfriVault</span>
+            <span className="flex items-center gap-2"><Shield className="w-4 h-4 text-[#5A5AFB]" /> Annulez à tout moment</span>
+          </div>
+          <a href="#/register" className="inline-flex items-center gap-2 px-10 py-4 rounded-xl bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white font-bold text-lg hover:opacity-90 transition-all shadow-2xl shadow-[#5A5AFB]/30">
+            Essayez-le gratuitement <ArrowRight className="w-5 h-5" />
+          </a>
+          <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20">
+            <Shield className="w-4 h-4 text-green-400" />
+            <span className="text-green-400 text-xs font-semibold">100% SANS RISQUE. ANNULEZ À TOUT MOMENT.</span>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== FOOTER ===== */}
+      <footer className="border-t border-white/[0.06] py-12">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#5A5AFB] to-[#9C5DFF] flex items-center justify-center">
+                <Zap className="w-4 h-4 text-white" />
+              </div>
+              <span className="text-white font-bold text-lg">Easy-Ecom</span>
+            </div>
+            <div className="flex items-center gap-6 text-sm text-gray-500">
+              <a href="#" className="hover:text-white transition-colors">Conditions</a>
+              <a href="#" className="hover:text-white transition-colors">Confidentialité</a>
+              <a href="#" className="hover:text-white transition-colors">Contact</a>
+            </div>
+          </div>
+          <p className="text-center text-gray-600 text-xs mt-8">© 2025 Easy-Ecom. Le SaaS pub pensé pour l'Afrique.</p>
+        </div>
+      </footer>
     </div>
   );
 }
