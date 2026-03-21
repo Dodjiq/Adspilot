@@ -71,7 +71,7 @@ html {
 }
 
 ::selection {
-  background-color: rgba(124, 58, 237, 0.3);
+  background-color: rgba(90, 90, 251, 0.3);
   color: white;
 }
 
@@ -81,4 +81,20 @@ input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0 30px #1A1A26 inset !important;
   -webkit-text-fill-color: #F9FAFB !important;
   caret-color: #F9FAFB;
+}
+
+/* Grid background */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+/* Fonts */
+.font-syne {
+  font-family: 'Syne', sans-serif;
+}
+.font-onest {
+  font-family: 'Onest', sans-serif;
 }
