@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(yarn --version)",
+      "Bash(npm --version:*)",
+      "Bash(npm install:*)",
+      "Bash(pip install:*)",
+      "Bash(python -m uvicorn:*)",
+      "Bash(npm start)",
+      "Bash(git fetch:*)",
+      "Bash(git checkout:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm run dev:webpack:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill:*)",
+      "Bash(npx shadcn@latest init:*)",
+      "Bash(npx kill-port:*)",
+      "Bash(timeout 10 bash:*)",
+      "Bash(node -c:*)",
+      "Bash(if exist .nextcache rmdir /s /q .nextcache)",
+      "Bash(npx next dev:*)",
+      "Bash(rm:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -31,12 +31,32 @@ module.exports = {
           DEFAULT: '#F59E0B',
           light: '#FCD34D',
         },
-        'bg-primary': '#0A0A0F',
-        'bg-secondary': '#12121A',
-        'bg-tertiary': '#1A1A26',
-        'text-primary': '#F9FAFB',
-        'text-secondary': '#9CA3AF',
-        'text-muted': '#6B7280',
+        // Dark mode backgrounds
+        'bg-primary': {
+          DEFAULT: '#0A0A0F',
+          light: '#F9FAFB',
+        },
+        'bg-secondary': {
+          DEFAULT: '#12121A',
+          light: '#F3F4F6',
+        },
+        'bg-tertiary': {
+          DEFAULT: '#1A1A26',
+          light: '#E5E7EB',
+        },
+        // Text colors with light mode support
+        'text-primary': {
+          DEFAULT: '#F9FAFB',
+          light: '#111827',
+        },
+        'text-secondary': {
+          DEFAULT: '#9CA3AF',
+          light: '#6B7280',
+        },
+        'text-muted': {
+          DEFAULT: '#6B7280',
+          light: '#9CA3AF',
+        },
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))'
