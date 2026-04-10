@@ -1,0 +1,12 @@
+# robots.txt for AdsPilot
+User-agent: *
+Allow: /
+Disallow: /admin-pro/
+Disallow: /dashboard/
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://ads-pilot.app/sitemap.xml
+
+# Crawl-delay (optional, for slower bots)
+Crawl-delay: 1
