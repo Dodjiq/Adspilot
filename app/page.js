@@ -1993,6 +1993,256 @@ function LoginPage({ onLogin, showToast }) {
 }
 
 // ============================================
+// FORGOT PASSWORD PAGE
+// ============================================
+function ForgotPasswordPage({ showToast }) {
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [sent, setSent] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!supabase) { showToast('Supabase non configuré', 'error'); return; }
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/#/reset-password`
+      });
+      if (error) throw error;
+      setSent(true);
+      showToast('Email de réinitialisation envoyé !', 'success');
+    } catch (err) {
+      showToast(err.message || 'Erreur lors de l\'envoi', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-grid px-4" style={{ backgroundColor: '#070B14' }}>
+      <div className="w-full max-w-md">
+        {/* Logo */}
+        <div className="mb-8 text-center">
+          <a href="#/" className="inline-flex items-center gap-2">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#5A5AFB] to-[#9C5DFF] flex items-center justify-center">
+              <Zap className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-white font-bold text-xl font-syne">AdsPilot</span>
+          </a>
+        </div>
+
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-8">
+          {!sent ? (
+            <>
+              <h1 className="text-2xl font-bold text-white mb-2 font-syne">
+                Mot de passe oublié ?
+              </h1>
+              <p className="text-gray-400 mb-6 text-sm">
+                Pas de souci ! Entre ton email et nous t'enverrons un lien pour réinitialiser ton mot de passe.
+              </p>
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    placeholder="exemple@email.com"
+                    required
+                    className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-[#5A5AFB] focus:ring-2 focus:ring-[#5A5AFB]/20 text-sm transition-all"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-3 rounded-lg bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white font-semibold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+                >
+                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
+                  {loading ? 'Envoi...' : 'Envoyer le lien'}
+                </button>
+              </form>
+
+              <div className="mt-6 text-center">
+                <a href="#/login" className="text-sm text-gray-400 hover:text-white transition-colors">
+                  ← Retour à la connexion
+                </a>
+              </div>
+            </>
+          ) : (
+            <div className="text-center">
+              <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-4">
+                <Check className="w-8 h-8 text-green-400" />
+              </div>
+              <h2 className="text-xl font-bold text-white mb-2 font-syne">Email envoyé !</h2>
+              <p className="text-gray-400 mb-6 text-sm">
+                Vérifie ta boîte mail <span className="text-white font-medium">{email}</span> et clique sur le lien pour réinitialiser ton mot de passe.
+              </p>
+              <p className="text-gray-500 text-xs mb-6">
+                Tu n'as rien reçu ? Vérifie tes spams ou réessaie dans quelques minutes.
+              </p>
+              <div className="space-y-3">
+                <button
+                  onClick={() => setSent(false)}
+                  className="w-full py-2.5 rounded-lg border border-white/10 text-white hover:bg-white/5 transition-all text-sm"
+                >
+                  Renvoyer l'email
+                </button>
+                <a
+                  href="#/login"
+                  className="block w-full py-2.5 rounded-lg bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white font-semibold hover:opacity-90 transition-all text-sm"
+                >
+                  Retour à la connexion
+                </a>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================
+// RESET PASSWORD PAGE
+// ============================================
+function ResetPasswordPage({ showToast }) {
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!supabase) { showToast('Supabase non configuré', 'error'); return; }
+    
+    if (password.length < 6) {
+      showToast('Le mot de passe doit contenir au moins 6 caractères', 'error');
+      return;
+    }
+    
+    if (password !== confirmPassword) {
+      showToast('Les mots de passe ne correspondent pas', 'error');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.updateUser({ password });
+      if (error) throw error;
+      showToast('Mot de passe réinitialisé avec succès !', 'success');
+      setTimeout(() => {
+        window.location.hash = '#/login';
+      }, 1500);
+    } catch (err) {
+      showToast(err.message || 'Erreur lors de la réinitialisation', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-grid px-4" style={{ backgroundColor: '#070B14' }}>
+      <div className="w-full max-w-md">
+        {/* Logo */}
+        <div className="mb-8 text-center">
+          <a href="#/" className="inline-flex items-center gap-2">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#5A5AFB] to-[#9C5DFF] flex items-center justify-center">
+              <Zap className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-white font-bold text-xl font-syne">AdsPilot</span>
+          </a>
+        </div>
+
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-8">
+          <h1 className="text-2xl font-bold text-white mb-2 font-syne">
+            Nouveau mot de passe
+          </h1>
+          <p className="text-gray-400 mb-6 text-sm">
+            Entre ton nouveau mot de passe. Assure-toi qu'il soit sécurisé !
+          </p>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Nouveau mot de passe</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder="••••••••••••••"
+                  required
+                  className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-[#5A5AFB] focus:ring-2 focus:ring-[#5A5AFB]/20 text-sm transition-all pr-12"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
+                >
+                  {showPassword ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Confirmer le mot de passe</label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={e => setConfirmPassword(e.target.value)}
+                  placeholder="••••••••••••••"
+                  required
+                  className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-[#5A5AFB] focus:ring-2 focus:ring-[#5A5AFB]/20 text-sm transition-all pr-12"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
+                >
+                  {showConfirmPassword ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
+
+            {password && (
+              <div className="bg-white/5 border border-white/10 rounded-lg p-3 space-y-1.5">
+                <p className="text-xs text-gray-400 mb-2">Sécurité du mot de passe :</p>
+                <div className="flex items-center gap-2">
+                  {password.length >= 6 ? <Check className="w-3.5 h-3.5 text-green-400" /> : <X className="w-3.5 h-3.5 text-gray-500" />}
+                  <span className={`text-xs ${password.length >= 6 ? 'text-green-400' : 'text-gray-500'}`}>Au moins 6 caractères</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  {password === confirmPassword && password ? <Check className="w-3.5 h-3.5 text-green-400" /> : <X className="w-3.5 h-3.5 text-gray-500" />}
+                  <span className={`text-xs ${password === confirmPassword && password ? 'text-green-400' : 'text-gray-500'}`}>Les mots de passe correspondent</span>
+                </div>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading || password !== confirmPassword || password.length < 6}
+              className="w-full py-3 rounded-lg bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white font-semibold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+            >
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
+              {loading ? 'Réinitialisation...' : 'Réinitialiser le mot de passe'}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <a href="#/login" className="text-sm text-gray-400 hover:text-white transition-colors">
+              ← Retour à la connexion
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================
 // REGISTER PAGE
 // ============================================
 function RegisterPage({ onRegister, showToast }) {
@@ -6104,6 +6354,13 @@ export default function App() {
   if (currentPath === '#/register') {
     if (user) { navigate('#/dashboard'); return null; }
     return <><RegisterPage onRegister={handleLogin} showToast={showToast} /><ToastContainer toasts={toasts} onDismiss={dismissToast} /><Analytics /><SpeedInsights /></>;
+  }
+  if (currentPath === '#/forgot-password') {
+    if (user) { navigate('#/dashboard'); return null; }
+    return <><ForgotPasswordPage showToast={showToast} /><ToastContainer toasts={toasts} onDismiss={dismissToast} /><Analytics /><SpeedInsights /></>;
+  }
+  if (currentPath === '#/reset-password') {
+    return <><ResetPasswordPage showToast={showToast} /><ToastContainer toasts={toasts} onDismiss={dismissToast} /><Analytics /><SpeedInsights /></>;
   }
   if (currentPath === '#/terms') {
     return <><TermsPage /><ToastContainer toasts={toasts} onDismiss={dismissToast} /><Analytics /><SpeedInsights /></>;
