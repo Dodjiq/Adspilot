@@ -870,15 +870,24 @@ function LandingPage() {
 
             {/* Navigation centrale */}
             <nav className="hidden md:flex items-center gap-8">
-              <a href="#fonctionnalites" className="text-gray-300 hover:text-white text-sm font-medium transition-colors">
+              <button
+                onClick={() => document.getElementById('fonctionnalites')?.scrollIntoView({ behavior: 'smooth' })}
+                className="text-gray-300 hover:text-white text-sm font-medium transition-colors cursor-pointer"
+              >
                 Fonctionnalités
-              </a>
-              <a href="#tarifs" className="text-gray-300 hover:text-white text-sm font-medium transition-colors">
+              </button>
+              <button
+                onClick={() => document.getElementById('tarifs')?.scrollIntoView({ behavior: 'smooth' })}
+                className="text-gray-300 hover:text-white text-sm font-medium transition-colors cursor-pointer"
+              >
                 Tarifs
-              </a>
-              <a href="#faq" className="text-gray-300 hover:text-white text-sm font-medium transition-colors">
+              </button>
+              <button
+                onClick={() => document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' })}
+                className="text-gray-300 hover:text-white text-sm font-medium transition-colors cursor-pointer"
+              >
                 FAQ
-              </a>
+              </button>
             </nav>
 
             {/* CTA Buttons */}
