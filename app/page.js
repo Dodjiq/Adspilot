@@ -2789,6 +2789,201 @@ function MetaConnectionCard({ session, showToast }) {
 }
 
 // ============================================
+// SHOPIFY CONNECTION CARD COMPONENT
+// ============================================
+function ShopifyConnectionCard({ session, showToast }) {
+  const [shopifyStore, setShopifyStore] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [connecting, setConnecting] = useState(false);
+  const [shopUrl, setShopUrl] = useState('');
+
+  useEffect(() => {
+    fetchShopifyStore();
+  }, [session]);
+
+  const fetchShopifyStore = async () => {
+    try {
+      const res = await fetch('/api/store', { headers: apiHeaders(session) });
+      if (res.ok) {
+        const data = await res.json();
+        setShopifyStore(data.store || null);
+      }
+    } catch (err) {
+      console.error('Error fetching Shopify store:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleConnectShopify = async (e) => {
+    e.preventDefault();
+    if (!shopUrl.trim()) {
+      showToast('Entre l\'URL de ta boutique Shopify', 'error');
+      return;
+    }
+
+    setConnecting(true);
+    try {
+      const res = await fetch('/api/shopify/auth', {
+        method: 'POST',
+        headers: apiHeaders(session),
+        body: JSON.stringify({ shopUrl: shopUrl.trim() })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.authUrl) {
+          window.location.href = data.authUrl;
+        }
+      } else {
+        const data = await res.json();
+        throw new Error(data.error || 'Failed to initiate Shopify connection');
+      }
+    } catch (err) {
+      showToast(err.message || 'Erreur lors de la connexion à Shopify', 'error');
+      setConnecting(false);
+    }
+  };
+
+  const handleDisconnect = async () => {
+    if (!confirm('Es-tu sûr de vouloir déconnecter ta boutique Shopify ?')) return;
+
+    try {
+      const res = await fetch('/api/store/disconnect', {
+        method: 'POST',
+        headers: apiHeaders(session)
+      });
+
+      if (res.ok) {
+        setShopifyStore(null);
+        showToast('Boutique Shopify déconnectée avec succès', 'success');
+      } else {
+        throw new Error('Failed to disconnect');
+      }
+    } catch (err) {
+      showToast('Erreur lors de la déconnexion', 'error');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center py-8">
+        <Loader2 className="w-6 h-6 text-brand animate-spin" />
+      </div>
+    );
+  }
+
+  if (shopifyStore) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-start gap-4 p-4 rounded-xl bg-green-500/10 border border-green-500/20">
+          <div className="w-10 h-10 rounded-xl bg-[#96BF48] flex items-center justify-center shrink-0">
+            <Store className="w-5 h-5 text-white" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <h3 className="text-sm font-semibold text-white">Boutique Shopify connectée</h3>
+              <CheckCircle2 className="w-4 h-4 text-green-400" />
+            </div>
+            <p className="text-xs text-gray-400 mb-2">
+              {shopifyStore.shop_name || shopifyStore.shop_domain}
+            </p>
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              <Link2 className="w-3 h-3" />
+              <span>{shopifyStore.shop_domain}</span>
+            </div>
+            {shopifyStore.products_count > 0 && (
+              <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
+                <Package className="w-3 h-3" />
+                <span>{shopifyStore.products_count} produits synchronisés</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="flex gap-2">
+          <button
+            onClick={handleDisconnect}
+            className="px-4 py-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium hover:bg-red-500/20 transition-all"
+          >
+            Déconnecter
+          </button>
+          <button
+            onClick={fetchShopifyStore}
+            className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 text-sm font-medium hover:bg-white/10 transition-all"
+          >
+            Actualiser
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-start gap-4 p-4 rounded-xl bg-[#1A1A26] border border-white/[0.08]">
+        <div className="w-10 h-10 rounded-xl bg-[#96BF48]/20 flex items-center justify-center shrink-0">
+          <Store className="w-5 h-5 text-[#96BF48]" />
+        </div>
+        <div className="flex-1">
+          <h3 className="text-sm font-semibold text-white mb-1">Connecter ta boutique Shopify</h3>
+          <p className="text-xs text-gray-400 mb-3">
+            Synchronise ta boutique Shopify pour importer tes produits et créer des publicités automatiquement.
+          </p>
+          <ul className="space-y-2 mb-4">
+            {[
+              'Importer tes produits automatiquement',
+              'Créer des pubs à partir de ton catalogue',
+              'Synchronisation en temps réel',
+              'Détection automatique de la devise'
+            ].map((feature, i) => (
+              <li key={i} className="flex items-center gap-2 text-xs text-gray-300">
+                <Check className="w-3 h-3 text-brand shrink-0" />
+                <span>{feature}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <div className="flex items-start gap-2 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
+        <Info className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+        <p className="text-xs text-blue-300">
+          Tu seras redirigé vers Shopify pour autoriser l'accès. Assure-toi d'être admin de ta boutique.
+        </p>
+      </div>
+
+      <form onSubmit={handleConnectShopify} className="space-y-3">
+        <input
+          type="text"
+          value={shopUrl}
+          onChange={(e) => setShopUrl(e.target.value)}
+          placeholder="ma-boutique.myshopify.com"
+          className="w-full px-4 py-2.5 rounded-lg bg-[#1A1A26] border border-white/10 text-white text-sm placeholder:text-gray-500 focus:border-brand focus:outline-none transition-all"
+        />
+        <button
+          type="submit"
+          disabled={connecting}
+          className="w-full py-3 rounded-xl bg-[#96BF48] text-white font-semibold text-sm hover:bg-[#7FA73C] disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+        >
+          {connecting ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Connexion en cours...
+            </>
+          ) : (
+            <>
+              <Store className="w-4 h-4" />
+              Connecter ma boutique Shopify
+            </>
+          )}
+        </button>
+      </form>
+    </div>
+  );
+}
+
+// ============================================
 // SETTINGS PAGE
 // ============================================
 function SettingsPage({ user, session, showToast }) {
@@ -2883,13 +3078,35 @@ function SettingsPage({ user, session, showToast }) {
         )}
       </div>
 
-      {/* Meta Connection Section */}
+      {/* Connexions Section */}
       <div className="bg-[#12121A] rounded-2xl border border-white/[0.08] p-6">
-        <h2 className="text-white font-semibold mb-4 flex items-center gap-2">
+        <h2 className="text-white font-semibold mb-6 flex items-center gap-2">
           <Globe className="w-5 h-5 text-brand" />
           Connexions
         </h2>
-        <MetaConnectionCard session={session} showToast={showToast} />
+        
+        <div className="space-y-6">
+          {/* Meta Connection */}
+          <div>
+            <h3 className="text-sm font-medium text-gray-400 mb-3 flex items-center gap-2">
+              <Facebook className="w-4 h-4" />
+              Meta Ads (Facebook & Instagram)
+            </h3>
+            <MetaConnectionCard session={session} showToast={showToast} />
+          </div>
+
+          {/* Divider */}
+          <div className="border-t border-white/[0.06]" />
+
+          {/* Shopify Connection */}
+          <div>
+            <h3 className="text-sm font-medium text-gray-400 mb-3 flex items-center gap-2">
+              <Store className="w-4 h-4" />
+              Shopify
+            </h3>
+            <ShopifyConnectionCard session={session} showToast={showToast} />
+          </div>
+        </div>
       </div>
 
       <Link href="#/settings/billing" className="block bg-[#12121A] rounded-2xl border border-white/[0.08] p-6 hover:border-brand/30 transition-all group cursor-pointer">
