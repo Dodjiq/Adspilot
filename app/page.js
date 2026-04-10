@@ -7,7 +7,7 @@ import {
   LayoutDashboard, FolderOpen, ShoppingBag, BarChart2, Search, Video,
   Settings, Zap, Bell, Heart, Check, X, ChevronDown, Filter, ExternalLink,
   Loader2, Mail, Lock, User, ArrowRight, TrendingUp, DollarSign,
-  ShoppingCart, LogOut, CreditCard, Sparkles, Clock, Eye, Store,
+  ShoppingCart, LogOut, CreditCard, Sparkles, Clock, Eye, EyeOff, Store,
   CheckCircle2, Circle, Palette, AlertCircle, Plus, ChevronRight, ChevronLeft,
   Globe, Layers, Shield, Users, Star, MessageSquare, MousePointerClick,
   Target, Image, Repeat, ChevronUp, Menu, Play, Facebook, Link2, Info,
@@ -1875,7 +1875,7 @@ function LoginPage({ onLogin, showToast }) {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
                 >
-                  {showPassword ? <Eye className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
                 </button>
               </div>
             </div>
@@ -2112,7 +2112,7 @@ function RegisterPage({ onRegister, showToast }) {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
                 >
-                  {showPassword ? <Eye className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
                 </button>
               </div>
               <div className="mt-2">
@@ -6140,7 +6140,13 @@ export default function App() {
 
   // Check if admin route
   if (currentPath && currentPath.startsWith('#/admin-pro')) {
-    return <AdminPanel currentPath={currentPath} user={user} session={session} showToast={showToast} onLogout={handleLogout} />;
+    return (
+      <>
+        <AdminPanel currentPath={currentPath} user={user} session={session} showToast={showToast} onLogout={handleLogout} />
+        <ToastContainer toasts={toasts} onDismiss={dismissToast} />
+        <Analytics />
+      </>
+    );
   }
 
   const pageContent = (() => {
