@@ -1207,6 +1207,57 @@ async function handleAdminUpdateUserRole(request, userId) {
   }
 }
 
+async function handleAdminBlockUser(request, userId) {
+  const user = await getAuthUser(request);
+  if (!user || (user.email !== 'dodjiq@gmail.com' && user.user_metadata?.role !== 'admin')) {
+    return NextResponse.json({ error: 'Accès refusé' }, { status: 403, headers: corsHeaders() });
+  }
+
+  try {
+    const supabase = getSupabaseAdmin();
+    
+    // Update user metadata to mark as banned
+    const { data, error } = await supabase.auth.admin.updateUserById(
+      userId,
+      { 
+        user_metadata: { banned: true },
+        ban_duration: 'none' // Permanent ban
+      }
+    );
+
+    if (error) throw error;
+
+    return NextResponse.json({ success: true, user: data.user }, { headers: corsHeaders() });
+  } catch (err) {
+    console.error('Admin block user error:', err);
+    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500, headers: corsHeaders() });
+  }
+}
+
+async function handleAdminUnblockUser(request, userId) {
+  const user = await getAuthUser(request);
+  if (!user || (user.email !== 'dodjiq@gmail.com' && user.user_metadata?.role !== 'admin')) {
+    return NextResponse.json({ error: 'Accès refusé' }, { status: 403, headers: corsHeaders() });
+  }
+
+  try {
+    const supabase = getSupabaseAdmin();
+    
+    // Update user metadata to remove ban
+    const { data, error } = await supabase.auth.admin.updateUserById(
+      userId,
+      { user_metadata: { banned: false } }
+    );
+
+    if (error) throw error;
+
+    return NextResponse.json({ success: true, user: data.user }, { headers: corsHeaders() });
+  } catch (err) {
+    console.error('Admin unblock user error:', err);
+    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500, headers: corsHeaders() });
+  }
+}
+
 async function handleAdminDeleteTemplate(request, templateId) {
   const user = await getAuthUser(request);
   if (!user || (user.email !== 'dodjiq@gmail.com' && user.user_metadata?.role !== 'admin')) {
@@ -1433,6 +1484,16 @@ export async function PUT(request, context) {
   // Handle admin user role updates (PUT /api/admin/users/:id/role)
   if (pathSegments[0] === 'admin' && pathSegments[1] === 'users' && pathSegments[2] && pathSegments[3] === 'role') {
     return handleAdminUpdateUserRole(request, pathSegments[2]);
+  }
+
+  // Handle admin user block (PUT /api/admin/users/:id/block)
+  if (pathSegments[0] === 'admin' && pathSegments[1] === 'users' && pathSegments[2] && pathSegments[3] === 'block') {
+    return handleAdminBlockUser(request, pathSegments[2]);
+  }
+
+  // Handle admin user unblock (PUT /api/admin/users/:id/unblock)
+  if (pathSegments[0] === 'admin' && pathSegments[1] === 'users' && pathSegments[2] && pathSegments[3] === 'unblock') {
+    return handleAdminUnblockUser(request, pathSegments[2]);
   }
 
   // Handle ticket status updates (PUT /api/tickets/:id/status)

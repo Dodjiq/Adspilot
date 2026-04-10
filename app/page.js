@@ -3809,7 +3809,7 @@ function AdminPanel({ currentPath, user, session, showToast, onLogout }) {
   return (
     <div className="min-h-screen bg-[#0A0A0F] flex">
       {/* Admin Sidebar */}
-      <AdminSidebar activeTab={activeTab} user={user} onLogout={onLogout} />
+      <AdminSidebar activeTab={activeTab} user={user} onLogout={onLogout} session={session} />
 
       {/* Admin Content */}
       <div className="flex-1 ml-[240px]">
@@ -3829,16 +3829,43 @@ function AdminPanel({ currentPath, user, session, showToast, onLogout }) {
 }
 
 // Admin Sidebar
-function AdminSidebar({ activeTab, user, onLogout }) {
+function AdminSidebar({ activeTab, user, onLogout, session }) {
+  const [unreadTicketsCount, setUnreadTicketsCount] = useState(0);
+
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'tickets', label: 'Tickets Support', icon: LifeBuoy },
+    { id: 'tickets', label: 'Tickets Support', icon: LifeBuoy, badge: unreadTicketsCount },
     { id: 'templates', label: 'Templates', icon: Palette },
     { id: 'announcements', label: 'Annonces', icon: Bell },
     { id: 'users', label: 'Utilisateurs', icon: Users },
     { id: 'subscriptions', label: 'Abonnements', icon: CreditCard },
     { id: 'settings', label: 'Paramètres', icon: Settings },
   ];
+
+  // Fetch unread tickets count for admin
+  useEffect(() => {
+    if (!session) return;
+
+    const fetchUnreadCount = async () => {
+      try {
+        const response = await fetch('/api/admin/tickets', {
+          headers: { 'Authorization': `Bearer ${session.access_token}` }
+        });
+        const data = await response.json();
+
+        if (data.tickets) {
+          const unreadCount = data.tickets.reduce((sum, ticket) => sum + (ticket.unread_by_admin || 0), 0);
+          setUnreadTicketsCount(unreadCount);
+        }
+      } catch (error) {
+        console.error('Error fetching unread tickets count:', error);
+      }
+    };
+
+    fetchUnreadCount();
+    const interval = setInterval(fetchUnreadCount, 30000);
+    return () => clearInterval(interval);
+  }, [session]);
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-[240px] bg-[#0D0D14] border-r border-white/[0.06] flex flex-col z-50">
@@ -3868,6 +3895,11 @@ function AdminSidebar({ activeTab, user, onLogout }) {
             >
               <item.icon className="w-5 h-5 shrink-0" />
               <span className="text-sm font-medium">{item.label}</span>
+              {item.badge > 0 && (
+                <span className="ml-auto px-2 py-0.5 rounded-full bg-red-500 text-white text-xs font-semibold">
+                  {item.badge}
+                </span>
+              )}
             </Link>
           ))}
         </nav>
@@ -4814,6 +4846,31 @@ function AdminUsers({ session, showToast }) {
     }
   };
 
+  const handleBlockUser = async (userId, currentlyBlocked) => {
+    const action = currentlyBlocked ? 'unblock' : 'block';
+    const confirmMsg = currentlyBlocked 
+      ? 'Êtes-vous sûr de vouloir débloquer cet utilisateur ?' 
+      : 'Êtes-vous sûr de vouloir bloquer cet utilisateur ? Il ne pourra plus se connecter.';
+    
+    if (!confirm(confirmMsg)) return;
+
+    try {
+      const res = await fetch(`/api/admin/users/${userId}/${action}`, {
+        method: 'PUT',
+        headers: apiHeaders(session)
+      });
+      if (res.ok) {
+        showToast(`Utilisateur ${currentlyBlocked ? 'débloqué' : 'bloqué'} avec succès`, 'success');
+        fetchUsers();
+      } else {
+        const d = await res.json();
+        showToast(d.error || 'Erreur lors de l\'opération', 'error');
+      }
+    } catch (err) {
+      showToast('Erreur serveur', 'error');
+    }
+  };
+
   if (loading) {
     return <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 text-brand animate-spin" /></div>;
   }
@@ -4857,24 +4914,42 @@ function AdminUsers({ session, showToast }) {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="px-2 py-1 rounded-full bg-green-500/20 text-green-400 text-xs font-medium">
-                      Actif
+                    <span className={cn(
+                      "px-2 py-1 rounded-full text-xs font-medium",
+                      user.banned 
+                        ? "bg-red-500/20 text-red-400" 
+                        : "bg-green-500/20 text-green-400"
+                    )}>
+                      {user.banned ? 'Bloqué' : 'Actif'}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-gray-400 text-sm">
                     {user.created_at ? new Date(user.created_at).toLocaleDateString('fr-FR') : '-'}
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <Dropdown
-                      value={user.role || 'user'}
-                      onChange={(val) => handleUpdateRole(user.id, val)}
-                      options={[
-                        { value: 'user', label: 'Standard' },
-                        { value: 'pro', label: 'Plan Pro' },
-                        { value: 'admin', label: 'Administrateur' },
-                      ]}
-                      style={{ minWidth: 150 }}
-                    />
+                    <div className="flex items-center justify-end gap-2">
+                      <Dropdown
+                        value={user.role || 'user'}
+                        onChange={(val) => handleUpdateRole(user.id, val)}
+                        options={[
+                          { value: 'user', label: 'Standard' },
+                          { value: 'pro', label: 'Plan Pro' },
+                          { value: 'admin', label: 'Administrateur' },
+                        ]}
+                        style={{ minWidth: 150 }}
+                      />
+                      <button
+                        onClick={() => handleBlockUser(user.id, user.banned)}
+                        className={cn(
+                          "px-3 py-1.5 rounded-lg text-xs font-medium transition-all",
+                          user.banned
+                            ? "bg-green-500/20 text-green-400 hover:bg-green-500/30"
+                            : "bg-red-500/20 text-red-400 hover:bg-red-500/30"
+                        )}
+                      >
+                        {user.banned ? 'Débloquer' : 'Bloquer'}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
