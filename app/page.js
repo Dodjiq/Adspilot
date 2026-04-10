@@ -1419,13 +1419,366 @@ function LandingPage() {
             <span className="text-white font-syne font-bold">AdsPilot</span>
           </div>
           <div className="flex items-center gap-5 text-xs text-gray-600">
-            <a href="#" className="hover:text-gray-400 transition-colors">Conditions</a>
-            <a href="#" className="hover:text-gray-400 transition-colors">Confidentialité</a>
-            <a href="#" className="hover:text-gray-400 transition-colors">Contact</a>
+            <a href="#/terms" className="hover:text-gray-400 transition-colors">Conditions</a>
+            <a href="#/privacy" className="hover:text-gray-400 transition-colors">Confidentialité</a>
+            <a href="#/contact" className="hover:text-gray-400 transition-colors">Contact</a>
           </div>
           <p className="text-gray-700 text-xs">© 2025 AdsPilot</p>
         </div>
       </footer>
+    </div>
+  );
+}
+
+// ============================================
+// TERMS OF SERVICE PAGE
+// ============================================
+function TermsPage() {
+  return (
+    <div className="min-h-screen font-onest bg-grid" style={{ backgroundColor: '#070B14' }}>
+      {/* Header */}
+      <header className="sticky top-0 z-50 pt-5 pb-5">
+        <div className="max-w-[1280px] mx-auto px-6">
+          <div className="bg-white/[0.08] backdrop-blur-xl border border-white/[0.1] rounded-full px-6 py-3 flex items-center justify-between shadow-lg">
+            <a href="#/" className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#5A5AFB] to-[#9C5DFF] flex items-center justify-center">
+                <Zap className="w-4 h-4 text-white" />
+              </div>
+              <span className="text-white font-syne font-bold text-lg">AdsPilot</span>
+            </a>
+            <a href="#/" className="text-gray-400 hover:text-white text-sm transition-colors">← Retour</a>
+          </div>
+        </div>
+      </header>
+
+      {/* Content */}
+      <div className="max-w-[900px] mx-auto px-6 py-16">
+        <h1 className="font-syne font-bold text-white text-4xl mb-8">Conditions Générales d'Utilisation</h1>
+        
+        <div className="space-y-8 text-gray-300 leading-relaxed">
+          <section>
+            <h2 className="text-white font-semibold text-xl mb-4">1. Acceptation des conditions</h2>
+            <p>En accédant et en utilisant AdsPilot, vous acceptez d'être lié par ces conditions générales d'utilisation. Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser notre service.</p>
+          </section>
+
+          <section>
+            <h2 className="text-white font-semibold text-xl mb-4">2. Description du service</h2>
+            <p>AdsPilot est une plateforme SaaS qui permet aux e-commerçants de créer et gérer des campagnes publicitaires Meta (Facebook/Instagram) avec des templates optimisés pour le marché africain.</p>
+          </section>
+
+          <section>
+            <h2 className="text-white font-semibold text-xl mb-4">3. Compte utilisateur</h2>
+            <p>Vous êtes responsable de maintenir la confidentialité de votre compte et mot de passe. Vous acceptez de nous notifier immédiatement de toute utilisation non autorisée de votre compte.</p>
+          </section>
+
+          <section>
+            <h2 className="text-white font-semibold text-xl mb-4">4. Utilisation du service</h2>
+            <p>Vous vous engagez à utiliser AdsPilot uniquement à des fins légales et conformément à toutes les lois applicables. Vous ne devez pas :</p>
+            <ul className="list-disc list-inside ml-4 mt-2 space-y-2">
+              <li>Utiliser le service pour des activités frauduleuses ou illégales</li>
+              <li>Partager votre compte avec des tiers</li>
+              <li>Tenter de contourner les mesures de sécurité</li>
+              <li>Utiliser le service pour envoyer du spam ou du contenu malveillant</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-white font-semibold text-xl mb-4">5. Propriété intellectuelle</h2>
+            <p>Tous les templates, designs et contenus fournis par AdsPilot restent notre propriété intellectuelle. Vous disposez d'une licence d'utilisation limitée pour créer vos campagnes publicitaires.</p>
+          </section>
+
+          <section>
+            <h2 className="text-white font-semibold text-xl mb-4">6. Paiements et abonnements</h2>
+            <p>Les frais d'abonnement sont facturés mensuellement ou annuellement selon votre choix. Vous pouvez annuler votre abonnement à tout moment depuis votre tableau de bord.</p>
+          </section>
+
+          <section>
+            <h2 className="text-white font-semibold text-xl mb-4">7. Limitation de responsabilité</h2>
+            <p>AdsPilot est fourni "tel quel". Nous ne garantissons pas que le service sera ininterrompu ou exempt d'erreurs. Nous ne sommes pas responsables des pertes ou dommages résultant de l'utilisation de notre service.</p>
+          </section>
+
+          <section>
+            <h2 className="text-white font-semibold text-xl mb-4">8. Modifications</h2>
+            <p>Nous nous réservons le droit de modifier ces conditions à tout moment. Les modifications seront effectives dès leur publication sur cette page.</p>
+          </section>
+
+          <section>
+            <h2 className="text-white font-semibold text-xl mb-4">9. Contact</h2>
+            <p>Pour toute question concernant ces conditions, contactez-nous à : <a href="#/contact" className="text-[#5A5AFB] hover:underline">contact@adspilot.com</a></p>
+          </section>
+
+          <p className="text-gray-500 text-sm mt-12">Dernière mise à jour : 10 avril 2026</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================
+// PRIVACY POLICY PAGE
+// ============================================
+function PrivacyPage() {
+  return (
+    <div className="min-h-screen font-onest bg-grid" style={{ backgroundColor: '#070B14' }}>
+      {/* Header */}
+      <header className="sticky top-0 z-50 pt-5 pb-5">
+        <div className="max-w-[1280px] mx-auto px-6">
+          <div className="bg-white/[0.08] backdrop-blur-xl border border-white/[0.1] rounded-full px-6 py-3 flex items-center justify-between shadow-lg">
+            <a href="#/" className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#5A5AFB] to-[#9C5DFF] flex items-center justify-center">
+                <Zap className="w-4 h-4 text-white" />
+              </div>
+              <span className="text-white font-syne font-bold text-lg">AdsPilot</span>
+            </a>
+            <a href="#/" className="text-gray-400 hover:text-white text-sm transition-colors">← Retour</a>
+          </div>
+        </div>
+      </header>
+
+      {/* Content */}
+      <div className="max-w-[900px] mx-auto px-6 py-16">
+        <h1 className="font-syne font-bold text-white text-4xl mb-8">Politique de Confidentialité</h1>
+        
+        <div className="space-y-8 text-gray-300 leading-relaxed">
+          <section>
+            <h2 className="text-white font-semibold text-xl mb-4">1. Collecte des données</h2>
+            <p>Nous collectons les informations suivantes lorsque vous utilisez AdsPilot :</p>
+            <ul className="list-disc list-inside ml-4 mt-2 space-y-2">
+              <li>Informations de compte (nom, email, mot de passe)</li>
+              <li>Informations de paiement (traitées par Stripe)</li>
+              <li>Données d'utilisation (templates utilisés, campagnes créées)</li>
+              <li>Données de connexion Shopify et Meta (tokens d'accès)</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-white font-semibold text-xl mb-4">2. Utilisation des données</h2>
+            <p>Nous utilisons vos données pour :</p>
+            <ul className="list-disc list-inside ml-4 mt-2 space-y-2">
+              <li>Fournir et améliorer nos services</li>
+              <li>Gérer votre compte et vos abonnements</li>
+              <li>Vous envoyer des notifications importantes</li>
+              <li>Analyser l'utilisation de la plateforme</li>
+              <li>Assurer la sécurité de nos services</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-white font-semibold text-xl mb-4">3. Partage des données</h2>
+            <p>Nous ne vendons jamais vos données personnelles. Nous partageons vos données uniquement avec :</p>
+            <ul className="list-disc list-inside ml-4 mt-2 space-y-2">
+              <li>Shopify (pour la connexion de votre boutique)</li>
+              <li>Meta (pour la création de campagnes publicitaires)</li>
+              <li>Stripe (pour le traitement des paiements)</li>
+              <li>Supabase (notre hébergeur de base de données)</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-white font-semibold text-xl mb-4">4. Sécurité</h2>
+            <p>Nous mettons en œuvre des mesures de sécurité techniques et organisationnelles pour protéger vos données :</p>
+            <ul className="list-disc list-inside ml-4 mt-2 space-y-2">
+              <li>Chiffrement SSL/TLS pour toutes les communications</li>
+              <li>Tokens d'accès stockés de manière sécurisée</li>
+              <li>Authentification sécurisée avec Supabase</li>
+              <li>Sauvegardes régulières</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-white font-semibold text-xl mb-4">5. Vos droits</h2>
+            <p>Conformément au RGPD, vous disposez des droits suivants :</p>
+            <ul className="list-disc list-inside ml-4 mt-2 space-y-2">
+              <li>Droit d'accès à vos données</li>
+              <li>Droit de rectification</li>
+              <li>Droit à l'effacement</li>
+              <li>Droit à la portabilité</li>
+              <li>Droit d'opposition</li>
+            </ul>
+            <p className="mt-4">Pour exercer ces droits, contactez-nous à : <a href="#/contact" className="text-[#5A5AFB] hover:underline">privacy@adspilot.com</a></p>
+          </section>
+
+          <section>
+            <h2 className="text-white font-semibold text-xl mb-4">6. Cookies</h2>
+            <p>Nous utilisons des cookies essentiels pour le fonctionnement du service (authentification, préférences). Vous pouvez désactiver les cookies dans votre navigateur, mais cela peut affecter certaines fonctionnalités.</p>
+          </section>
+
+          <section>
+            <h2 className="text-white font-semibold text-xl mb-4">7. Conservation des données</h2>
+            <p>Nous conservons vos données tant que votre compte est actif. Après suppression de votre compte, vos données sont supprimées dans un délai de 30 jours.</p>
+          </section>
+
+          <section>
+            <h2 className="text-white font-semibold text-xl mb-4">8. Modifications</h2>
+            <p>Nous pouvons modifier cette politique de confidentialité à tout moment. Les modifications seront publiées sur cette page avec une nouvelle date de mise à jour.</p>
+          </section>
+
+          <p className="text-gray-500 text-sm mt-12">Dernière mise à jour : 10 avril 2026</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================
+// CONTACT PAGE
+// ============================================
+function ContactPage({ showToast }) {
+  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
+  const [sending, setSending] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSending(true);
+    
+    // Simulate sending
+    setTimeout(() => {
+      showToast('Message envoyé ! Nous vous répondrons sous 24h.', 'success');
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      setSending(false);
+    }, 1000);
+  };
+
+  return (
+    <div className="min-h-screen font-onest bg-grid" style={{ backgroundColor: '#070B14' }}>
+      {/* Header */}
+      <header className="sticky top-0 z-50 pt-5 pb-5">
+        <div className="max-w-[1280px] mx-auto px-6">
+          <div className="bg-white/[0.08] backdrop-blur-xl border border-white/[0.1] rounded-full px-6 py-3 flex items-center justify-between shadow-lg">
+            <a href="#/" className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#5A5AFB] to-[#9C5DFF] flex items-center justify-center">
+                <Zap className="w-4 h-4 text-white" />
+              </div>
+              <span className="text-white font-syne font-bold text-lg">AdsPilot</span>
+            </a>
+            <a href="#/" className="text-gray-400 hover:text-white text-sm transition-colors">← Retour</a>
+          </div>
+        </div>
+      </header>
+
+      {/* Content */}
+      <div className="max-w-[800px] mx-auto px-6 py-16">
+        <div className="text-center mb-12">
+          <h1 className="font-syne font-bold text-white text-4xl mb-4">Contactez-nous</h1>
+          <p className="text-gray-400 text-lg">Une question ? Un problème ? Notre équipe est là pour vous aider.</p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-8 mb-12">
+          {/* Contact Info */}
+          <div className="space-y-6">
+            <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-6">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-lg bg-[#5A5AFB]/20 flex items-center justify-center shrink-0">
+                  <Mail className="w-5 h-5 text-[#5A5AFB]" />
+                </div>
+                <div>
+                  <h3 className="text-white font-semibold mb-1">Email</h3>
+                  <p className="text-gray-400 text-sm">support@adspilot.com</p>
+                  <p className="text-gray-500 text-xs mt-1">Réponse sous 24h</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-6">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-lg bg-[#5A5AFB]/20 flex items-center justify-center shrink-0">
+                  <MessageCircle className="w-5 h-5 text-[#5A5AFB]" />
+                </div>
+                <div>
+                  <h3 className="text-white font-semibold mb-1">Support</h3>
+                  <p className="text-gray-400 text-sm">Chat en direct disponible</p>
+                  <p className="text-gray-500 text-xs mt-1">Lun-Ven 9h-18h GMT</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-6">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-lg bg-[#5A5AFB]/20 flex items-center justify-center shrink-0">
+                  <Globe className="w-5 h-5 text-[#5A5AFB]" />
+                </div>
+                <div>
+                  <h3 className="text-white font-semibold mb-1">Réseaux sociaux</h3>
+                  <div className="flex gap-3 mt-2">
+                    <a href="#" className="text-gray-400 hover:text-[#5A5AFB] transition-colors">Twitter</a>
+                    <a href="#" className="text-gray-400 hover:text-[#5A5AFB] transition-colors">LinkedIn</a>
+                    <a href="#" className="text-gray-400 hover:text-[#5A5AFB] transition-colors">Instagram</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Contact Form */}
+          <form onSubmit={handleSubmit} className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-6 space-y-4">
+            <div>
+              <label className="text-white text-sm font-medium mb-2 block">Nom</label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                required
+                className="w-full px-4 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 focus:border-[#5A5AFB] focus:outline-none transition-all"
+                placeholder="Votre nom"
+              />
+            </div>
+
+            <div>
+              <label className="text-white text-sm font-medium mb-2 block">Email</label>
+              <input
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                required
+                className="w-full px-4 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 focus:border-[#5A5AFB] focus:outline-none transition-all"
+                placeholder="votre@email.com"
+              />
+            </div>
+
+            <div>
+              <label className="text-white text-sm font-medium mb-2 block">Sujet</label>
+              <input
+                type="text"
+                value={formData.subject}
+                onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                required
+                className="w-full px-4 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 focus:border-[#5A5AFB] focus:outline-none transition-all"
+                placeholder="De quoi s'agit-il ?"
+              />
+            </div>
+
+            <div>
+              <label className="text-white text-sm font-medium mb-2 block">Message</label>
+              <textarea
+                value={formData.message}
+                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                required
+                rows={5}
+                className="w-full px-4 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 focus:border-[#5A5AFB] focus:outline-none transition-all resize-none"
+                placeholder="Décrivez votre demande..."
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={sending}
+              className="w-full py-3 rounded-lg bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white font-semibold hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+            >
+              {sending ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Envoi en cours...
+                </>
+              ) : (
+                <>
+                  <Send className="w-4 h-4" />
+                  Envoyer le message
+                </>
+              )}
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }
@@ -5763,6 +6116,15 @@ export default function App() {
   if (currentPath === '#/register') {
     if (user) { navigate('#/dashboard'); return null; }
     return <><RegisterPage onRegister={handleLogin} showToast={showToast} /><ToastContainer toasts={toasts} onDismiss={dismissToast} /></>;
+  }
+  if (currentPath === '#/terms') {
+    return <><TermsPage /><ToastContainer toasts={toasts} onDismiss={dismissToast} /></>;
+  }
+  if (currentPath === '#/privacy') {
+    return <><PrivacyPage /><ToastContainer toasts={toasts} onDismiss={dismissToast} /></>;
+  }
+  if (currentPath === '#/contact') {
+    return <><ContactPage showToast={showToast} /><ToastContainer toasts={toasts} onDismiss={dismissToast} /></>;
   }
 
   // Protected routes
