@@ -30,6 +30,11 @@ async function getAuthUser(request) {
   }
 }
 
+function isAdmin(user) {
+  if (!user) return false;
+  return user.user_metadata?.role === 'admin';
+}
+
 function corsHeaders() {
   return {
     'Access-Control-Allow-Origin': '*',
@@ -124,7 +129,7 @@ async function handleGetUserTickets(request) {
 
 async function handleGetAllTickets(request) {
   const user = await getAuthUser(request);
-  if (!user || (user.email !== 'dodjiq@gmail.com' && user.user_metadata?.role !== 'admin')) {
+  if (!isAdmin(user)) {
     return NextResponse.json({ error: 'Accès refusé' }, { status: 403, headers: corsHeaders() });
   }
 
@@ -196,7 +201,7 @@ async function handleCreateTicket(request) {
 
 async function handleUpdateTicketStatus(request, ticketId) {
   const user = await getAuthUser(request);
-  if (!user || (user.email !== 'dodjiq@gmail.com' && user.user_metadata?.role !== 'admin')) {
+  if (!isAdmin(user)) {
     return NextResponse.json({ error: 'Accès refusé' }, { status: 403, headers: corsHeaders() });
   }
 
@@ -238,8 +243,8 @@ async function handleGetTicketMessages(request, ticketId) {
       .eq('id', ticketId)
       .single();
 
-    const isAdmin = user.email === 'dodjiq@gmail.com' || user.user_metadata?.role === 'admin';
-    if (!isAdmin && ticket?.user_id !== user.id) {
+    const userIsAdmin = isAdmin(user);
+    if (!userIsAdmin && ticket?.user_id !== user.id) {
       return NextResponse.json({ error: 'Accès refusé' }, { status: 403, headers: corsHeaders() });
     }
 
@@ -278,8 +283,8 @@ async function handleCreateTicketMessage(request, ticketId) {
       .eq('id', ticketId)
       .single();
 
-    const isAdmin = user.email === 'dodjiq@gmail.com' || user.user_metadata?.role === 'admin';
-    if (!isAdmin && ticket?.user_id !== user.id) {
+    const userIsAdmin = isAdmin(user);
+    if (!userIsAdmin && ticket?.user_id !== user.id) {
       return NextResponse.json({ error: 'Accès refusé' }, { status: 403, headers: corsHeaders() });
     }
 
@@ -288,7 +293,7 @@ async function handleCreateTicketMessage(request, ticketId) {
       .insert({
         ticket_id: ticketId,
         user_id: user.id,
-        is_admin: isAdmin,
+        is_admin: userIsAdmin,
         message
       })
       .select()
@@ -316,13 +321,13 @@ async function handleMarkTicketAsRead(request, ticketId) {
       .eq('id', ticketId)
       .single();
 
-    const isAdmin = user.email === 'dodjiq@gmail.com' || user.user_metadata?.role === 'admin';
+    const userIsAdmin = isAdmin(user);
     
-    if (!isAdmin && ticket?.user_id !== user.id) {
+    if (!userIsAdmin && ticket?.user_id !== user.id) {
       return NextResponse.json({ error: 'Accès refusé' }, { status: 403, headers: corsHeaders() });
     }
 
-    const updateData = isAdmin 
+    const updateData = userIsAdmin 
       ? { unread_by_admin: 0 }
       : { unread_by_user: 0 };
 
@@ -1078,7 +1083,7 @@ async function handleDeleteMetaConnection(request) {
 // ============================================
 async function handleAdminStats(request) {
   const user = await getAuthUser(request);
-  if (!user || (user.email !== 'dodjiq@gmail.com' && user.user_metadata?.role !== 'admin')) {
+  if (!isAdmin(user)) {
     return NextResponse.json({ error: 'Accès refusé' }, { status: 403, headers: corsHeaders() });
   }
 
@@ -1131,7 +1136,7 @@ async function handleAdminStats(request) {
 
 async function handleAdminGetTemplates(request) {
   const user = await getAuthUser(request);
-  if (!user || (user.email !== 'dodjiq@gmail.com' && user.user_metadata?.role !== 'admin')) {
+  if (!isAdmin(user)) {
     return NextResponse.json({ error: 'Accès refusé' }, { status: 403, headers: corsHeaders() });
   }
 
@@ -1155,7 +1160,7 @@ async function handleAdminGetTemplates(request) {
 
 async function handleAdminGetUsers(request) {
   const user = await getAuthUser(request);
-  if (!user || (user.email !== 'dodjiq@gmail.com' && user.user_metadata?.role !== 'admin')) {
+  if (!isAdmin(user)) {
     return NextResponse.json({ error: 'Accès refusé' }, { status: 403, headers: corsHeaders() });
   }
 
@@ -1184,7 +1189,7 @@ async function handleAdminGetUsers(request) {
 
 async function handleAdminUpdateUserRole(request, userId) {
   const user = await getAuthUser(request);
-  if (!user || (user.email !== 'dodjiq@gmail.com' && user.user_metadata?.role !== 'admin')) {
+  if (!isAdmin(user)) {
     return NextResponse.json({ error: 'Accès refusé' }, { status: 403, headers: corsHeaders() });
   }
 
@@ -1209,7 +1214,7 @@ async function handleAdminUpdateUserRole(request, userId) {
 
 async function handleAdminBlockUser(request, userId) {
   const user = await getAuthUser(request);
-  if (!user || (user.email !== 'dodjiq@gmail.com' && user.user_metadata?.role !== 'admin')) {
+  if (!isAdmin(user)) {
     return NextResponse.json({ error: 'Accès refusé' }, { status: 403, headers: corsHeaders() });
   }
 
@@ -1236,7 +1241,7 @@ async function handleAdminBlockUser(request, userId) {
 
 async function handleAdminUnblockUser(request, userId) {
   const user = await getAuthUser(request);
-  if (!user || (user.email !== 'dodjiq@gmail.com' && user.user_metadata?.role !== 'admin')) {
+  if (!isAdmin(user)) {
     return NextResponse.json({ error: 'Accès refusé' }, { status: 403, headers: corsHeaders() });
   }
 
@@ -1260,7 +1265,7 @@ async function handleAdminUnblockUser(request, userId) {
 
 async function handleAdminDeleteTemplate(request, templateId) {
   const user = await getAuthUser(request);
-  if (!user || (user.email !== 'dodjiq@gmail.com' && user.user_metadata?.role !== 'admin')) {
+  if (!isAdmin(user)) {
     return NextResponse.json({ error: 'Accès refusé' }, { status: 403, headers: corsHeaders() });
   }
 
@@ -1307,7 +1312,7 @@ async function handleGetAnnouncements(request) {
 
 async function handleAdminUpdateAnnouncement(request) {
   const user = await getAuthUser(request);
-  if (!user || (user.email !== 'dodjiq@gmail.com' && user.user_metadata?.role !== 'admin')) {
+  if (!isAdmin(user)) {
     return NextResponse.json({ error: 'Accès refusé' }, { status: 403, headers: corsHeaders() });
   }
   try {
@@ -1331,7 +1336,7 @@ async function handleAdminUpdateAnnouncement(request) {
 
 async function handleAdminCreateTemplate(request) {
   const user = await getAuthUser(request);
-  if (!user || (user.email !== 'dodjiq@gmail.com' && user.user_metadata?.role !== 'admin')) {
+  if (!isAdmin(user)) {
     return NextResponse.json({ error: 'Accès refusé' }, { status: 403, headers: corsHeaders() });
   }
 
@@ -1373,7 +1378,7 @@ async function handleAdminCreateTemplate(request) {
 
 async function handleAdminUpdateTemplate(request, templateId) {
   const user = await getAuthUser(request);
-  if (!user || (user.email !== 'dodjiq@gmail.com' && user.user_metadata?.role !== 'admin')) {
+  if (!isAdmin(user)) {
     return NextResponse.json({ error: 'Accès refusé' }, { status: 403, headers: corsHeaders() });
   }
 

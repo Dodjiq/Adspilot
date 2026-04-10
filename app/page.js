@@ -1694,21 +1694,6 @@ function ContactPage({ showToast }) {
               </div>
             </div>
 
-            <div className="bg-[#12121A] border border-white/[0.12] rounded-2xl p-6 hover:border-[#5A5AFB]/30 transition-all">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#5A5AFB] to-[#9C5DFF] flex items-center justify-center shrink-0">
-                  <Globe className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-white font-semibold text-lg mb-1">Réseaux sociaux</h3>
-                  <div className="flex gap-3 mt-2">
-                    <a href="#" className="text-gray-300 hover:text-[#5A5AFB] font-medium transition-colors">Twitter</a>
-                    <a href="#" className="text-gray-300 hover:text-[#5A5AFB] font-medium transition-colors">LinkedIn</a>
-                    <a href="#" className="text-gray-300 hover:text-[#5A5AFB] font-medium transition-colors">Instagram</a>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Contact Form */}
@@ -1849,7 +1834,7 @@ function LoginPage({ onLogin, showToast }) {
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                placeholder="dodjiq@gmail.com"
+                placeholder="exemple@email.com"
                 required
                 className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-[#5A5AFB] focus:ring-2 focus:ring-[#5A5AFB]/20 text-sm transition-all"
               />
@@ -3786,8 +3771,8 @@ function AdminPanel({ currentPath, user, session, showToast, onLogout }) {
     setActiveTab(path || 'dashboard');
   }, [currentPath]);
 
-  // Check if user is admin (you can customize this logic)
-  const isAdmin = user?.email === 'dodjiq@gmail.com' || user?.user_metadata?.role === 'admin';
+  // Check if user is admin
+  const isAdmin = user?.user_metadata?.role === 'admin';
 
   if (!isAdmin) {
     return (
@@ -5087,7 +5072,7 @@ function AdminSettings({ session, showToast }) {
             <label className="block text-sm font-medium text-gray-300 mb-2">Email admin</label>
             <input
               type="email"
-              defaultValue="dodjiq@gmail.com"
+              defaultValue="admin@adspilot.com"
               className="w-full px-4 py-3 rounded-xl bg-[#1A1A26] border border-white/[0.08] text-white placeholder-gray-500 focus:outline-none focus:border-brand/50 focus:ring-1 focus:ring-brand/30 text-sm transition-all"
             />
           </div>
