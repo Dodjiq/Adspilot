@@ -10,8 +10,13 @@ import {
   CheckCircle2, Circle, Palette, AlertCircle, Plus, ChevronRight, ChevronLeft,
   Globe, Layers, Shield, Users, Star, MessageSquare, MousePointerClick,
   Target, Image, Repeat, ChevronUp, Menu, Play, Facebook, Link2, Info,
-  Trophy, Rocket
+  Trophy, Rocket, LifeBuoy, Send, Paperclip, MoreVertical, Tag, Package
 } from 'lucide-react';
+import AdScoutView from '@/components/AdScoutView';
+import CampagnesView from '@/components/CampagnesView';
+import CommentairesView from '@/components/CommentairesView';
+import ScrapifyView from '@/components/ScrapifyView';
+import { Dropdown } from '@/components/ui/Dropdown';
 
 // ============================================
 // SUPABASE CLIENT
@@ -52,17 +57,19 @@ const FORMATS = [
 
 const NAV_ITEMS = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '#/dashboard' },
-  { icon: FolderOpen, label: 'Campagnes', path: '#/campaigns', soon: true },
+  { icon: FolderOpen, label: 'Campagnes', path: '#/campaigns' },
   { icon: ShoppingBag, label: 'Ma Boutique', path: '#/my-store' },
   { icon: BarChart2, label: 'Analytics', path: '#/analytics', badge: 'PRO' },
   { icon: Sparkles, label: 'Insights', path: '#/insights', badge: 'PRO' },
   { icon: Image, label: 'Créatifs', path: '#/creatives', badge: 'PRO' },
-  { icon: MessageSquare, label: 'Commentaires', path: '#/comments', soon: true },
+  { icon: MessageSquare, label: 'Commentaires', path: '#/comments' },
+  { icon: LifeBuoy, label: 'Support', path: '#/support' },
 ];
 
 const TOOLS_ITEMS = [
   { icon: FolderOpen, label: 'AfriVault', path: '#/afrivault', badge: 'PRO', count: 523 },
-  { icon: Search, label: 'AdScout', path: '#/adscout', soon: true },
+  { icon: Search, label: 'AdScout', path: '#/adscout' },
+  { icon: Package, label: 'Scrapify', path: '#/scrapify' },
   { icon: Play, label: 'Guides', path: '#/guides' },
 ];
 
@@ -73,6 +80,7 @@ const SPECIAL_ITEMS = [
 const LANDING_FEATURES = [
   { icon: Palette, title: 'Templates AfriVault', desc: '+500 templates publicitaires optimisés pour le marché africain. Beauté, mode, food, électronique.' },
   { icon: Store, title: 'Connexion Shopify', desc: 'Connecte ta boutique en un clic. On récupère tes produits automatiquement.' },
+  { icon: Rocket, title: 'Lancement de campagnes Meta', desc: 'Crée et lance tes campagnes Facebook/Instagram directement depuis AdsPilot. Plus besoin du Gestionnaire de Publicités.' },
   { icon: TrendingUp, title: 'Analytics (Bientôt)', desc: 'Suis tes performances, ton ROAS et tes ventes depuis un seul dashboard.' },
 ];
 
@@ -189,14 +197,14 @@ function UserProfileMenu({ user, onLogout }) {
             onClick={() => setIsOpen(false)}
             className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-all group cursor-pointer"
           >
-            <div className="w-8 h-8 rounded-lg bg-brand/15 flex items-center justify-center">
-              <User className="w-4 h-4 text-brand" />
+            <div className="w-8 h-8 rounded-lg bg-[#5A5AFB]/15 flex items-center justify-center">
+              <User className="w-4 h-4 text-[#5A5AFB]" />
             </div>
             <div className="flex-1">
               <div className="text-sm font-medium text-white">Profil</div>
               <div className="text-xs text-gray-500">Gérer ton compte</div>
             </div>
-            <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-brand transition-colors" />
+            <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-[#5A5AFB] transition-colors" />
           </Link>
 
           <div className="h-px bg-white/[0.06]" />
@@ -206,14 +214,14 @@ function UserProfileMenu({ user, onLogout }) {
             onClick={() => setIsOpen(false)}
             className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-all group cursor-pointer"
           >
-            <div className="w-8 h-8 rounded-lg bg-brand/15 flex items-center justify-center">
-              <CreditCard className="w-4 h-4 text-brand" />
+            <div className="w-8 h-8 rounded-lg bg-[#5A5AFB]/15 flex items-center justify-center">
+              <CreditCard className="w-4 h-4 text-[#5A5AFB]" />
             </div>
             <div className="flex-1">
               <div className="text-sm font-medium text-white">Abonnement</div>
               <div className="text-xs text-gray-500">9,99€/mois</div>
             </div>
-            <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-brand transition-colors" />
+            <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-[#5A5AFB] transition-colors" />
           </Link>
 
           <div className="h-px bg-white/[0.06]" />
@@ -241,7 +249,7 @@ function UserProfileMenu({ user, onLogout }) {
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-all group"
       >
-        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-brand to-accent-gold flex items-center justify-center text-white font-semibold text-sm shrink-0">
+        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#5A5AFB] to-[#9C5DFF] flex items-center justify-center text-white font-semibold text-sm shrink-0">
           {user?.user_metadata?.full_name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U'}
         </div>
         <div className="flex-1 min-w-0 text-left">
@@ -409,40 +417,40 @@ function Sidebar({ currentPath, user, onLogout }) {
         className={cn(
           'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group relative',
           isActive
-            ? 'bg-brand/15 text-brand'
+            ? 'bg-[#5A5AFB]/15 text-[#5A5AFB]'
             : item.highlight
-            ? 'bg-brand text-white hover:bg-brand/90 cursor-pointer'
+            ? 'bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white hover:opacity-90 cursor-pointer'
             : isDisabled
-            ? 'text-muted-foreground cursor-not-allowed'
-            : 'text-muted-foreground hover:text-foreground hover:bg-accent cursor-pointer'
+            ? 'text-gray-600 cursor-not-allowed'
+            : 'text-gray-400 hover:text-white hover:bg-white/5 cursor-pointer'
         )}
       >
         <item.icon className="w-[18px] h-[18px] shrink-0" />
         <span className="text-[13px] font-medium flex-1">{item.label}</span>
         {item.badge === 'PRO' && (
-          <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-brand/20 text-brand">PRO</span>
+          <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-[#5A5AFB]/20 text-[#5A5AFB]">PRO</span>
         )}
         {item.soon && !item.highlight && (
           <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-500/20 text-amber-400">SOON</span>
         )}
         {item.count && (
-          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-secondary text-secondary-foreground">{item.count}</span>
+          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-white/10 text-gray-300">{item.count}</span>
         )}
       </Link>
     );
   };
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-[200px] bg-card border-r border-border flex flex-col z-50 font-onest transition-colors duration-200">
+    <aside className="fixed left-0 top-0 h-screen w-[200px] flex flex-col z-50 font-onest transition-colors duration-200" style={{ backgroundColor: '#0A0A0F', borderRight: '1px solid rgba(255,255,255,0.06)' }}>
       {/* Logo */}
-      <div className="px-4 h-16 flex items-center justify-between border-b border-border">
+      <div className="px-4 h-16 flex items-center justify-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <Link href="#/dashboard" className="flex items-center gap-2.5 cursor-pointer">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand to-brand-dark flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#5A5AFB] to-[#9C5DFF] flex items-center justify-center">
             <Zap className="w-4 h-4 text-white" />
           </div>
-          <span className="text-foreground font-bold text-[15px] font-syne">AdsPilot</span>
+          <span className="text-white font-bold text-[15px] font-syne">AdsPilot</span>
         </Link>
-        <button className="w-7 h-7 rounded-md flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors cursor-pointer">
+        <button className="w-7 h-7 rounded-md flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/5 transition-colors cursor-pointer">
           <Layers className="w-4 h-4" />
         </button>
       </div>
@@ -457,7 +465,7 @@ function Sidebar({ currentPath, user, onLogout }) {
 
         {/* Tools Section */}
         <div className="mt-6">
-          <p className="px-3 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Outils</p>
+          <p className="px-3 text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Outils</p>
           <nav className="space-y-0.5">
             {TOOLS_ITEMS.map(item => (
               <NavItem key={item.path} item={item} isActive={currentPath === item.path} />
@@ -474,14 +482,14 @@ function Sidebar({ currentPath, user, onLogout }) {
       </div>
 
       {/* Connections */}
-      <div className="border-t border-border">
+      <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <Link href="#/settings" className={cn(
           'flex items-center gap-3 px-4 py-3 transition-colors cursor-pointer',
-          currentPath?.startsWith('#/settings') ? 'text-brand' : 'text-muted-foreground hover:text-foreground'
+          currentPath?.startsWith('#/settings') ? 'text-[#5A5AFB]' : 'text-gray-400 hover:text-white'
         )}>
           <div className="relative">
             <Globe className="w-[18px] h-[18px]" />
-            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-red-500 border-2 border-card" />
+            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-red-500 border-2" style={{ borderColor: '#0A0A0F' }} />
           </div>
           <span className="text-[13px]">Connexions</span>
         </Link>
@@ -583,11 +591,11 @@ function TopNav({ title, subtitle, showDatePicker = false }) {
           </button>
         </div>
       )}
-      <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-xl border-b border-border transition-colors duration-200 supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-40 backdrop-blur-xl transition-colors duration-200" style={{ backgroundColor: 'rgba(10,10,15,0.95)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="px-6 py-4 flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-foreground font-syne">{title}</h1>
-          {subtitle && <p className="text-sm text-muted-foreground mt-0.5">{subtitle}</p>}
+          <h1 className="text-xl font-bold text-white font-syne">{title}</h1>
+          {subtitle && <p className="text-sm text-gray-400 mt-0.5">{subtitle}</p>}
         </div>
         <div className="flex items-center gap-3">
           {/* Notification Center */}
@@ -595,7 +603,7 @@ function TopNav({ title, subtitle, showDatePicker = false }) {
           {showDatePicker && (
             <>
               {/* Period Selector */}
-              <div className="inline-flex items-center bg-muted rounded-lg border border-border p-0.5">
+              <div className="inline-flex items-center bg-white/5 rounded-lg border border-white/10 p-0.5">
                 {periods.map(p => (
                   <button
                     key={p}
@@ -603,8 +611,8 @@ function TopNav({ title, subtitle, showDatePicker = false }) {
                     className={cn(
                       'px-3 py-1.5 rounded-md text-xs font-medium transition-colors',
                       selectedPeriod === p
-                        ? 'bg-background text-foreground shadow-sm'
-                        : 'text-muted-foreground hover:text-foreground'
+                        ? 'bg-[#5A5AFB] text-white shadow-sm'
+                        : 'text-gray-400 hover:text-white'
                     )}
                   >
                     {p}
@@ -612,19 +620,19 @@ function TopNav({ title, subtitle, showDatePicker = false }) {
                 ))}
               </div>
               {/* Date Range */}
-              <button className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-muted border border-border text-sm text-muted-foreground hover:text-foreground hover:border-input transition-colors">
+              <button className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-gray-400 hover:text-white hover:border-white/20 transition-colors">
                 <Clock className="w-4 h-4" />
                 <span>{dateRange || 'Chargement...'}</span>
               </button>
               {/* Location */}
-              <button className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-muted border border-border text-sm text-muted-foreground hover:text-foreground hover:border-input transition-colors">
+              <button className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-gray-400 hover:text-white hover:border-white/20 transition-colors">
                 <Globe className="w-4 h-4" />
                 <span className="capitalize">{location}</span>
               </button>
             </>
           )}
           {/* Refresh */}
-          <button onClick={() => window.location.reload()} className="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-muted border border-border text-muted-foreground hover:text-foreground hover:border-input transition-colors">
+          <button onClick={() => window.location.reload()} className="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:border-white/20 transition-colors">
             <Repeat className="w-4 h-4" />
           </button>
         </div>
@@ -646,21 +654,28 @@ function DashboardLayout({ children, user, currentPath, onLogout }) {
     '#/settings/billing': { title: 'Abonnement', subtitle: 'Gère ton plan AdsPilot', showDatePicker: false },
     '#/analytics': { title: 'Analytics', subtitle: 'Suis tes performances', showDatePicker: true },
     '#/adscout': { title: 'AdScout', subtitle: 'Espionne les pubs des concurrents', showDatePicker: false },
+    '#/scrapify': { title: 'Scrapify', subtitle: 'Importe des produits Shopify concurrents', showDatePicker: false },
     '#/ugc': { title: 'UGC Studio', subtitle: 'Crée du contenu UGC', showDatePicker: false },
     '#/campaigns': { title: 'Campagnes', subtitle: 'Gère tes campagnes publicitaires', showDatePicker: true },
     '#/insights': { title: 'Insights', subtitle: 'Recommandations IA', showDatePicker: false },
     '#/creatives': { title: 'Créatifs', subtitle: 'Ta bibliothèque de pubs', showDatePicker: false },
     '#/comments': { title: 'Commentaires', subtitle: 'Gère les commentaires de tes pubs', showDatePicker: false },
     '#/guides': { title: 'Guides', subtitle: 'Apprends à scaler tes pubs', showDatePicker: false },
+    '#/support': { title: 'Support', subtitle: 'Mes tickets de support', showDatePicker: false },
+    '#/admin/tickets': { title: 'Gestion des Tickets', subtitle: 'Gérer tous les tickets de support', showDatePicker: false },
   };
   const config = pageConfigs[currentPath] || pageConfigs['#/dashboard'];
   
   return (
-    <div className="min-h-screen bg-background font-onest transition-colors duration-200">
+    <div className="min-h-screen font-onest transition-colors duration-200" style={{ backgroundColor: '#070B14' }}>
       <Sidebar currentPath={currentPath} user={user} onLogout={onLogout} />
       <div className="ml-[200px]">
         <TopNav title={config.title} subtitle={config.subtitle} showDatePicker={config.showDatePicker} />
-        <main className="p-6 animate-fade-in">{children}</main>
+        <main className="p-6 animate-fade-in">
+          <div className="max-w-[1280px] mx-auto">
+            {children}
+          </div>
+        </main>
       </div>
     </div>
   );
@@ -672,12 +687,11 @@ function DashboardLayout({ children, user, currentPath, onLogout }) {
 function LandingPage() {
   const [openFaq, setOpenFaq] = useState(null);
   const [heroEmail, setHeroEmail] = useState('');
-  const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
   const steps = [
     { num: '01', icon: Store, title: 'Connecte ta boutique', desc: 'Lie ta boutique Shopify en un clic. Import automatique de tes produits.' },
     { num: '02', icon: Layers, title: 'Choisis ton template', desc: 'Parcours +500 templates AfriVault optimisés pour le marché africain.' },
-    { num: '03', icon: ExternalLink, title: 'Lance ta publicité', desc: 'Personnalise dans Canva et publie directement sur Meta.' },
+    { num: '03', icon: Rocket, title: 'Lance ta campagne Meta', desc: 'Crée et lance ta campagne Facebook/Instagram directement depuis AdsPilot. Budget, ciblage, tout est géré en un seul endroit.' },
   ];
 
   const stats = [
@@ -718,22 +732,78 @@ function LandingPage() {
     if (heroEmail) window.location.hash = '#/register';
   };
 
+  // Scroll reveal effect
+  useEffect(() => {
+    // Wait for DOM to be ready
+    const timer = setTimeout(() => {
+      const observerOptions = {
+        threshold: 0.15,
+        rootMargin: '0px 0px -100px 0px'
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+          }
+        });
+      }, observerOptions);
+
+      const revealElements = document.querySelectorAll('.scroll-reveal');
+      console.log('Scroll reveal elements found:', revealElements.length);
+      revealElements.forEach(el => observer.observe(el));
+
+      return () => {
+        revealElements.forEach(el => observer.unobserve(el));
+      };
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="min-h-screen font-onest bg-grid" style={{ backgroundColor: '#070B14' }}>
       {/* ===== HEADER ===== */}
-      <header className="sticky top-0 z-50 border-b border-white/[0.06] backdrop-blur-xl" style={{ backgroundColor: 'rgba(7,11,20,0.8)' }}>
-        <div className="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#5A5AFB] to-[#9C5DFF] flex items-center justify-center">
-              <Zap className="w-4 h-4 text-white" />
+      <header className="sticky top-0 z-50 pt-5 pb-5">
+        <div className="max-w-[1280px] mx-auto px-6">
+          <div className="bg-white/[0.08] backdrop-blur-xl border border-white/[0.1] rounded-full px-6 py-3 flex items-center justify-between shadow-lg">
+            {/* Logo */}
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#5A5AFB] to-[#9C5DFF] flex items-center justify-center">
+                <Zap className="w-4 h-4 text-white" />
+              </div>
+              <span className="text-white font-syne font-bold text-lg">AdsPilot</span>
             </div>
-            <span className="text-white font-syne font-bold text-lg">AdsPilot</span>
-          </div>
-          <div className="flex items-center gap-5">
-            <a href="#/login" className="text-gray-400 hover:text-white text-sm transition-colors">Connexion</a>
-            <a href="#/register" className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white text-sm font-medium hover:opacity-90 transition-all">
-              Démarrer gratuitement
-            </a>
+
+            {/* Navigation centrale */}
+            <nav className="hidden md:flex items-center gap-8">
+              <a href="#fonctionnalites" className="text-gray-300 hover:text-white text-sm font-medium transition-colors">
+                Fonctionnalités
+              </a>
+              <a href="#/pricing" className="text-gray-300 hover:text-white text-sm font-medium transition-colors">
+                Tarifs
+              </a>
+              <a href="#faq" className="text-gray-300 hover:text-white text-sm font-medium transition-colors">
+                FAQ
+              </a>
+            </nav>
+
+            {/* CTA Buttons */}
+            <div className="flex items-center gap-2">
+              <a
+                href="#/login"
+                className="px-5 py-2 rounded-full border border-white/20 text-white text-sm font-medium hover:bg-white/5 transition-all"
+              >
+                Se connecter
+              </a>
+              <a
+                href="#/register"
+                className="px-5 py-2 rounded-full bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white text-sm font-semibold hover:opacity-90 transition-all flex items-center gap-1.5"
+              >
+                Essai gratuit
+                <ArrowRight className="w-3.5 h-3.5" />
+              </a>
+            </div>
           </div>
         </div>
       </header>
@@ -741,9 +811,9 @@ function LandingPage() {
       {/* ===== HERO ===== */}
       <section className="relative overflow-hidden">
         <div className="absolute top-[-200px] left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full bg-[#5A5AFB]/[0.06] blur-[150px] pointer-events-none" />
-        <div className="max-w-[1200px] mx-auto px-6 pt-20 pb-14 md:pt-24 md:pb-20">
+        <div className="max-w-[1280px] mx-auto px-6 pt-16 pb-12 md:pt-20 md:pb-16">
           <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div>
+            <div className="animate-fadeInUp">
               <h1
                 className="font-syne font-bold text-white leading-[1.1] tracking-tight break-words max-w-[34rem]"
                 style={{ fontSize: 'clamp(32px, 4.3vw, 48px)' }}
@@ -752,22 +822,22 @@ function LandingPage() {
                 <span className="bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] bg-clip-text text-transparent">convertissent</span>
                 {' '}pour le marché africain.
               </h1>
-              <p className="text-gray-400 mt-6 text-[15px] leading-relaxed max-w-[440px]">
-                +500 templates optimisés, édition Canva intégrée, connexion Shopify — lance tes premières pubs Meta en 5 minutes.
+              <p className="text-gray-400 mt-6 text-[15px] leading-relaxed max-w-[440px] opacity-0 animate-fadeInUp animation-delay-200">
+                +500 templates optimisés, connexion Shopify, lancement de campagnes Meta intégré — crée et lance tes pubs Facebook/Instagram en 5 minutes, sans quitter AdsPilot.
               </p>
-              <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3">
-                {['+500 templates', 'Édition Canva', 'Connexion Shopify', 'Setup 5 min'].map(f => (
+              <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 opacity-0 animate-fadeInUp animation-delay-300">
+                {['+500 templates', 'Lancement campagnes Meta', 'Connexion Shopify', 'Setup 5 min'].map(f => (
                   <span key={f} className="flex items-center gap-2 text-sm text-gray-400">
                     <Check className="w-3.5 h-3.5 text-[#5A5AFB]" />{f}
                   </span>
                 ))}
               </div>
-              <a href="#/register" className="hidden md:inline-flex items-center gap-2 mt-10 px-7 py-3 rounded-lg bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white text-sm font-medium hover:opacity-90 transition-all">
+              <a href="#/register" className="hidden md:inline-flex items-center gap-2 mt-10 px-7 py-3 rounded-lg bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white text-sm font-medium hover:opacity-90 transition-all opacity-0 animate-fadeInUp animation-delay-400">
                 Démarrer gratuitement <ArrowRight className="w-4 h-4" />
               </a>
             </div>
             {/* Right card */}
-            <div className="relative">
+            <div className="relative opacity-0 animate-fadeInUp animation-delay-200">
               <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-7">
                 <p className="text-white font-syne font-semibold text-lg mb-1">Commencer</p>
                 <p className="text-gray-500 text-sm mb-6">Crée ton compte gratuitement</p>
@@ -786,8 +856,8 @@ function LandingPage() {
       </section>
 
       {/* ===== SOCIAL PROOF ===== */}
-      <div className="max-w-[1200px] mx-auto px-6 pb-10">
-        <div className="flex items-center justify-center">
+      <div className="max-w-[1280px] mx-auto px-6 pb-8">
+        <div className="flex items-center justify-center opacity-0 animate-fadeIn animation-delay-500">
           <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border border-white/[0.06] bg-white/[0.02]">
             <div className="flex -space-x-2">
               {['S', 'K', 'A', 'M'].map((l, i) => (
@@ -800,18 +870,29 @@ function LandingPage() {
       </div>
 
       {/* ===== LOGOS ===== */}
-      <div className="border-t border-b border-white/[0.04] py-10">
-        <div className="max-w-[1200px] mx-auto px-6 flex items-center justify-center gap-14 opacity-30 flex-wrap">
-          {['Shopify', 'Canva', 'Meta Ads', 'Instagram', 'Facebook'].map(n => (
-            <span key={n} className="text-white font-syne font-bold text-lg">{n}</span>
-          ))}
+      <div className="border-t border-b border-white/[0.04] py-8">
+        <div className="max-w-[1280px] mx-auto overflow-hidden relative">
+          {/* Gradient overlays for fade effect - horizontal (larger) */}
+          <div className="absolute left-0 top-0 bottom-0 w-48 bg-gradient-to-r from-[#070B14] via-[#070B14]/80 to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-48 bg-gradient-to-l from-[#070B14] via-[#070B14]/80 to-transparent z-10 pointer-events-none" />
+
+          <div className="flex items-center gap-8 opacity-30 animate-scroll whitespace-nowrap">
+            {/* Duplicate logos for infinite scroll effect */}
+            {[...Array(3)].map((_, groupIndex) => (
+              <div key={groupIndex} className="flex items-center gap-8 shrink-0">
+                {['Shopify', 'Canva', 'Meta Ads', 'Instagram', 'Facebook', 'WhatsApp', 'TikTok'].map((n, i) => (
+                  <span key={`${groupIndex}-${i}`} className="text-white font-syne font-semibold text-base shrink-0">{n}</span>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* ===== STEPS ===== */}
-      <section className="py-16">
-        <div className="max-w-[1200px] mx-auto px-6">
-          <div className="grid md:grid-cols-2 gap-20 items-start">
+      <section className="py-12 scroll-reveal">
+        <div className="max-w-[1280px] mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-16 items-start">
             <div className="md:sticky md:top-32">
               <p className="text-[#5A5AFB] text-xs font-semibold uppercase tracking-[0.15em]">Comment ça marche</p>
               <h2
@@ -846,8 +927,8 @@ function LandingPage() {
       </section>
 
       {/* ===== STATS ===== */}
-      <section className="py-14">
-        <div className="max-w-[1200px] mx-auto px-6">
+      <section className="py-12 scroll-reveal">
+        <div className="max-w-[1280px] mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {stats.map(s => (
               <div key={s.label} className="text-center py-10 rounded-xl border border-white/[0.06] bg-white/[0.01]">
@@ -860,8 +941,8 @@ function LandingPage() {
       </section>
 
       {/* ===== AFRIVAULT FEATURE ===== */}
-      <section className="py-16">
-        <div className="max-w-[1200px] mx-auto px-6">
+      <section id="fonctionnalites" className="py-12 scroll-reveal">
+        <div className="max-w-[1280px] mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div>
               <p className="text-[#5A5AFB] text-xs font-semibold uppercase tracking-[0.15em]">AfriVault</p>
@@ -884,28 +965,130 @@ function LandingPage() {
                 ))}
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              {MOCK_TEMPLATES.slice(0, 4).map(t => (
-                <div key={t.id} className="rounded-xl overflow-hidden border border-white/[0.06] hover:border-[#5A5AFB]/20 transition-all">
-                  <img src={t.preview_url} alt={t.title} className="w-full aspect-square object-cover" loading="lazy" />
-                  <div className="p-2.5 bg-white/[0.02]">
-                    <span className={cn('text-[10px] font-medium px-1.5 py-0.5 rounded', NICHE_CONFIG[t.niche]?.bg, NICHE_CONFIG[t.niche]?.text)}>{NICHE_CONFIG[t.niche]?.label}</span>
-                    <p className="text-white text-xs mt-1 truncate">{t.title}</p>
+            <div className="relative h-[600px] overflow-hidden rounded-2xl">
+              {/* Gradient overlays for fade effect - vertical */}
+              <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#070B14] to-transparent z-10 pointer-events-none" />
+              <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#070B14] to-transparent z-10 pointer-events-none" />
+
+              {/* Scrolling container - vertical */}
+              <div className="grid grid-cols-2 gap-3 animate-scroll-vertical">
+                {/* Duplicate templates for seamless infinite scroll */}
+                {[...MOCK_TEMPLATES, ...MOCK_TEMPLATES, ...MOCK_TEMPLATES].map((t, index) => (
+                  <div
+                    key={`${t.id}-${index}`}
+                    className="relative group rounded-xl overflow-hidden border border-white/[0.06] hover:border-[#5A5AFB]/30 transition-all"
+                  >
+                    {/* Image with hover overlay */}
+                    <div className="relative aspect-square overflow-hidden">
+                      <img
+                        src={t.preview_url}
+                        alt={t.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                      />
+                      {/* Overlay on hover */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                        <p className="text-white text-sm font-medium">{t.description}</p>
+                      </div>
+                    </div>
+
+                    {/* Card footer */}
+                    <div className="p-2.5 bg-white/[0.02] group-hover:bg-white/[0.04] transition-colors">
+                      <span className={cn('text-[10px] font-medium px-1.5 py-0.5 rounded', NICHE_CONFIG[t.niche]?.bg, NICHE_CONFIG[t.niche]?.text)}>
+                        {NICHE_CONFIG[t.niche]?.label}
+                      </span>
+                      <p className="text-white text-xs mt-1 truncate">{t.title}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== CAMPAIGN LAUNCH FEATURE ===== */}
+      <section className="py-12 scroll-reveal">
+        <div className="max-w-[1280px] mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div className="relative h-[500px] rounded-2xl overflow-hidden border border-white/[0.08] bg-gradient-to-br from-[#5A5AFB]/10 to-[#9C5DFF]/5 p-8 flex items-center justify-center">
+              <div className="text-center space-y-6">
+                <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-[#5A5AFB] to-[#9C5DFF] flex items-center justify-center">
+                  <Rocket className="w-10 h-10 text-white" />
+                </div>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
+                    <CheckCircle2 className="w-4 h-4 text-green-400" />
+                    <span>Campagne configurée</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
+                    <CheckCircle2 className="w-4 h-4 text-green-400" />
+                    <span>Budget défini: 50€/jour</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
+                    <CheckCircle2 className="w-4 h-4 text-green-400" />
+                    <span>Audience ciblée: 25-45 ans</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
+                    <CheckCircle2 className="w-4 h-4 text-green-400" />
+                    <span>Créatif sélectionné</span>
                   </div>
                 </div>
-              ))}
+                <button className="mt-6 px-8 py-3 rounded-lg bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white text-sm font-semibold hover:opacity-90 transition-all flex items-center gap-2 mx-auto">
+                  <Rocket className="w-4 h-4" />
+                  Lancer la campagne
+                </button>
+              </div>
+            </div>
+            <div>
+              <p className="text-[#5A5AFB] text-xs font-semibold uppercase tracking-[0.15em]">Lancement de campagnes</p>
+              <h2
+                className="font-syne font-bold text-white mt-4 leading-[1.15] tracking-tight break-words max-w-[34rem]"
+                style={{ fontSize: 'clamp(24px, 3.2vw, 36px)' }}
+              >
+                Lance tes campagnes Meta{' '}
+                <span className="bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] bg-clip-text text-transparent">directement depuis AdsPilot</span>
+              </h2>
+              <p className="text-gray-500 mt-5 text-[15px] leading-relaxed max-w-sm">
+                Plus besoin de jongler entre plusieurs outils. Crée, configure et lance tes campagnes Facebook et Instagram en quelques clics, tout depuis ton dashboard AdsPilot.
+              </p>
+              <div className="mt-8 space-y-3">
+                {[
+                  'Configuration campagne en 2 minutes',
+                  'Ciblage audience simplifié',
+                  'Gestion budget et enchères',
+                  'Lancement direct sur Meta',
+                  'Suivi performances en temps réel'
+                ].map(f => (
+                  <div key={f} className="flex items-center gap-2.5">
+                    <Check className="w-3.5 h-3.5 text-[#5A5AFB] shrink-0" />
+                    <span className="text-gray-400 text-sm">{f}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-8 p-4 rounded-xl bg-[#5A5AFB]/5 border border-[#5A5AFB]/20">
+                <div className="flex items-start gap-3">
+                  <Info className="w-5 h-5 text-[#5A5AFB] shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-white text-sm font-medium mb-1">Tout-en-un</p>
+                    <p className="text-gray-400 text-xs leading-relaxed">
+                      Fini le Gestionnaire de Publicités Meta complexe. AdsPilot simplifie tout le processus pour que tu puisses te concentrer sur tes ventes.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* ===== COMPARISON ===== */}
-      <section className="py-16">
+      <section className="py-12 scroll-reveal">
         <div className="max-w-[900px] mx-auto px-6">
           <div className="text-center mb-10">
             <p className="text-[#5A5AFB] text-xs font-semibold uppercase tracking-[0.15em]">Comparaison</p>
             <h2
-              className="font-syne font-bold text-white mt-4 tracking-tight break-words max-w-[34rem]"
+              className="font-syne font-bold text-white mt-4 tracking-tight break-words mx-auto"
               style={{ fontSize: 'clamp(24px, 3.2vw, 36px)' }}
             >
               Pourquoi choisir{' '}
@@ -938,12 +1121,12 @@ function LandingPage() {
       </section>
 
       {/* ===== TESTIMONIALS CAROUSEL ===== */}
-      <section className="py-16">
-        <div className="max-w-[1200px] mx-auto px-6">
+      <section className="py-12 scroll-reveal">
+        <div className="max-w-[1280px] mx-auto px-6">
           <div className="text-center mb-10">
             <p className="text-[#5A5AFB] text-xs font-semibold uppercase tracking-[0.15em]">Témoignages</p>
             <h2
-              className="font-syne font-bold text-white mt-4 tracking-tight break-words max-w-[34rem]"
+              className="font-syne font-bold text-white mt-4 tracking-tight break-words mx-auto"
               style={{ fontSize: 'clamp(24px, 3.2vw, 36px)' }}
             >
               Ils nous font{' '}
@@ -951,83 +1134,72 @@ function LandingPage() {
             </h2>
           </div>
 
-          <div className="relative">
-            {/* Carousel Container */}
-            <div className="overflow-hidden">
-              <div
-                className="flex transition-transform duration-500 ease-out"
-                style={{ transform: `translateX(-${currentTestimonial * 100}%)` }}
-              >
-                {/* Group testimonials in pairs */}
-                {Array.from({ length: Math.ceil(testimonials.length / 2) }).map((_, groupIndex) => (
-                  <div key={groupIndex} className="min-w-full grid md:grid-cols-2 gap-5 px-1">
-                    {testimonials.slice(groupIndex * 2, groupIndex * 2 + 2).map(t => (
-                      <div key={t.name} className="p-6 rounded-xl border border-white/[0.06] bg-white/[0.01] hover:border-white/[0.1] transition-all">
-                        <div className="flex gap-0.5 mb-4">
-                          {[...Array(5)].map((_, i) => <Star key={i} className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />)}
-                        </div>
-                        <p className="text-gray-300 text-sm leading-relaxed mb-6">"{t.quote}"</p>
-                        <div className="flex items-center gap-3 pt-4 border-t border-white/[0.04]">
-                          <div className={cn("w-9 h-9 rounded-full bg-gradient-to-br flex items-center justify-center text-white text-xs font-bold", t.color)}>
-                            {t.avatar}
-                          </div>
-                          <div>
-                            <p className="text-white text-sm font-medium">{t.name}</p>
-                            <p className="text-gray-600 text-xs">{t.role}</p>
-                          </div>
-                        </div>
+          <div className="relative overflow-hidden">
+            {/* Gradient overlays for fade effect - horizontal */}
+            <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[#070B14] to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#070B14] to-transparent z-10 pointer-events-none" />
+
+            {/* Scrolling container - horizontal with 2 rows */}
+            <div className="flex flex-col gap-4">
+              {/* Row 1 */}
+              <div className="flex gap-4 animate-scroll-testimonials">
+                {[...testimonials.filter((_, i) => i % 2 === 0), ...testimonials.filter((_, i) => i % 2 === 0), ...testimonials.filter((_, i) => i % 2 === 0)].map((t, index) => (
+                  <div
+                    key={`row1-${t.name}-${index}`}
+                    className="shrink-0 w-[450px] p-6 rounded-xl border border-white/[0.06] bg-white/[0.01] hover:border-[#5A5AFB]/20 hover:bg-white/[0.02] transition-all"
+                  >
+                    <div className="flex gap-0.5 mb-4">
+                      {[...Array(5)].map((_, i) => <Star key={i} className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />)}
+                    </div>
+                    <p className="text-gray-300 text-sm leading-relaxed mb-6">"{t.quote}"</p>
+                    <div className="flex items-center gap-3 pt-4 border-t border-white/[0.04]">
+                      <div className={cn("w-9 h-9 rounded-full bg-gradient-to-br flex items-center justify-center text-white text-xs font-bold", t.color)}>
+                        {t.avatar}
                       </div>
-                    ))}
+                      <div>
+                        <p className="text-white text-sm font-medium">{t.name}</p>
+                        <p className="text-gray-600 text-xs">{t.role}</p>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
-            </div>
 
-            {/* Navigation Buttons */}
-            <div className="flex items-center justify-center gap-3 mt-8">
-              <button
-                onClick={() => setCurrentTestimonial(prev => Math.max(0, prev - 1))}
-                disabled={currentTestimonial === 0}
-                className="p-2 rounded-lg border border-white/[0.1] bg-white/[0.02] hover:bg-white/[0.05] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-              >
-                <ChevronLeft className="w-5 h-5 text-white" />
-              </button>
-
-              {/* Dots Indicator */}
-              <div className="flex gap-2">
-                {Array.from({ length: Math.ceil(testimonials.length / 2) }).map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setCurrentTestimonial(idx)}
-                    className={cn(
-                      "h-1.5 rounded-full transition-all",
-                      currentTestimonial === idx
-                        ? "w-8 bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF]"
-                        : "w-1.5 bg-white/20 hover:bg-white/30"
-                    )}
-                  />
+              {/* Row 2 */}
+              <div className="flex gap-4 animate-scroll-testimonials-reverse">
+                {[...testimonials.filter((_, i) => i % 2 === 1), ...testimonials.filter((_, i) => i % 2 === 1), ...testimonials.filter((_, i) => i % 2 === 1)].map((t, index) => (
+                  <div
+                    key={`row2-${t.name}-${index}`}
+                    className="shrink-0 w-[450px] p-6 rounded-xl border border-white/[0.06] bg-white/[0.01] hover:border-[#5A5AFB]/20 hover:bg-white/[0.02] transition-all"
+                  >
+                    <div className="flex gap-0.5 mb-4">
+                      {[...Array(5)].map((_, i) => <Star key={i} className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />)}
+                    </div>
+                    <p className="text-gray-300 text-sm leading-relaxed mb-6">"{t.quote}"</p>
+                    <div className="flex items-center gap-3 pt-4 border-t border-white/[0.04]">
+                      <div className={cn("w-9 h-9 rounded-full bg-gradient-to-br flex items-center justify-center text-white text-xs font-bold", t.color)}>
+                        {t.avatar}
+                      </div>
+                      <div>
+                        <p className="text-white text-sm font-medium">{t.name}</p>
+                        <p className="text-gray-600 text-xs">{t.role}</p>
+                      </div>
+                    </div>
+                  </div>
                 ))}
               </div>
-
-              <button
-                onClick={() => setCurrentTestimonial(prev => Math.min(Math.ceil(testimonials.length / 2) - 1, prev + 1))}
-                disabled={currentTestimonial === Math.ceil(testimonials.length / 2) - 1}
-                className="p-2 rounded-lg border border-white/[0.1] bg-white/[0.02] hover:bg-white/[0.05] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-              >
-                <ChevronRight className="w-5 h-5 text-white" />
-              </button>
             </div>
           </div>
         </div>
       </section>
 
       {/* ===== PRICING ===== */}
-      <section className="py-16">
+      <section className="py-16 scroll-reveal">
         <div className="max-w-[1000px] mx-auto px-6">
           <div className="text-center mb-10">
             <p className="text-[#5A5AFB] text-xs font-semibold uppercase tracking-[0.15em]">Tarifs</p>
             <h2
-              className="font-syne font-bold text-white mt-4 tracking-tight break-words max-w-[34rem]"
+              className="font-syne font-bold text-white mt-4 tracking-tight break-words mx-auto"
               style={{ fontSize: 'clamp(24px, 3.2vw, 36px)' }}
             >
               Simple et{' '}
@@ -1083,7 +1255,7 @@ function LandingPage() {
       </section>
 
       {/* ===== FAQ ===== */}
-      <section className="py-16">
+      <section id="faq" className="py-12 scroll-reveal">
         <div className="max-w-[700px] mx-auto px-6">
           <div className="text-center mb-10">
             <p className="text-[#5A5AFB] text-xs font-semibold uppercase tracking-[0.15em]">FAQ</p>
@@ -1114,7 +1286,7 @@ function LandingPage() {
       </section>
 
       {/* ===== FINAL CTA ===== */}
-      <section className="py-16 relative overflow-hidden">
+      <section className="py-8 relative overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[#5A5AFB]/[0.04] blur-[120px] pointer-events-none" />
         <div className="max-w-[600px] mx-auto px-6 text-center relative">
           <h2
@@ -1137,7 +1309,7 @@ function LandingPage() {
 
       {/* ===== FOOTER ===== */}
       <footer className="border-t border-white/[0.04] py-10">
-        <div className="max-w-[1200px] mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="max-w-[1280px] mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#5A5AFB] to-[#9C5DFF] flex items-center justify-center">
               <Zap className="w-3.5 h-3.5 text-white" />
@@ -1163,6 +1335,7 @@ function LoginPage({ onLogin, showToast }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -1180,45 +1353,178 @@ function LoginPage({ onLogin, showToast }) {
     }
   };
 
+  const handleOAuth = async (provider) => {
+    if (provider === 'tiktok') { showToast('Connexion TikTok bientôt disponible', 'info'); return; }
+    if (!supabase) { showToast('Supabase non configuré', 'error'); return; }
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: typeof window !== 'undefined' ? window.location.origin : '' }
+    });
+    if (error) showToast(error.message, 'error');
+  };
+
   return (
-    <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center p-6">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <a href="#/" className="inline-flex items-center gap-2 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand to-brand-dark flex items-center justify-center">
-              <Zap className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-white font-bold text-xl">AdsPilot</span>
-          </a>
-          <h1 className="text-2xl font-bold text-white">Bon retour !</h1>
-          <p className="text-gray-400 mt-1">Connecte-toi pour accéder à ton dashboard</p>
-        </div>
-        <form onSubmit={handleSubmit} className="bg-[#12121A] rounded-2xl border border-white/[0.08] p-8 space-y-5">
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
-            <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="ton@email.com" required
-                className="w-full pl-11 pr-4 py-3 rounded-xl bg-[#1A1A26] border border-white/[0.08] text-white placeholder-gray-500 focus:outline-none focus:border-brand/50 focus:ring-1 focus:ring-brand/30 text-sm transition-all" />
-            </div>
+    <div className="min-h-screen flex bg-grid" style={{ backgroundColor: '#070B14' }}>
+      {/* Left Side - Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center px-8 lg:px-16 xl:px-24">
+        <div className="w-full max-w-md">
+          {/* Logo */}
+          <div className="mb-12">
+            <a href="#/" className="inline-flex items-center gap-2">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#5A5AFB] to-[#9C5DFF] flex items-center justify-center">
+                <Zap className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-white font-bold text-xl font-syne">AdsPilot</span>
+            </a>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Mot de passe</label>
-            <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-              <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" required
-                className="w-full pl-11 pr-4 py-3 rounded-xl bg-[#1A1A26] border border-white/[0.08] text-white placeholder-gray-500 focus:outline-none focus:border-brand/50 focus:ring-1 focus:ring-brand/30 text-sm transition-all" />
-            </div>
-          </div>
-          <button type="submit" disabled={loading}
-            className="w-full py-3.5 rounded-xl bg-brand text-white font-semibold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2">
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-            {loading ? 'Connexion...' : 'Se connecter'}
-          </button>
-          <p className="text-center text-sm text-gray-400">
-            Pas encore de compte ? <a href="#/register" className="text-brand hover:text-brand-light font-medium transition-colors">Créer un compte</a>
+
+          <h1 className="text-3xl font-bold text-white mb-2 font-syne">
+            Bon retour parmi nous 👋
+          </h1>
+          <p className="text-gray-400 mb-8">
+            Connecte-toi pour retrouver tes contenus et continuer à créer.
           </p>
-        </form>
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="dodjiq@gmail.com"
+                required
+                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-[#5A5AFB] focus:ring-2 focus:ring-[#5A5AFB]/20 text-sm transition-all"
+              />
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-sm font-medium text-gray-300">Mot de passe</label>
+                <a href="#/forgot-password" className="text-sm text-[#5A5AFB] hover:text-[#9C5DFF] transition-colors">
+                  Mot de passe oublié ?
+                </a>
+              </div>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder="••••••••••••••"
+                  required
+                  className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:border-[#5A5AFB] focus:ring-2 focus:ring-[#5A5AFB]/20 text-sm transition-all pr-12"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
+                >
+                  {showPassword ? <Eye className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3.5 rounded-lg bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white font-semibold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#5A5AFB]/25"
+            >
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
+              {loading ? 'Connexion...' : 'Se connecter'}
+            </button>
+          </form>
+
+          {/* Divider */}
+          <div className="flex items-center gap-3 my-6">
+            <div className="flex-1 h-px bg-white/10"></div>
+            <span className="text-gray-500 text-xs uppercase tracking-wider">ou continuer avec</span>
+            <div className="flex-1 h-px bg-white/10"></div>
+          </div>
+
+          {/* Social auth buttons */}
+          <div className="grid grid-cols-3 gap-3">
+            <button type="button" onClick={() => handleOAuth('google')}
+              className="flex items-center justify-center gap-2 py-2.5 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20 transition-all group">
+              <svg width="18" height="18" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+              </svg>
+              <span className="text-sm text-gray-300 group-hover:text-white transition-colors font-medium">Google</span>
+            </button>
+
+            <button type="button" onClick={() => handleOAuth('facebook')}
+              className="flex items-center justify-center gap-2 py-2.5 rounded-lg border border-white/10 bg-white/5 hover:bg-[#1877F2]/20 hover:border-[#1877F2]/40 transition-all group">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+              <span className="text-sm text-gray-300 group-hover:text-white transition-colors font-medium">Facebook</span>
+            </button>
+
+            <button type="button" onClick={() => handleOAuth('tiktok')}
+              className="relative flex items-center justify-center gap-2 py-2.5 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20 transition-all group">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+                <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.04a8.16 8.16 0 004.77 1.52V7.12a4.85 4.85 0 01-1-.43z"/>
+              </svg>
+              <span className="text-sm text-gray-300 group-hover:text-white transition-colors font-medium">TikTok</span>
+              <span className="absolute -top-1.5 -right-1.5 text-[9px] bg-amber-500 text-black font-bold px-1 rounded-full leading-4">bientôt</span>
+            </button>
+          </div>
+
+          <p className="text-center text-sm text-gray-400 mt-6">
+            Nouveau sur AdsPilot ? <a href="#/register" className="text-[#5A5AFB] hover:text-[#9C5DFF] font-semibold transition-colors">Créer un compte</a>
+          </p>
+        </div>
+      </div>
+
+      {/* Right Side - Visual */}
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden items-center justify-center p-12 my-[15px] rounded-l-[2.5rem] bg-grid" style={{ backgroundColor: '#070B14' }}>
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#5A5AFB]/20 via-[#7B6BFF]/10 to-[#9C5DFF]/20"></div>
+        {/* Decorative circles */}
+        <div className="absolute top-20 right-20 w-64 h-64 rounded-full bg-[#9C5DFF] opacity-20 blur-3xl"></div>
+        <div className="absolute bottom-20 left-20 w-80 h-80 rounded-full bg-[#5A5AFB] opacity-15 blur-3xl"></div>
+        
+        {/* Content */}
+        <div className="relative z-10 max-w-lg">
+          <h2 className="text-4xl font-bold text-white mb-4 font-syne leading-tight">
+            Tes campagnes Meta t'attendent
+          </h2>
+          <p className="text-white/90 text-lg mb-8 leading-relaxed">
+            Reprends le contrôle de tes pubs et continue à générer des résultats.
+          </p>
+
+          {/* Testimonials Carousel */}
+          <div className="relative overflow-hidden">
+            <div className="flex gap-3 animate-scroll-testimonials">
+              {[
+                { name: "Amadou K.", role: "E-commerce Mode", quote: "AdsPilot a transformé mes campagnes. +250% de ROI en 2 mois !", avatar: "AK" },
+                { name: "Fatou D.", role: "Boutique Cosmétiques", quote: "Interface simple, résultats incroyables. Je recommande à 100% !", avatar: "FD" },
+                { name: "Ibrahim S.", role: "Sneakers Store", quote: "Mes pubs n'ont jamais été aussi performantes. Merci AdsPilot !", avatar: "IS" },
+                { name: "Aïcha M.", role: "Bijoux Artisanaux", quote: "Le meilleur outil pour scaler mes campagnes Meta en Afrique.", avatar: "AM" }
+              ].map((testimonial, index) => (
+                <div key={index} className="shrink-0 w-[320px] bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-xl">
+                  <div className="flex items-start gap-2.5 mb-2.5">
+                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#5A5AFB] to-[#9C5DFF] flex items-center justify-center shrink-0">
+                      <span className="text-white text-xs font-bold">{testimonial.avatar}</span>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-900 text-xs">{testimonial.name}</h3>
+                      <p className="text-gray-500 text-[10px]">{testimonial.role}</p>
+                    </div>
+                    <div className="flex gap-0.5">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="w-3 h-3 text-amber-400 fill-amber-400" />
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-gray-700 text-xs leading-relaxed">"{testimonial.quote}"</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -1232,6 +1538,26 @@ function RegisterPage({ onRegister, showToast }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Password validation
+  const passwordValidation = {
+    minLength: password.length >= 8,
+    hasUpperCase: /[A-Z]/.test(password),
+    hasLowerCase: /[a-z]/.test(password),
+    hasNumber: /[0-9]/.test(password),
+    hasSymbol: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+  };
+
+  const handleOAuth = async (provider) => {
+    if (provider === 'tiktok') { showToast('Inscription TikTok bientôt disponible', 'info'); return; }
+    if (!supabase) { showToast('Supabase non configuré', 'error'); return; }
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: typeof window !== 'undefined' ? window.location.origin : '' }
+    });
+    if (error) showToast(error.message, 'error');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -1250,7 +1576,6 @@ function RegisterPage({ onRegister, showToast }) {
       } else {
         showToast('Compte créé avec succès !', 'success');
         if (data.session) {
-          // Create profile in MongoDB
           try {
             await fetch('/api/profile', {
               method: 'POST',
@@ -1269,52 +1594,199 @@ function RegisterPage({ onRegister, showToast }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center p-6">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <a href="#/" className="inline-flex items-center gap-2 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand to-brand-dark flex items-center justify-center">
-              <Zap className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-white font-bold text-xl">AdsPilot</span>
-          </a>
-          <h1 className="text-2xl font-bold text-white">Créer ton compte</h1>
-          <p className="text-gray-400 mt-1">Rejoins +500 e-commerçants africains</p>
-        </div>
-        <form onSubmit={handleSubmit} className="bg-[#12121A] rounded-2xl border border-white/[0.08] p-8 space-y-5">
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Nom complet</label>
-            <div className="relative">
-              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-              <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Ton nom" required
-                className="w-full pl-11 pr-4 py-3 rounded-xl bg-[#1A1A26] border border-white/[0.08] text-white placeholder-gray-500 focus:outline-none focus:border-brand/50 focus:ring-1 focus:ring-brand/30 text-sm transition-all" />
-            </div>
+    <div className="min-h-screen flex bg-grid" style={{ backgroundColor: '#070B14' }}>
+      {/* Left Side - Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center px-8 lg:px-16 xl:px-24">
+        <div className="w-full max-w-md">
+          {/* Logo */}
+          <div className="mb-6">
+            <a href="#/" className="inline-flex items-center gap-2">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#5A5AFB] to-[#9C5DFF] flex items-center justify-center">
+                <Zap className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-white font-bold text-xl font-syne">AdsPilot</span>
+            </a>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
-            <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="ton@email.com" required
-                className="w-full pl-11 pr-4 py-3 rounded-xl bg-[#1A1A26] border border-white/[0.08] text-white placeholder-gray-500 focus:outline-none focus:border-brand/50 focus:ring-1 focus:ring-brand/30 text-sm transition-all" />
-            </div>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Mot de passe</label>
-            <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-              <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Min. 6 caractères" required
-                className="w-full pl-11 pr-4 py-3 rounded-xl bg-[#1A1A26] border border-white/[0.08] text-white placeholder-gray-500 focus:outline-none focus:border-brand/50 focus:ring-1 focus:ring-brand/30 text-sm transition-all" />
-            </div>
-          </div>
-          <button type="submit" disabled={loading}
-            className="w-full py-3.5 rounded-xl bg-brand text-white font-semibold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2">
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-            {loading ? 'Création...' : 'Créer mon compte'}
-          </button>
-          <p className="text-center text-sm text-gray-400">
-            Déjà un compte ? <a href="#/login" className="text-brand hover:text-brand-light font-medium transition-colors">Se connecter</a>
+
+          <h1 className="text-3xl font-bold text-white mb-2 font-syne">
+            Commence gratuitement
+          </h1>
+          <p className="text-gray-400 mb-5">
+            Rejoins +500 e-commerçants qui transforment leurs pubs en opportunités.
           </p>
-        </form>
+
+          <form onSubmit={handleSubmit} className="space-y-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Nom complet</label>
+              <input
+                type="text"
+                value={name}
+                onChange={e => setName(e.target.value)}
+                placeholder="Jean Dupont"
+                required
+                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:border-[#5A5AFB] focus:ring-2 focus:ring-[#5A5AFB]/20 text-sm transition-all"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="ton@email.com"
+                required
+                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:border-[#5A5AFB] focus:ring-2 focus:ring-[#5A5AFB]/20 text-sm transition-all"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Mot de passe</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder="Min. 6 caractères"
+                  required
+                  className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:border-[#5A5AFB] focus:ring-2 focus:ring-[#5A5AFB]/20 text-sm transition-all pr-12"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
+                >
+                  {showPassword ? <Eye className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+              <div className="mt-2 space-y-1">
+                <p className="text-xs font-medium text-gray-400 mb-1.5">Exigences du mot de passe :</p>
+                <div className="flex items-center gap-1.5">
+                  <Check className={cn("w-3.5 h-3.5", passwordValidation.minLength ? "text-green-600" : "text-gray-600")} />
+                  <span className={cn("text-xs", passwordValidation.minLength ? "text-green-600" : "text-gray-500")}>Minimum 8 caractères</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Check className={cn("w-3.5 h-3.5", passwordValidation.hasUpperCase ? "text-green-600" : "text-gray-600")} />
+                  <span className={cn("text-xs", passwordValidation.hasUpperCase ? "text-green-600" : "text-gray-500")}>Au moins une majuscule (A-Z)</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Check className={cn("w-3.5 h-3.5", passwordValidation.hasLowerCase ? "text-green-600" : "text-gray-600")} />
+                  <span className={cn("text-xs", passwordValidation.hasLowerCase ? "text-green-600" : "text-gray-500")}>Au moins une minuscule (a-z)</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Check className={cn("w-3.5 h-3.5", passwordValidation.hasNumber ? "text-green-600" : "text-gray-600")} />
+                  <span className={cn("text-xs", passwordValidation.hasNumber ? "text-green-600" : "text-gray-500")}>Au moins un chiffre (0-9)</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Check className={cn("w-3.5 h-3.5", passwordValidation.hasSymbol ? "text-green-600" : "text-gray-600")} />
+                  <span className={cn("text-xs", passwordValidation.hasSymbol ? "text-green-600" : "text-gray-500")}>Au moins un symbole (!@#$%...)</span>
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3.5 rounded-lg bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white font-semibold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#5A5AFB]/25"
+            >
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
+              {loading ? 'Création...' : 'Créer mon compte'}
+            </button>
+          </form>
+
+          {/* Divider */}
+          <div className="flex items-center gap-3 my-6">
+            <div className="flex-1 h-px bg-white/10"></div>
+            <span className="text-gray-500 text-xs uppercase tracking-wider">ou continuer avec</span>
+            <div className="flex-1 h-px bg-white/10"></div>
+          </div>
+
+          {/* Social auth buttons */}
+          <div className="grid grid-cols-3 gap-3">
+            <button type="button" onClick={() => handleOAuth('google')}
+              className="flex items-center justify-center gap-2 py-2.5 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20 transition-all group">
+              <svg width="18" height="18" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+              </svg>
+              <span className="text-sm text-gray-300 group-hover:text-white transition-colors font-medium">Google</span>
+            </button>
+
+            <button type="button" onClick={() => handleOAuth('facebook')}
+              className="flex items-center justify-center gap-2 py-2.5 rounded-lg border border-white/10 bg-white/5 hover:bg-[#1877F2]/20 hover:border-[#1877F2]/40 transition-all group">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+              <span className="text-sm text-gray-300 group-hover:text-white transition-colors font-medium">Facebook</span>
+            </button>
+
+            <button type="button" onClick={() => handleOAuth('tiktok')}
+              className="relative flex items-center justify-center gap-2 py-2.5 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20 transition-all group">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+                <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.04a8.16 8.16 0 004.77 1.52V7.12a4.85 4.85 0 01-1-.43z"/>
+              </svg>
+              <span className="text-sm text-gray-300 group-hover:text-white transition-colors font-medium">TikTok</span>
+              <span className="absolute -top-1.5 -right-1.5 text-[9px] bg-amber-500 text-black font-bold px-1 rounded-full leading-4">bientôt</span>
+            </button>
+          </div>
+
+          <p className="text-center text-sm text-gray-400 mt-6">
+            Déjà un compte ? <a href="#/login" className="text-[#5A5AFB] hover:text-[#9C5DFF] font-semibold transition-colors">Se connecter</a>
+          </p>
+        </div>
+      </div>
+
+      {/* Right Side - Visual */}
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden items-center justify-center p-12 my-[15px] rounded-l-[2.5rem] bg-grid" style={{ backgroundColor: '#070B14' }}>
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#5A5AFB]/20 via-[#7B6BFF]/10 to-[#9C5DFF]/20"></div>
+        {/* Decorative circles */}
+        <div className="absolute top-20 right-20 w-64 h-64 rounded-full bg-[#9C5DFF] opacity-20 blur-3xl"></div>
+        <div className="absolute bottom-20 left-20 w-80 h-80 rounded-full bg-[#5A5AFB] opacity-15 blur-3xl"></div>
+        
+        {/* Content */}
+        <div className="relative z-10 max-w-lg">
+          <h2 className="text-4xl font-bold text-white mb-4 font-syne leading-tight">
+            Transforme tes pubs en machines à cash.
+          </h2>
+          <p className="text-white/90 text-lg mb-8 leading-relaxed">
+            Rejoins des centaines d'e-commerçants africains qui utilisent AdsPilot pour scaler leurs campagnes Meta.
+          </p>
+
+          {/* Features List */}
+          <div className="space-y-3">
+            {[
+              { icon: Target, text: 'Créatifs gagnants testés en Afrique' },
+              { icon: TrendingUp, text: 'Analytics en temps réel' },
+              { icon: Sparkles, text: 'Insights IA pour optimiser tes pubs' },
+              { icon: Rocket, text: 'Lancement de campagnes en 1 clic' }
+            ].map((feature, index) => (
+              <div key={index} className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-lg p-3 hover:bg-white/15 transition-all">
+                <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
+                  <feature.icon className="w-4 h-4 text-white" />
+                </div>
+                <p className="text-white text-sm font-medium">{feature.text}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Social Proof */}
+          <div className="mt-8 flex items-center gap-3">
+            <div className="flex -space-x-2">
+              {[1, 2, 3, 4].map(i => (
+                <div key={i} className="w-10 h-10 rounded-full bg-gradient-to-br from-white to-gray-200 border-2 border-[#5A5AFB] flex items-center justify-center text-sm font-bold text-[#5A5AFB]">
+                  {String.fromCharCode(64 + i)}
+                </div>
+              ))}
+            </div>
+            <div className="text-white/90 text-sm">
+              <p className="font-semibold">+500 utilisateurs actifs</p>
+              <p className="text-white/70">Rejoins la communauté</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -2289,16 +2761,19 @@ function SettingsPage({ user, session, showToast }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">Niche</label>
-              <select value={businessNiche} onChange={e => setBusinessNiche(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-[#1A1A26] border border-white/[0.08] text-white focus:outline-none focus:border-brand/50 focus:ring-1 focus:ring-brand/30 text-sm transition-all">
-                <option value="">Sélectionner une niche</option>
-                <option value="beaute">Beauté</option>
-                <option value="mode">Mode</option>
-                <option value="food">Food</option>
-                <option value="electronique">Électronique</option>
-                <option value="maison">Maison</option>
-                <option value="sante">Santé</option>
-              </select>
+              <Dropdown
+                value={businessNiche}
+                onChange={setBusinessNiche}
+                placeholder="Sélectionner une niche"
+                options={[
+                  { value: 'beaute', label: 'Beauté' },
+                  { value: 'mode', label: 'Mode' },
+                  { value: 'food', label: 'Food' },
+                  { value: 'electronique', label: 'Électronique' },
+                  { value: 'maison', label: 'Maison' },
+                  { value: 'sante', label: 'Santé' },
+                ]}
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
@@ -2665,6 +3140,7 @@ function AdminPanel({ currentPath, user, session, showToast, onLogout }) {
         <AdminHeader user={user} />
         <div className="p-8">
           {activeTab === 'dashboard' && <AdminDashboard session={session} showToast={showToast} />}
+          {activeTab === 'tickets' && <AdminTickets session={session} showToast={showToast} />}
           {activeTab === 'templates' && <AdminTemplates session={session} showToast={showToast} />}
           {activeTab === 'announcements' && <AdminAnnouncements session={session} showToast={showToast} />}
           {activeTab === 'users' && <AdminUsers session={session} showToast={showToast} />}
@@ -2680,6 +3156,7 @@ function AdminPanel({ currentPath, user, session, showToast, onLogout }) {
 function AdminSidebar({ activeTab, user, onLogout }) {
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'tickets', label: 'Tickets Support', icon: LifeBuoy },
     { id: 'templates', label: 'Templates', icon: Palette },
     { id: 'announcements', label: 'Annonces', icon: Bell },
     { id: 'users', label: 'Utilisateurs', icon: Users },
@@ -2769,6 +3246,333 @@ function AdminHeader({ user }) {
         </div>
       </div>
     </header>
+  );
+}
+
+// Admin Tickets
+function AdminTickets({ session, showToast }) {
+  const [tickets, setTickets] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [filterPriority, setFilterPriority] = useState('all');
+  const [selectedTicket, setSelectedTicket] = useState(null);
+  const [replyMessage, setReplyMessage] = useState('');
+  const [sending, setSending] = useState(false);
+
+  const statuses = {
+    all: { label: 'Tous', color: 'bg-gray-500/20 text-gray-400 border-gray-500/30' },
+    open: { label: 'Ouvert', color: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
+    in_progress: { label: 'En cours', color: 'bg-amber-500/20 text-amber-400 border-amber-500/30' },
+    resolved: { label: 'Résolu', color: 'bg-green-500/20 text-green-400 border-green-500/30' },
+    closed: { label: 'Fermé', color: 'bg-gray-500/20 text-gray-400 border-gray-500/30' }
+  };
+
+  const priorities = {
+    all: { label: 'Toutes', color: 'text-gray-400' },
+    low: { label: 'Basse', color: 'text-gray-400' },
+    normal: { label: 'Normale', color: 'text-blue-400' },
+    high: { label: 'Haute', color: 'text-orange-400' },
+    urgent: { label: 'Urgente', color: 'text-red-400' }
+  };
+
+  const categories = {
+    general: 'Question générale',
+    technical: 'Problème technique',
+    billing: 'Facturation',
+    feature: 'Demande de fonctionnalité'
+  };
+
+  useEffect(() => {
+    const fetchAllTickets = async () => {
+      try {
+        const response = await fetch('/api/admin/tickets', {
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`
+          }
+        });
+        const data = await response.json();
+        if (data.tickets) {
+          setTickets(data.tickets);
+        } else if (data.error) {
+          showToast(data.error, 'error');
+        }
+      } catch (error) {
+        console.error('Error fetching admin tickets:', error);
+        showToast('Erreur lors du chargement des tickets', 'error');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAllTickets();
+  }, [session]);
+
+  const handleTicketSelect = async (ticket) => {
+    setSelectedTicket(ticket);
+    
+    if (ticket.unread_by_admin > 0) {
+      try {
+        await fetch(`/api/tickets/${ticket.id}/read`, {
+          method: 'PUT',
+          headers: { 'Authorization': `Bearer ${session.access_token}` }
+        });
+        
+        setTickets(tickets.map(t => 
+          t.id === ticket.id ? { ...t, unread_by_admin: 0 } : t
+        ));
+      } catch (error) {
+        console.error('Error marking as read:', error);
+      }
+    }
+  };
+
+  const handleStatusChange = async (ticketId, newStatus) => {
+    try {
+      const response = await fetch(`/api/tickets/${ticketId}/status`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        setTickets(tickets.map(t => t.id === ticketId ? { ...t, status: newStatus, updated_at: new Date().toISOString() } : t));
+        if (selectedTicket?.id === ticketId) {
+          setSelectedTicket({ ...selectedTicket, status: newStatus });
+        }
+        showToast('Statut mis à jour', 'success');
+      } else {
+        showToast(data.error || 'Erreur lors de la mise à jour', 'error');
+      }
+    } catch (error) {
+      console.error('Error updating ticket status:', error);
+      showToast('Erreur lors de la mise à jour', 'error');
+    }
+  };
+
+  const handleSendReply = (e) => {
+    e.preventDefault();
+    if (!replyMessage.trim()) return;
+
+    setSending(true);
+    setTimeout(() => {
+      setSending(false);
+      setReplyMessage('');
+      showToast('Réponse envoyée !', 'success');
+    }, 500);
+  };
+
+  const filteredTickets = tickets.filter(ticket => {
+    if (filterStatus !== 'all' && ticket.status !== filterStatus) return false;
+    if (filterPriority !== 'all' && ticket.priority !== filterPriority) return false;
+    return true;
+  });
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 60) return `Il y a ${diffMins} min`;
+    if (diffHours < 24) return `Il y a ${diffHours}h`;
+    if (diffDays < 7) return `Il y a ${diffDays}j`;
+    return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="w-8 h-8 text-[#5A5AFB] animate-spin" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-white font-syne">Gestion des Tickets</h1>
+          <p className="text-gray-400 text-sm mt-1">Gérez tous les tickets de support utilisateur</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            className="px-4 py-2 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white text-sm focus:outline-none focus:border-[#5A5AFB]/50"
+          >
+            {Object.entries(statuses).map(([key, value]) => (
+              <option key={key} value={key}>{value.label}</option>
+            ))}
+          </select>
+          <select
+            value={filterPriority}
+            onChange={(e) => setFilterPriority(e.target.value)}
+            className="px-4 py-2 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white text-sm focus:outline-none focus:border-[#5A5AFB]/50"
+          >
+            {Object.entries(priorities).map(([key, value]) => (
+              <option key={key} value={key}>{value.label}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Stats rapides */}
+      <div className="grid grid-cols-4 gap-4">
+        {[
+          { label: 'Total', count: tickets.length, color: 'from-gray-500 to-gray-600' },
+          { label: 'Ouverts', count: tickets.filter(t => t.status === 'open').length, color: 'from-blue-500 to-blue-600' },
+          { label: 'En cours', count: tickets.filter(t => t.status === 'in_progress').length, color: 'from-amber-500 to-amber-600' },
+          { label: 'Résolus', count: tickets.filter(t => t.status === 'resolved').length, color: 'from-green-500 to-green-600' }
+        ].map(stat => (
+          <div key={stat.label} className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-4">
+            <p className="text-gray-400 text-xs mb-1">{stat.label}</p>
+            <p className={`text-2xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>
+              {stat.count}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {/* Liste des tickets */}
+      <div className="grid grid-cols-2 gap-6">
+        {/* Colonne gauche - Liste */}
+        <div className="space-y-3">
+          {filteredTickets.length === 0 ? (
+            <div className="text-center py-16 bg-white/[0.02] border border-white/[0.06] rounded-xl">
+              <LifeBuoy className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+              <p className="text-gray-400 text-sm">Aucun ticket trouvé</p>
+            </div>
+          ) : (
+            filteredTickets.map(ticket => {
+              const statusInfo = statuses[ticket.status];
+              const priorityInfo = priorities[ticket.priority];
+
+              return (
+                <div
+                  key={ticket.id}
+                  onClick={() => handleTicketSelect(ticket)}
+                  className={`bg-white/[0.03] border rounded-xl p-4 hover:border-white/[0.15] transition-all cursor-pointer relative ${
+                    selectedTicket?.id === ticket.id ? 'border-[#5A5AFB]' : 'border-white/[0.08]'
+                  }`}
+                >
+                  {ticket.unread_by_admin > 0 && (
+                    <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 flex items-center justify-center border-2 border-[#0F0F14] z-10">
+                      <span className="text-white text-xs font-bold">{ticket.unread_by_admin}</span>
+                    </div>
+                  )}
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-white font-semibold text-sm mb-1 truncate">{ticket.title}</h3>
+                      <p className="text-gray-500 text-xs">{ticket.user_name} • {ticket.user_email}</p>
+                    </div>
+                    <span className={`px-2 py-1 rounded-md border text-xs font-medium shrink-0 ${statusInfo.color}`}>
+                      {statusInfo.label}
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 text-xs">
+                    <span className={priorityInfo.color}>
+                      {priorityInfo.label}
+                    </span>
+                    <span className="text-gray-500">•</span>
+                    <span className="text-gray-400">{categories[ticket.category]}</span>
+                    <span className="text-gray-500">•</span>
+                    <span className="text-gray-400">{formatDate(ticket.updated_at)}</span>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        {/* Colonne droite - Détails */}
+        <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-6 sticky top-6">
+          {selectedTicket ? (
+            <div className="space-y-6">
+              <div>
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <h2 className="text-xl font-bold text-white mb-2 font-syne">{selectedTicket.title}</h2>
+                    <p className="text-gray-400 text-sm">{selectedTicket.user_name} • {selectedTicket.user_email}</p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3 mb-4">
+                  <span className={`px-3 py-1.5 rounded-lg border text-sm font-medium ${statuses[selectedTicket.status].color}`}>
+                    {statuses[selectedTicket.status].label}
+                  </span>
+                  <span className={`text-sm ${priorities[selectedTicket.priority].color}`}>
+                    Priorité: {priorities[selectedTicket.priority].label}
+                  </span>
+                </div>
+
+                <div className="p-4 rounded-lg bg-white/[0.02] border border-white/[0.06]">
+                  <p className="text-gray-300 text-sm leading-relaxed">{selectedTicket.description}</p>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Changer le statut</label>
+                <div className="flex gap-2">
+                  {Object.entries(statuses).filter(([key]) => key !== 'all').map(([key, value]) => (
+                    <button
+                      key={key}
+                      onClick={() => handleStatusChange(selectedTicket.id, key)}
+                      className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${
+                        selectedTicket.status === key
+                          ? value.color
+                          : 'border-white/[0.1] text-gray-400 hover:text-white hover:border-white/[0.2]'
+                      }`}
+                    >
+                      {value.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Répondre */}
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Répondre au ticket</label>
+                <form onSubmit={handleSendReply} className="space-y-3">
+                  <textarea
+                    value={replyMessage}
+                    onChange={(e) => setReplyMessage(e.target.value)}
+                    placeholder="Écrivez votre réponse..."
+                    rows={4}
+                    disabled={sending}
+                    className="w-full px-4 py-3 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white placeholder-gray-500 focus:outline-none focus:border-[#5A5AFB]/50 text-sm resize-none"
+                  />
+                  <button
+                    type="submit"
+                    disabled={sending || !replyMessage.trim()}
+                    className="w-full px-4 py-2.5 rounded-lg bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white text-sm font-semibold hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {sending ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Send className="w-4 h-4" />
+                    )}
+                    Envoyer la réponse
+                  </button>
+                </form>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-16">
+              <MessageSquare className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+              <p className="text-gray-400 text-sm">Sélectionnez un ticket pour voir les détails</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -3023,15 +3827,16 @@ function AdminUsers({ session, showToast }) {
                     {user.created_at ? new Date(user.created_at).toLocaleDateString('fr-FR') : '-'}
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <select 
-                      value={user.role || 'user'} 
-                      onChange={(e) => handleUpdateRole(user.id, e.target.value)}
-                      className="bg-[#1A1A26] border border-white/[0.08] text-white text-sm rounded-lg px-2 py-1.5 focus:outline-none focus:border-[#7C3AED] transition-all cursor-pointer"
-                    >
-                      <option value="user">Standard</option>
-                      <option value="pro">Plan Pro</option>
-                      <option value="admin">Administrateur</option>
-                    </select>
+                    <Dropdown
+                      value={user.role || 'user'}
+                      onChange={(val) => handleUpdateRole(user.id, val)}
+                      options={[
+                        { value: 'user', label: 'Standard' },
+                        { value: 'pro', label: 'Plan Pro' },
+                        { value: 'admin', label: 'Administrateur' },
+                      ]}
+                      style={{ minWidth: 150 }}
+                    />
                   </td>
                 </tr>
               ))}
@@ -3371,6 +4176,584 @@ function AdScoutPage({ showToast }) {
 }
 
 // ============================================
+// SUPPORT PAGE - TICKETS
+// ============================================
+function SupportPage({ user, session, showToast }) {
+  const [tickets, setTickets] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [formData, setFormData] = useState({
+    title: '',
+    category: 'general',
+    priority: 'normal',
+    description: ''
+  });
+
+  const categories = [
+    { value: 'general', label: 'Question générale', icon: MessageSquare },
+    { value: 'technical', label: 'Problème technique', icon: AlertCircle },
+    { value: 'billing', label: 'Facturation', icon: CreditCard },
+    { value: 'feature', label: 'Demande de fonctionnalité', icon: Sparkles }
+  ];
+
+  const priorities = [
+    { value: 'low', label: 'Basse', color: 'text-gray-400' },
+    { value: 'normal', label: 'Normale', color: 'text-blue-400' },
+    { value: 'high', label: 'Haute', color: 'text-orange-400' },
+    { value: 'urgent', label: 'Urgente', color: 'text-red-400' }
+  ];
+
+  const statuses = {
+    open: { label: 'Ouvert', color: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
+    in_progress: { label: 'En cours', color: 'bg-amber-500/20 text-amber-400 border-amber-500/30' },
+    resolved: { label: 'Résolu', color: 'bg-green-500/20 text-green-400 border-green-500/30' },
+    closed: { label: 'Fermé', color: 'bg-gray-500/20 text-gray-400 border-gray-500/30' }
+  };
+
+  useEffect(() => {
+    const fetchTickets = async () => {
+      try {
+        const response = await fetch('/api/tickets', {
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`
+          }
+        });
+        const data = await response.json();
+        if (data.tickets) {
+          setTickets(data.tickets);
+        }
+      } catch (error) {
+        console.error('Error fetching tickets:', error);
+        showToast('Erreur lors du chargement des tickets', 'error');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTickets();
+  }, [session]);
+
+  const handleCreateTicket = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('/api/tickets', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+      
+      const data = await response.json();
+      
+      if (data.success && data.ticket) {
+        setTickets([data.ticket, ...tickets]);
+        setFormData({ title: '', category: 'general', priority: 'normal', description: '' });
+        setShowCreateForm(false);
+        showToast('Ticket créé avec succès !', 'success');
+      } else {
+        showToast(data.error || 'Erreur lors de la création du ticket', 'error');
+      }
+    } catch (error) {
+      console.error('Error creating ticket:', error);
+      showToast('Erreur lors de la création du ticket', 'error');
+    }
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 60) return `Il y a ${diffMins} min`;
+    if (diffHours < 24) return `Il y a ${diffHours}h`;
+    if (diffDays < 7) return `Il y a ${diffDays}j`;
+    return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+  };
+
+  const getCategoryIcon = (category) => {
+    const cat = categories.find(c => c.value === category);
+    return cat ? cat.icon : MessageSquare;
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="w-8 h-8 text-[#5A5AFB] animate-spin" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header avec bouton créer */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-white font-syne">Mes Tickets</h2>
+          <p className="text-gray-400 text-sm mt-1">Gérez vos demandes de support</p>
+        </div>
+        <button
+          onClick={() => setShowCreateForm(!showCreateForm)}
+          className="px-4 py-2.5 rounded-lg bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white text-sm font-semibold hover:opacity-90 transition-all flex items-center gap-2"
+        >
+          <Plus className="w-4 h-4" />
+          Nouveau ticket
+        </button>
+      </div>
+
+      {/* Formulaire de création */}
+      {showCreateForm && (
+        <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-6">
+          <h3 className="text-lg font-semibold text-white mb-4 font-syne">Créer un ticket</h3>
+          <form onSubmit={handleCreateTicket} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Titre</label>
+              <input
+                type="text"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                placeholder="Décrivez brièvement votre problème"
+                required
+                className="w-full px-4 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white placeholder-gray-500 focus:outline-none focus:border-[#5A5AFB]/50 text-sm"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Catégorie</label>
+                <select
+                  value={formData.category}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white focus:outline-none focus:border-[#5A5AFB]/50 text-sm"
+                  style={{ colorScheme: 'dark' }}
+                >
+                  {categories.map(cat => (
+                    <option key={cat.value} value={cat.value} className="bg-[#1A1A26] text-white">{cat.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Priorité</label>
+                <select
+                  value={formData.priority}
+                  onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white focus:outline-none focus:border-[#5A5AFB]/50 text-sm"
+                  style={{ colorScheme: 'dark' }}
+                >
+                  {priorities.map(p => (
+                    <option key={p.value} value={p.value} className="bg-[#1A1A26] text-white">{p.label}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Description</label>
+              <textarea
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Décrivez votre problème en détail..."
+                required
+                rows={4}
+                className="w-full px-4 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white placeholder-gray-500 focus:outline-none focus:border-[#5A5AFB]/50 text-sm resize-none"
+              />
+            </div>
+
+            <div className="flex gap-3 justify-end">
+              <button
+                type="button"
+                onClick={() => setShowCreateForm(false)}
+                className="px-4 py-2.5 rounded-lg border border-white/20 text-white text-sm font-medium hover:bg-white/5 transition-all"
+              >
+                Annuler
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2.5 rounded-lg bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white text-sm font-semibold hover:opacity-90 transition-all"
+              >
+                Créer le ticket
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Liste des tickets */}
+      {tickets.length === 0 ? (
+        <div className="text-center py-16 bg-white/[0.02] border border-white/[0.06] rounded-xl">
+          <LifeBuoy className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-white mb-2">Aucun ticket</h3>
+          <p className="text-gray-400 text-sm mb-6">Vous n'avez pas encore créé de ticket de support</p>
+          <button
+            onClick={() => setShowCreateForm(true)}
+            className="px-4 py-2.5 rounded-lg bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white text-sm font-semibold hover:opacity-90 transition-all inline-flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            Créer mon premier ticket
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {tickets.map(ticket => {
+            const CategoryIcon = getCategoryIcon(ticket.category);
+            const statusInfo = statuses[ticket.status];
+            const priorityInfo = priorities.find(p => p.value === ticket.priority);
+
+            return (
+              <div
+                key={ticket.id}
+                className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-5 hover:border-white/[0.15] transition-all cursor-pointer group"
+                onClick={() => window.location.hash = `#/support/${ticket.id}`}
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-start gap-4 flex-1">
+                    <div className="w-10 h-10 rounded-lg bg-[#5A5AFB]/10 flex items-center justify-center shrink-0">
+                      <CategoryIcon className="w-5 h-5 text-[#5A5AFB]" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-white font-semibold mb-1 group-hover:text-[#5A5AFB] transition-colors">
+                        {ticket.title}
+                      </h3>
+                      <div className="flex flex-wrap items-center gap-2 text-xs">
+                        <span className={`px-2 py-1 rounded-md border ${statusInfo.color}`}>
+                          {statusInfo.label}
+                        </span>
+                        <span className={`${priorityInfo.color}`}>
+                          Priorité: {priorityInfo.label}
+                        </span>
+                        <span className="text-gray-500">•</span>
+                        <span className="text-gray-400">
+                          {categories.find(c => c.value === ticket.category)?.label}
+                        </span>
+                        {ticket.messages_count > 0 && (
+                          <>
+                            <span className="text-gray-500">•</span>
+                            <span className="text-gray-400 flex items-center gap-1">
+                              <MessageSquare className="w-3 h-3" />
+                              {ticket.messages_count}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {ticket.unread_by_user > 0 && (
+                      <div className="relative">
+                        <div className="w-8 h-8 rounded-full bg-[#5A5AFB] flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">{ticket.unread_by_user}</span>
+                        </div>
+                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-[#0F0F14]"></div>
+                      </div>
+                    )}
+                    <div className="text-right shrink-0">
+                      <p className="text-xs text-gray-500">Mis à jour</p>
+                      <p className="text-xs text-gray-400">{formatDate(ticket.updated_at)}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ============================================
+// TICKET DETAIL PAGE
+// ============================================
+function TicketDetailPage({ user, session, showToast, ticketId }) {
+  const [ticket, setTicket] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [newMessage, setNewMessage] = useState('');
+  const [sending, setSending] = useState(false);
+
+  const statuses = {
+    open: { label: 'Ouvert', color: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
+    in_progress: { label: 'En cours', color: 'bg-amber-500/20 text-amber-400 border-amber-500/30' },
+    resolved: { label: 'Résolu', color: 'bg-green-500/20 text-green-400 border-green-500/30' },
+    closed: { label: 'Fermé', color: 'bg-gray-500/20 text-gray-400 border-gray-500/30' }
+  };
+
+  const priorities = {
+    low: { label: 'Basse', color: 'text-gray-400' },
+    normal: { label: 'Normale', color: 'text-blue-400' },
+    high: { label: 'Haute', color: 'text-orange-400' },
+    urgent: { label: 'Urgente', color: 'text-red-400' }
+  };
+
+  const categories = {
+    general: 'Question générale',
+    technical: 'Problème technique',
+    billing: 'Facturation',
+    feature: 'Demande de fonctionnalité'
+  };
+
+  useEffect(() => {
+    const fetchTicketDetails = async () => {
+      try {
+        const [ticketRes, messagesRes] = await Promise.all([
+          fetch('/api/tickets', {
+            headers: { 'Authorization': `Bearer ${session.access_token}` }
+          }),
+          fetch(`/api/tickets/${ticketId}/messages`, {
+            headers: { 'Authorization': `Bearer ${session.access_token}` }
+          })
+        ]);
+
+        const ticketData = await ticketRes.json();
+        const messagesData = await messagesRes.json();
+
+        const foundTicket = ticketData.tickets?.find(t => t.id === ticketId);
+        
+        if (foundTicket) {
+          setTicket(foundTicket);
+          
+          if (foundTicket.unread_by_user > 0) {
+            fetch(`/api/tickets/${ticketId}/read`, {
+              method: 'PUT',
+              headers: { 'Authorization': `Bearer ${session.access_token}` }
+            }).catch(err => console.error('Error marking as read:', err));
+          }
+        }
+
+        if (messagesData.messages) {
+          const formattedMessages = messagesData.messages.map(msg => ({
+            ...msg,
+            author_name: msg.is_admin ? 'Support AdsPilot' : (user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Vous')
+          }));
+          setMessages(formattedMessages);
+        }
+      } catch (error) {
+        console.error('Error fetching ticket details:', error);
+        showToast('Erreur lors du chargement du ticket', 'error');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTicketDetails();
+  }, [ticketId, session, user]);
+
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    if (!newMessage.trim()) return;
+
+    setSending(true);
+    try {
+      const response = await fetch(`/api/tickets/${ticketId}/messages`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message: newMessage })
+      });
+
+      const data = await response.json();
+
+      if (data.success && data.message) {
+        const formattedMessage = {
+          ...data.message,
+          author_name: user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Vous'
+        };
+        setMessages([...messages, formattedMessage]);
+        setNewMessage('');
+        showToast('Message envoyé !', 'success');
+      } else {
+        showToast(data.error || 'Erreur lors de l\'envoi du message', 'error');
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      showToast('Erreur lors de l\'envoi du message', 'error');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('fr-FR', { 
+      day: 'numeric', 
+      month: 'long', 
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="w-8 h-8 text-[#5A5AFB] animate-spin" />
+      </div>
+    );
+  }
+
+  if (!ticket) {
+    return (
+      <div className="text-center py-16">
+        <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
+        <h3 className="text-lg font-semibold text-white mb-2">Ticket introuvable</h3>
+        <p className="text-gray-400 text-sm mb-6">Ce ticket n'existe pas ou a été supprimé</p>
+        <button
+          onClick={() => window.location.hash = '#/support'}
+          className="px-4 py-2.5 rounded-lg bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white text-sm font-semibold hover:opacity-90 transition-all"
+        >
+          Retour aux tickets
+        </button>
+      </div>
+    );
+  }
+
+  const statusInfo = statuses[ticket.status];
+  const priorityInfo = priorities[ticket.priority];
+
+  return (
+    <div className="space-y-6">
+      {/* Bouton retour */}
+      <button
+        onClick={() => window.location.hash = '#/support'}
+        className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-sm"
+      >
+        <ChevronLeft className="w-4 h-4" />
+        Retour aux tickets
+      </button>
+
+      {/* En-tête du ticket */}
+      <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-6">
+        <div className="flex items-start justify-between gap-4 mb-4">
+          <div className="flex-1">
+            <h1 className="text-2xl font-bold text-white mb-3 font-syne">{ticket.title}</h1>
+            <div className="flex flex-wrap items-center gap-3">
+              <span className={`px-3 py-1.5 rounded-lg border text-sm font-medium ${statusInfo.color}`}>
+                {statusInfo.label}
+              </span>
+              <span className={`text-sm ${priorityInfo.color}`}>
+                Priorité: {priorityInfo.label}
+              </span>
+              <span className="text-sm text-gray-400">
+                {categories[ticket.category]}
+              </span>
+            </div>
+          </div>
+          <div className="text-right text-sm">
+            <p className="text-gray-500">Créé le</p>
+            <p className="text-gray-300">{formatDate(ticket.created_at)}</p>
+          </div>
+        </div>
+
+        {ticket.status === 'resolved' && (
+          <div className="mt-4 p-4 rounded-lg bg-green-500/10 border border-green-500/20">
+            <div className="flex items-start gap-3">
+              <CheckCircle2 className="w-5 h-5 text-green-400 shrink-0 mt-0.5" />
+              <div>
+                <p className="text-green-400 font-medium text-sm">Ticket résolu</p>
+                <p className="text-gray-400 text-xs mt-1">Ce ticket a été marqué comme résolu. Si votre problème persiste, vous pouvez rouvrir le ticket.</p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Messages */}
+      <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-6">
+        <h2 className="text-lg font-semibold text-white mb-6 font-syne">Conversation</h2>
+        
+        <div className="space-y-6 mb-6">
+          {messages.map((msg, index) => (
+            <div key={msg.id} className={`flex gap-4 ${msg.is_admin ? 'flex-row' : 'flex-row-reverse'}`}>
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
+                msg.is_admin 
+                  ? 'bg-[#5A5AFB]/20 text-[#5A5AFB]' 
+                  : 'bg-gradient-to-br from-[#5A5AFB] to-[#9C5DFF] text-white'
+              }`}>
+                {msg.is_admin ? (
+                  <LifeBuoy className="w-5 h-5" />
+                ) : (
+                  <span className="text-sm font-semibold">
+                    {msg.author_name?.[0]?.toUpperCase() || 'U'}
+                  </span>
+                )}
+              </div>
+              
+              <div className={`flex-1 ${msg.is_admin ? 'text-left' : 'text-right'}`}>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className={`text-sm font-medium ${msg.is_admin ? 'text-[#5A5AFB]' : 'text-white'}`}>
+                    {msg.author_name}
+                  </span>
+                  <span className="text-xs text-gray-500">
+                    {formatDate(msg.created_at)}
+                  </span>
+                </div>
+                <div className={`inline-block max-w-[80%] p-4 rounded-xl ${
+                  msg.is_admin 
+                    ? 'bg-white/[0.05] border border-white/[0.1] text-gray-300' 
+                    : 'bg-gradient-to-r from-[#5A5AFB]/20 to-[#9C5DFF]/20 border border-[#5A5AFB]/30 text-white'
+                }`}>
+                  <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.message}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Formulaire de réponse */}
+        {ticket.status !== 'closed' && (
+          <form onSubmit={handleSendMessage} className="border-t border-white/[0.08] pt-6">
+            <div className="flex gap-3">
+              <textarea
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                placeholder="Écrivez votre message..."
+                rows={3}
+                disabled={sending}
+                className="flex-1 px-4 py-3 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white placeholder-gray-500 focus:outline-none focus:border-[#5A5AFB]/50 text-sm resize-none"
+              />
+              <button
+                type="submit"
+                disabled={sending || !newMessage.trim()}
+                className="px-6 py-3 rounded-lg bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white text-sm font-semibold hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 self-end"
+              >
+                {sending ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Send className="w-4 h-4" />
+                )}
+                Envoyer
+              </button>
+            </div>
+          </form>
+        )}
+
+        {ticket.status === 'closed' && (
+          <div className="border-t border-white/[0.08] pt-6">
+            <div className="p-4 rounded-lg bg-gray-500/10 border border-gray-500/20 text-center">
+              <p className="text-gray-400 text-sm">Ce ticket est fermé. Vous ne pouvez plus envoyer de messages.</p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ============================================
+// ANALYTICS PAGE (Placeholder)
+// ============================================
+function AnalyticsPage({ showToast }) {
+  return <ComingSoonPage title="Analytics" icon={BarChart2} showToast={showToast} />;
+}
+
+// ============================================
 // COMING SOON PAGE
 // ============================================
 function ComingSoonPage({ title, icon: Icon, showToast }) {
@@ -3611,7 +4994,7 @@ export default function App() {
   const { currentPath, navigate } = useHashRouter();
   const [user, setUser] = useState(null);
   const [session, setSession] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [toasts, setToasts] = useState([]);
 
   const showToast = useCallback((message, type = 'success') => {
@@ -3627,6 +5010,15 @@ export default function App() {
   useEffect(() => {
     let isMounted = true;
     let subscription = null;
+    let timeoutId = null;
+
+    // Timeout de sécurité : force le chargement à se terminer après 5 secondes
+    timeoutId = setTimeout(() => {
+      if (isMounted && loading) {
+        console.warn('Supabase auth timeout - forcing loading to false');
+        setLoading(false);
+      }
+    }, 5000);
 
     async function bootstrapSession() {
       if (!supabase) {
@@ -3640,6 +5032,7 @@ export default function App() {
         setSession(s);
         setUser(s?.user || null);
       } catch (e) {
+        console.error('Supabase auth error:', e);
         if (!isMounted) return;
         setSession(null);
         setUser(null);
@@ -3657,6 +5050,7 @@ export default function App() {
     bootstrapSession();
     return () => {
       isMounted = false;
+      if (timeoutId) clearTimeout(timeoutId);
       if (subscription) subscription.unsubscribe();
     };
   }, []);
@@ -3704,21 +5098,26 @@ export default function App() {
   }
 
   const pageContent = (() => {
+    // Gestion des routes dynamiques pour les tickets
+    if (currentPath?.startsWith('#/support/')) {
+      const ticketId = currentPath.split('/')[2];
+      return <TicketDetailPage {...pageProps} ticketId={ticketId} />;
+    }
+
     switch (currentPath) {
       case '#/dashboard': return <DashboardPage {...pageProps} />;
       case '#/afrivault': return <AfriVaultPage {...pageProps} />;
+      case '#/adscout': return <AdScoutView supabase={supabase} user={user} />;
+      case '#/scrapify': return <ScrapifyView supabase={supabase} user={user} />;
+      case '#/campaigns': return <CampagnesView supabase={supabase} user={user} />;
+      case '#/comments': return <CommentairesView supabase={supabase} user={user} />;
       case '#/creatives': return <CreativesPage {...pageProps} />;
       case '#/guides': return <GuidesPage {...pageProps} />;
       case '#/my-store': return <MyStorePage {...pageProps} />;
-      case '#/settings': return <SettingsPage {...pageProps} />;
-      case '#/settings/billing': return <BillingPage {...pageProps} />;
-      case '#/pricing': return <PricingPage {...pageProps} />;
-      case '#/analytics': return <ComingSoonPage title="Analytics" icon={BarChart2} showToast={showToast} />;
-      case '#/adscout': return <AdScoutPage {...pageProps} />;
-      case '#/ugc': return <ComingSoonPage title="UGC Studio" icon={Video} showToast={showToast} />;
-      case '#/campaigns': return <ComingSoonPage title="Campagnes" icon={Target} showToast={showToast} />;
+      case '#/analytics': return <AnalyticsPage {...pageProps} />;
+      case '#/ugc': return <ComingSoonPage title="UGC à 1€" icon={Video} showToast={showToast} />;
       case '#/insights': return <ComingSoonPage title="Insights" icon={Sparkles} showToast={showToast} />;
-      case '#/comments': return <ComingSoonPage title="Commentaires" icon={MessageSquare} showToast={showToast} />;
+      case '#/support': return <SupportPage {...pageProps} />;
       default: return <DashboardPage {...pageProps} />;
     }
   })();

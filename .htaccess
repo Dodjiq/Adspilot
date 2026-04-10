@@ -1,0 +1,137 @@
+# ============================================
+# HTACCESS - ADSPILOT SAAS (Next.js App)
+# ============================================
+
+# Activer le moteur de réécriture
+RewriteEngine On
+
+# ============================================
+# HTTPS REDIRECT (Forcer HTTPS)
+# ============================================
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# ============================================
+# COMPRESSION GZIP
+# ============================================
+<IfModule mod_deflate.c>
+  # Compresser HTML, CSS, JavaScript, Text, XML et fonts
+  AddOutputFilterByType DEFLATE application/javascript
+  AddOutputFilterByType DEFLATE application/json
+  AddOutputFilterByType DEFLATE application/rss+xml
+  AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+  AddOutputFilterByType DEFLATE application/x-font-ttf
+  AddOutputFilterByType DEFLATE application/x-javascript
+  AddOutputFilterByType DEFLATE application/xhtml+xml
+  AddOutputFilterByType DEFLATE application/xml
+  AddOutputFilterByType DEFLATE font/opentype
+  AddOutputFilterByType DEFLATE font/otf
+  AddOutputFilterByType DEFLATE font/ttf
+  AddOutputFilterByType DEFLATE image/svg+xml
+  AddOutputFilterByType DEFLATE image/x-icon
+  AddOutputFilterByType DEFLATE text/css
+  AddOutputFilterByType DEFLATE text/html
+  AddOutputFilterByType DEFLATE text/javascript
+  AddOutputFilterByType DEFLATE text/plain
+  AddOutputFilterByType DEFLATE text/xml
+</IfModule>
+
+# ============================================
+# CACHE BROWSER (Améliorer les performances)
+# ============================================
+<IfModule mod_expires.c>
+  ExpiresActive On
+  
+  # Images
+  ExpiresByType image/jpg "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/gif "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType image/x-icon "access plus 1 year"
+  
+  # CSS et JavaScript
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType text/javascript "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+  
+  # Fonts
+  ExpiresByType font/ttf "access plus 1 year"
+  ExpiresByType font/otf "access plus 1 year"
+  ExpiresByType font/woff "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType application/font-woff "access plus 1 year"
+  
+  # HTML (pas de cache pour le contenu dynamique)
+  ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+# ============================================
+# SÉCURITÉ
+# ============================================
+
+# Bloquer l'accès aux fichiers sensibles
+<FilesMatch "^\.env|\.git|\.htaccess|package\.json|package-lock\.json|node_modules">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
+
+# Empêcher l'affichage du contenu des répertoires
+Options -Indexes
+
+# Protection XSS
+<IfModule mod_headers.c>
+  Header set X-XSS-Protection "1; mode=block"
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  
+  # Content Security Policy (à ajuster selon tes besoins)
+  Header set Content-Security-Policy "default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; connect-src 'self' https://jnthpvekjwsfjyumvyoe.supabase.co https://www.facebook.com https://graph.facebook.com;"
+</IfModule>
+
+# ============================================
+# NEXT.JS ROUTING (SPA)
+# ============================================
+
+# Rediriger toutes les requêtes vers index.html (pour le routing côté client)
+# SAUF les fichiers statiques existants
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !^/api/
+RewriteRule ^(.*)$ /index.html [L,QSA]
+
+# ============================================
+# CORS (si nécessaire pour les API)
+# ============================================
+<IfModule mod_headers.c>
+  # Autoriser les requêtes cross-origin depuis ton domaine
+  Header set Access-Control-Allow-Origin "*"
+  Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+  Header set Access-Control-Allow-Headers "Content-Type, Authorization"
+</IfModule>
+
+# ============================================
+# OPTIMISATIONS
+# ============================================
+
+# Désactiver ETags (pour améliorer le cache)
+<IfModule mod_headers.c>
+  Header unset ETag
+</IfModule>
+FileETag None
+
+# Limiter la taille des uploads (ajuste selon tes besoins)
+php_value upload_max_filesize 50M
+php_value post_max_size 50M
+
+# Augmenter le temps d'exécution PHP (si tu utilises PHP)
+php_value max_execution_time 300
+php_value max_input_time 300
+
+# ============================================
+# ERROR PAGES (optionnel)
+# ============================================
+# ErrorDocument 404 /404.html
+# ErrorDocument 500 /500.html

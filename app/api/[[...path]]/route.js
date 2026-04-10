@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { v4 as uuidv4 } from 'uuid';
+import { searchMetaAds, validateMetaToken } from '@/lib/services/metaAdsService.js';
+import { searchTikTokAds, validateTikTokToken } from '@/lib/services/tiktokAdsService.js';
+import { searchAdsUnified, filterAds, calculateAdsStats } from '@/lib/services/unifiedAdsService.js';
 
 // ============================================
 // SUPABASE ADMIN
@@ -83,6 +86,257 @@ async function handleGetTemplates(request) {
   } catch (err) {
     console.error('Get templates error:', err);
     return NextResponse.json({ templates: SEED_TEMPLATES }, { headers: corsHeaders() });
+  }
+}
+
+// ============================================
+// SUPPORT TICKETS HANDLERS
+// ============================================
+
+async function handleGetUserTickets(request) {
+  const user = await getAuthUser(request);
+  if (!user) return NextResponse.json({ error: 'Non autorisé' }, { status: 401, headers: corsHeaders() });
+
+  try {
+    const supabase = getSupabaseAdmin();
+    const { data: tickets, error } = await supabase
+      .from('support_tickets')
+      .select(`
+        *,
+        messages:support_ticket_messages(count)
+      `)
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    const ticketsWithCount = tickets.map(ticket => ({
+      ...ticket,
+      messages_count: ticket.messages?.[0]?.count || 0
+    }));
+
+    return NextResponse.json({ tickets: ticketsWithCount }, { headers: corsHeaders() });
+  } catch (err) {
+    console.error('Get user tickets error:', err);
+    return NextResponse.json({ error: 'Erreur serveur', tickets: [] }, { status: 500, headers: corsHeaders() });
+  }
+}
+
+async function handleGetAllTickets(request) {
+  const user = await getAuthUser(request);
+  if (!user || (user.email !== 'dodjiq@gmail.com' && user.user_metadata?.role !== 'admin')) {
+    return NextResponse.json({ error: 'Accès refusé' }, { status: 403, headers: corsHeaders() });
+  }
+
+  try {
+    const supabase = getSupabaseAdmin();
+    const { data: tickets, error } = await supabase
+      .from('support_tickets')
+      .select(`
+        *,
+        messages:support_ticket_messages(count)
+      `)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    const ticketsWithCount = tickets.map(ticket => ({
+      ...ticket,
+      messages_count: ticket.messages?.[0]?.count || 0
+    }));
+
+    return NextResponse.json({ tickets: ticketsWithCount }, { headers: corsHeaders() });
+  } catch (err) {
+    console.error('Get all tickets error:', err);
+    return NextResponse.json({ error: 'Erreur serveur', tickets: [] }, { status: 500, headers: corsHeaders() });
+  }
+}
+
+async function handleCreateTicket(request) {
+  const user = await getAuthUser(request);
+  if (!user) return NextResponse.json({ error: 'Non autorisé' }, { status: 401, headers: corsHeaders() });
+
+  try {
+    const body = await request.json();
+    const { title, description, category, priority } = body;
+
+    if (!title || !description || !category) {
+      return NextResponse.json({ error: 'Données manquantes' }, { status: 400, headers: corsHeaders() });
+    }
+
+    const supabase = getSupabaseAdmin();
+    const { data: ticket, error } = await supabase
+      .from('support_tickets')
+      .insert({
+        user_id: user.id,
+        user_email: user.email,
+        user_name: user.user_metadata?.full_name || user.email,
+        title,
+        description,
+        category,
+        priority: priority || 'normal',
+        status: 'open'
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    const ticketWithCount = {
+      ...ticket,
+      messages_count: 0
+    };
+
+    return NextResponse.json({ success: true, ticket: ticketWithCount }, { headers: corsHeaders() });
+  } catch (err) {
+    console.error('Create ticket error:', err);
+    return NextResponse.json({ error: 'Erreur lors de la création du ticket' }, { status: 500, headers: corsHeaders() });
+  }
+}
+
+async function handleUpdateTicketStatus(request, ticketId) {
+  const user = await getAuthUser(request);
+  if (!user || (user.email !== 'dodjiq@gmail.com' && user.user_metadata?.role !== 'admin')) {
+    return NextResponse.json({ error: 'Accès refusé' }, { status: 403, headers: corsHeaders() });
+  }
+
+  try {
+    const body = await request.json();
+    const { status } = body;
+
+    if (!status) {
+      return NextResponse.json({ error: 'Statut manquant' }, { status: 400, headers: corsHeaders() });
+    }
+
+    const supabase = getSupabaseAdmin();
+    const { data: ticket, error } = await supabase
+      .from('support_tickets')
+      .update({ status })
+      .eq('id', ticketId)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return NextResponse.json({ success: true, ticket }, { headers: corsHeaders() });
+  } catch (err) {
+    console.error('Update ticket status error:', err);
+    return NextResponse.json({ error: 'Erreur lors de la mise à jour' }, { status: 500, headers: corsHeaders() });
+  }
+}
+
+async function handleGetTicketMessages(request, ticketId) {
+  const user = await getAuthUser(request);
+  if (!user) return NextResponse.json({ error: 'Non autorisé' }, { status: 401, headers: corsHeaders() });
+
+  try {
+    const supabase = getSupabaseAdmin();
+    
+    const { data: ticket } = await supabase
+      .from('support_tickets')
+      .select('user_id')
+      .eq('id', ticketId)
+      .single();
+
+    const isAdmin = user.email === 'dodjiq@gmail.com' || user.user_metadata?.role === 'admin';
+    if (!isAdmin && ticket?.user_id !== user.id) {
+      return NextResponse.json({ error: 'Accès refusé' }, { status: 403, headers: corsHeaders() });
+    }
+
+    const { data: messages, error } = await supabase
+      .from('support_ticket_messages')
+      .select('*')
+      .eq('ticket_id', ticketId)
+      .order('created_at', { ascending: true });
+
+    if (error) throw error;
+
+    return NextResponse.json({ messages: messages || [] }, { headers: corsHeaders() });
+  } catch (err) {
+    console.error('Get ticket messages error:', err);
+    return NextResponse.json({ error: 'Erreur serveur', messages: [] }, { status: 500, headers: corsHeaders() });
+  }
+}
+
+async function handleCreateTicketMessage(request, ticketId) {
+  const user = await getAuthUser(request);
+  if (!user) return NextResponse.json({ error: 'Non autorisé' }, { status: 401, headers: corsHeaders() });
+
+  try {
+    const body = await request.json();
+    const { message } = body;
+
+    if (!message) {
+      return NextResponse.json({ error: 'Message manquant' }, { status: 400, headers: corsHeaders() });
+    }
+
+    const supabase = getSupabaseAdmin();
+    
+    const { data: ticket } = await supabase
+      .from('support_tickets')
+      .select('user_id')
+      .eq('id', ticketId)
+      .single();
+
+    const isAdmin = user.email === 'dodjiq@gmail.com' || user.user_metadata?.role === 'admin';
+    if (!isAdmin && ticket?.user_id !== user.id) {
+      return NextResponse.json({ error: 'Accès refusé' }, { status: 403, headers: corsHeaders() });
+    }
+
+    const { data: newMessage, error } = await supabase
+      .from('support_ticket_messages')
+      .insert({
+        ticket_id: ticketId,
+        user_id: user.id,
+        is_admin: isAdmin,
+        message
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return NextResponse.json({ success: true, message: newMessage }, { headers: corsHeaders() });
+  } catch (err) {
+    console.error('Create ticket message error:', err);
+    return NextResponse.json({ error: 'Erreur lors de l\'envoi du message' }, { status: 500, headers: corsHeaders() });
+  }
+}
+
+async function handleMarkTicketAsRead(request, ticketId) {
+  const user = await getAuthUser(request);
+  if (!user) return NextResponse.json({ error: 'Non autorisé' }, { status: 401, headers: corsHeaders() });
+
+  try {
+    const supabase = getSupabaseAdmin();
+    
+    const { data: ticket } = await supabase
+      .from('support_tickets')
+      .select('user_id')
+      .eq('id', ticketId)
+      .single();
+
+    const isAdmin = user.email === 'dodjiq@gmail.com' || user.user_metadata?.role === 'admin';
+    
+    if (!isAdmin && ticket?.user_id !== user.id) {
+      return NextResponse.json({ error: 'Accès refusé' }, { status: 403, headers: corsHeaders() });
+    }
+
+    const updateData = isAdmin 
+      ? { unread_by_admin: 0 }
+      : { unread_by_user: 0 };
+
+    const { error } = await supabase
+      .from('support_tickets')
+      .update(updateData)
+      .eq('id', ticketId);
+
+    if (error) throw error;
+
+    return NextResponse.json({ success: true }, { headers: corsHeaders() });
+  } catch (err) {
+    console.error('Mark ticket as read error:', err);
+    return NextResponse.json({ error: 'Erreur lors de la mise à jour' }, { status: 500, headers: corsHeaders() });
   }
 }
 
@@ -369,6 +623,273 @@ async function handleUpdateProfile(request) {
   } catch (err) {
     console.error('Update profile error:', err);
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500, headers: corsHeaders() });
+  }
+}
+
+// ============================================
+// ADSCOUT HANDLERS
+// ============================================
+
+async function handleGetApiConnections(request) {
+  const user = await getAuthUser(request);
+  if (!user) return NextResponse.json({ error: 'Non autorisé' }, { status: 401, headers: corsHeaders() });
+
+  try {
+    const supabase = getSupabaseAdmin();
+    const { data: connections, error } = await supabase
+      .from('api_connections')
+      .select('id, provider, is_active, last_sync_at, created_at')
+      .eq('user_id', user.id);
+
+    if (error) throw error;
+
+    return NextResponse.json({ connections: connections || [] }, { headers: corsHeaders() });
+  } catch (err) {
+    console.error('Get API connections error:', err);
+    return NextResponse.json({ error: 'Erreur serveur', connections: [] }, { status: 500, headers: corsHeaders() });
+  }
+}
+
+async function handleSaveApiConnection(request) {
+  const user = await getAuthUser(request);
+  if (!user) return NextResponse.json({ error: 'Non autorisé' }, { status: 401, headers: corsHeaders() });
+
+  try {
+    const body = await request.json();
+    const { provider, credentials } = body;
+
+    if (!provider || !credentials) {
+      return NextResponse.json({ error: 'Données manquantes' }, { status: 400, headers: corsHeaders() });
+    }
+
+    // Validation des credentials selon le provider
+    let isValid = false;
+    if (provider === 'meta' && credentials.meta_access_token) {
+      isValid = await validateMetaToken(credentials.meta_access_token);
+    } else if (provider === 'tiktok' && credentials.tiktok_access_token) {
+      isValid = await validateTikTokToken(credentials.tiktok_access_token);
+    }
+
+    if (!isValid) {
+      return NextResponse.json({ error: 'Token invalide' }, { status: 400, headers: corsHeaders() });
+    }
+
+    const supabase = getSupabaseAdmin();
+    
+    // Upsert (insert or update)
+    const connectionData = {
+      user_id: user.id,
+      provider: provider,
+      is_active: true,
+      last_sync_at: new Date().toISOString(),
+      ...credentials
+    };
+
+    const { data: connection, error } = await supabase
+      .from('api_connections')
+      .upsert(connectionData, { onConflict: 'user_id,provider' })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return NextResponse.json({ success: true, connection }, { headers: corsHeaders() });
+  } catch (err) {
+    console.error('Save API connection error:', err);
+    return NextResponse.json({ error: 'Erreur lors de la sauvegarde' }, { status: 500, headers: corsHeaders() });
+  }
+}
+
+async function handleSearchAds(request) {
+  const user = await getAuthUser(request);
+  if (!user) return NextResponse.json({ error: 'Non autorisé' }, { status: 401, headers: corsHeaders() });
+
+  try {
+    const body = await request.json();
+    const { keyword, networks = ['all'], country = 'ALL', activeOnly = true } = body;
+
+    if (!keyword) {
+      return NextResponse.json({ error: 'Mot-clé manquant' }, { status: 400, headers: corsHeaders() });
+    }
+
+    // Récupérer les tokens de l'utilisateur
+    const supabase = getSupabaseAdmin();
+    const { data: connections } = await supabase
+      .from('api_connections')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('is_active', true);
+
+    const metaConnection = connections?.find(c => c.provider === 'meta');
+    const tiktokConnection = connections?.find(c => c.provider === 'tiktok');
+
+    const userTokens = {
+      metaToken: metaConnection?.meta_access_token,
+      tiktokToken: tiktokConnection?.tiktok_access_token
+    };
+
+    // Recherche unifiée
+    const results = await searchAdsUnified({
+      keyword,
+      networks,
+      country,
+      activeOnly
+    }, userTokens);
+
+    // Sauvegarder dans le cache
+    if (results.ads.length > 0) {
+      const adsToCache = results.ads.map(ad => ({
+        network: ad.network,
+        ad_id: ad.ad_id,
+        brand_name: ad.brand_name,
+        page_name: ad.page_name,
+        ad_creative_url: ad.ad_creative_url,
+        ad_creative_type: ad.ad_creative_type,
+        thumbnail_url: ad.thumbnail_url,
+        copy_text: ad.copy_text,
+        cta_type: ad.cta_type,
+        cta_text: ad.cta_text,
+        spend_estimate_min: ad.spend_estimate_min,
+        spend_estimate_max: ad.spend_estimate_max,
+        impressions_estimate_min: ad.impressions_estimate_min,
+        impressions_estimate_max: ad.impressions_estimate_max,
+        started_running_at: ad.started_running_at,
+        stopped_running_at: ad.stopped_running_at,
+        is_active: ad.is_active,
+        raw_data: ad.raw_data,
+        search_query: keyword
+      }));
+
+      await supabase
+        .from('cached_ads')
+        .upsert(adsToCache, { onConflict: 'network,ad_id', ignoreDuplicates: true });
+    }
+
+    // Sauvegarder l'historique de recherche
+    await supabase
+      .from('ad_search_history')
+      .insert({
+        user_id: user.id,
+        search_query: keyword,
+        filters: { networks, country, activeOnly },
+        results_count: results.total
+      });
+
+    return NextResponse.json(results, { headers: corsHeaders() });
+  } catch (err) {
+    console.error('Search ads error:', err);
+    return NextResponse.json({ 
+      error: 'Erreur lors de la recherche',
+      ads: [],
+      meta: { success: false, count: 0, error: err.message },
+      tiktok: { success: false, count: 0, error: null },
+      total: 0
+    }, { status: 500, headers: corsHeaders() });
+  }
+}
+
+async function handleGetSavedAds(request) {
+  const user = await getAuthUser(request);
+  if (!user) return NextResponse.json({ error: 'Non autorisé' }, { status: 401, headers: corsHeaders() });
+
+  try {
+    const supabase = getSupabaseAdmin();
+    const { data: savedAds, error } = await supabase
+      .from('saved_ads')
+      .select(`
+        *,
+        ad:cached_ads(*)
+      `)
+      .eq('user_id', user.id)
+      .order('saved_at', { ascending: false });
+
+    if (error) throw error;
+
+    return NextResponse.json({ savedAds: savedAds || [] }, { headers: corsHeaders() });
+  } catch (err) {
+    console.error('Get saved ads error:', err);
+    return NextResponse.json({ error: 'Erreur serveur', savedAds: [] }, { status: 500, headers: corsHeaders() });
+  }
+}
+
+async function handleSaveAd(request) {
+  const user = await getAuthUser(request);
+  if (!user) return NextResponse.json({ error: 'Non autorisé' }, { status: 401, headers: corsHeaders() });
+
+  try {
+    const body = await request.json();
+    const { cached_ad_id, user_notes, user_tags } = body;
+
+    if (!cached_ad_id) {
+      return NextResponse.json({ error: 'ID de publicité manquant' }, { status: 400, headers: corsHeaders() });
+    }
+
+    const supabase = getSupabaseAdmin();
+    const { data: savedAd, error } = await supabase
+      .from('saved_ads')
+      .insert({
+        user_id: user.id,
+        cached_ad_id,
+        user_notes: user_notes || null,
+        user_tags: user_tags || []
+      })
+      .select()
+      .single();
+
+    if (error) {
+      if (error.code === '23505') {
+        return NextResponse.json({ error: 'Publicité déjà sauvegardée' }, { status: 400, headers: corsHeaders() });
+      }
+      throw error;
+    }
+
+    return NextResponse.json({ success: true, savedAd }, { headers: corsHeaders() });
+  } catch (err) {
+    console.error('Save ad error:', err);
+    return NextResponse.json({ error: 'Erreur lors de la sauvegarde' }, { status: 500, headers: corsHeaders() });
+  }
+}
+
+async function handleDeleteSavedAd(request, savedAdId) {
+  const user = await getAuthUser(request);
+  if (!user) return NextResponse.json({ error: 'Non autorisé' }, { status: 401, headers: corsHeaders() });
+
+  try {
+    const supabase = getSupabaseAdmin();
+    const { error } = await supabase
+      .from('saved_ads')
+      .delete()
+      .eq('id', savedAdId)
+      .eq('user_id', user.id);
+
+    if (error) throw error;
+
+    return NextResponse.json({ success: true }, { headers: corsHeaders() });
+  } catch (err) {
+    console.error('Delete saved ad error:', err);
+    return NextResponse.json({ error: 'Erreur lors de la suppression' }, { status: 500, headers: corsHeaders() });
+  }
+}
+
+async function handleGetSearchHistory(request) {
+  const user = await getAuthUser(request);
+  if (!user) return NextResponse.json({ error: 'Non autorisé' }, { status: 401, headers: corsHeaders() });
+
+  try {
+    const supabase = getSupabaseAdmin();
+    const { data: history, error } = await supabase
+      .from('ad_search_history')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('searched_at', { ascending: false })
+      .limit(20);
+
+    if (error) throw error;
+
+    return NextResponse.json({ history: history || [] }, { headers: corsHeaders() });
+  } catch (err) {
+    console.error('Get search history error:', err);
+    return NextResponse.json({ error: 'Erreur serveur', history: [] }, { status: 500, headers: corsHeaders() });
   }
 }
 
@@ -849,6 +1370,10 @@ export async function GET(request, context) {
   const pathSegments = params?.path || [];
   const path = pathSegments.join('/');
 
+  if (pathSegments[0] === 'tickets' && pathSegments[1] && pathSegments[2] === 'messages') {
+    return handleGetTicketMessages(request, pathSegments[1]);
+  }
+
   switch (path) {
     case 'public/announcements': return handleGetAnnouncements(request);
     case 'templates': return handleGetTemplates(request);
@@ -857,9 +1382,14 @@ export async function GET(request, context) {
     case 'profile': return handleGetProfile(request);
     case 'meta/connection': return handleGetMetaConnection(request);
     case 'meta/callback': return handleMetaCallback(request);
+    case 'tickets': return handleGetUserTickets(request);
     case 'admin/stats': return handleAdminStats(request);
     case 'admin/templates': return handleAdminGetTemplates(request);
     case 'admin/users': return handleAdminGetUsers(request);
+    case 'admin/tickets': return handleGetAllTickets(request);
+    case 'adscout/connections': return handleGetApiConnections(request);
+    case 'adscout/saved': return handleGetSavedAds(request);
+    case 'adscout/history': return handleGetSearchHistory(request);
     case 'health': return handleHealth();
     default: return NextResponse.json({ error: 'Route non trouvée' }, { status: 404, headers: corsHeaders() });
   }
@@ -870,6 +1400,10 @@ export async function POST(request, context) {
   const pathSegments = params?.path || [];
   const path = pathSegments.join('/');
 
+  if (pathSegments[0] === 'tickets' && pathSegments[1] && pathSegments[2] === 'messages') {
+    return handleCreateTicketMessage(request, pathSegments[1]);
+  }
+
   switch (path) {
     case 'templates/save': return handleSaveTemplate(request);
     case 'templates/seed': return handleSeedTemplates();
@@ -877,7 +1411,11 @@ export async function POST(request, context) {
     case 'store/disconnect': return handleDisconnectStore(request);
     case 'profile': return handleUpdateProfile(request);
     case 'meta/auth': return handleInitiateMetaAuth(request);
+    case 'tickets': return handleCreateTicket(request);
     case 'admin/templates': return handleAdminCreateTemplate(request);
+    case 'adscout/connections': return handleSaveApiConnection(request);
+    case 'adscout/search': return handleSearchAds(request);
+    case 'adscout/save': return handleSaveAd(request);
     default: return NextResponse.json({ error: 'Route non trouvée' }, { status: 404, headers: corsHeaders() });
   }
 }
@@ -897,6 +1435,16 @@ export async function PUT(request, context) {
     return handleAdminUpdateUserRole(request, pathSegments[2]);
   }
 
+  // Handle ticket status updates (PUT /api/tickets/:id/status)
+  if (pathSegments[0] === 'tickets' && pathSegments[1] && pathSegments[2] === 'status') {
+    return handleUpdateTicketStatus(request, pathSegments[1]);
+  }
+
+  // Handle mark ticket as read (PUT /api/tickets/:id/read)
+  if (pathSegments[0] === 'tickets' && pathSegments[1] && pathSegments[2] === 'read') {
+    return handleMarkTicketAsRead(request, pathSegments[1]);
+  }
+
   if (path === 'admin/announcements') {
     return handleAdminUpdateAnnouncement(request);
   }
@@ -912,6 +1460,11 @@ export async function DELETE(request, context) {
   // Handle admin template deletion (DELETE /api/admin/templates/:id)
   if (pathSegments[0] === 'admin' && pathSegments[1] === 'templates' && pathSegments[2]) {
     return handleAdminDeleteTemplate(request, pathSegments[2]);
+  }
+
+  // Handle saved ad deletion (DELETE /api/adscout/saved/:id)
+  if (pathSegments[0] === 'adscout' && pathSegments[1] === 'saved' && pathSegments[2]) {
+    return handleDeleteSavedAd(request, pathSegments[2]);
   }
 
   switch (path) {
