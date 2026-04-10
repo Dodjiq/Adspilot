@@ -2114,27 +2114,29 @@ function RegisterPage({ onRegister, showToast }) {
                   {showPassword ? <Eye className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
-              <div className="mt-2 space-y-1">
-                <p className="text-xs font-medium text-gray-400 mb-1.5">Exigences du mot de passe :</p>
-                <div className="flex items-center gap-1.5">
-                  <Check className={cn("w-3.5 h-3.5", passwordValidation.minLength ? "text-green-600" : "text-gray-600")} />
-                  <span className={cn("text-xs", passwordValidation.minLength ? "text-green-600" : "text-gray-500")}>Minimum 8 caractères</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Check className={cn("w-3.5 h-3.5", passwordValidation.hasUpperCase ? "text-green-600" : "text-gray-600")} />
-                  <span className={cn("text-xs", passwordValidation.hasUpperCase ? "text-green-600" : "text-gray-500")}>Au moins une majuscule (A-Z)</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Check className={cn("w-3.5 h-3.5", passwordValidation.hasLowerCase ? "text-green-600" : "text-gray-600")} />
-                  <span className={cn("text-xs", passwordValidation.hasLowerCase ? "text-green-600" : "text-gray-500")}>Au moins une minuscule (a-z)</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Check className={cn("w-3.5 h-3.5", passwordValidation.hasNumber ? "text-green-600" : "text-gray-600")} />
-                  <span className={cn("text-xs", passwordValidation.hasNumber ? "text-green-600" : "text-gray-500")}>Au moins un chiffre (0-9)</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Check className={cn("w-3.5 h-3.5", passwordValidation.hasSymbol ? "text-green-600" : "text-gray-600")} />
-                  <span className={cn("text-xs", passwordValidation.hasSymbol ? "text-green-600" : "text-gray-500")}>Au moins un symbole (!@#$%...)</span>
+              <div className="mt-2">
+                <p className="text-xs font-medium text-gray-400 mb-2">Exigences du mot de passe :</p>
+                <div className="flex flex-wrap gap-x-4 gap-y-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <Check className={cn("w-3.5 h-3.5", passwordValidation.minLength ? "text-green-600" : "text-gray-600")} />
+                    <span className={cn("text-xs", passwordValidation.minLength ? "text-green-600" : "text-gray-500")}>8+ caractères</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Check className={cn("w-3.5 h-3.5", passwordValidation.hasUpperCase ? "text-green-600" : "text-gray-600")} />
+                    <span className={cn("text-xs", passwordValidation.hasUpperCase ? "text-green-600" : "text-gray-500")}>Majuscule</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Check className={cn("w-3.5 h-3.5", passwordValidation.hasLowerCase ? "text-green-600" : "text-gray-600")} />
+                    <span className={cn("text-xs", passwordValidation.hasLowerCase ? "text-green-600" : "text-gray-500")}>Minuscule</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Check className={cn("w-3.5 h-3.5", passwordValidation.hasNumber ? "text-green-600" : "text-gray-600")} />
+                    <span className={cn("text-xs", passwordValidation.hasNumber ? "text-green-600" : "text-gray-500")}>Chiffre</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Check className={cn("w-3.5 h-3.5", passwordValidation.hasSymbol ? "text-green-600" : "text-gray-600")} />
+                    <span className={cn("text-xs", passwordValidation.hasSymbol ? "text-green-600" : "text-gray-500")}>Symbole</span>
+                  </div>
                 </div>
               </div>
             </div>
