@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import {
   LayoutDashboard, FolderOpen, ShoppingBag, BarChart2, Search, Video,
   Settings, Zap, Bell, Heart, Check, X, ChevronDown, Filter, ExternalLink,
@@ -6110,24 +6111,24 @@ export default function App() {
 
   // Public routes
   if (!currentPath || currentPath === '#/' || currentPath === '#') {
-    return <><LandingPage /><ToastContainer toasts={toasts} onDismiss={dismissToast} /></>;
+    return <><LandingPage /><ToastContainer toasts={toasts} onDismiss={dismissToast} /><Analytics /><SpeedInsights /></>;
   }
   if (currentPath === '#/login') {
     if (user) { navigate('#/dashboard'); return null; }
-    return <><LoginPage onLogin={handleLogin} showToast={showToast} /><ToastContainer toasts={toasts} onDismiss={dismissToast} /></>;
+    return <><LoginPage onLogin={handleLogin} showToast={showToast} /><ToastContainer toasts={toasts} onDismiss={dismissToast} /><Analytics /><SpeedInsights /></>;
   }
   if (currentPath === '#/register') {
     if (user) { navigate('#/dashboard'); return null; }
-    return <><RegisterPage onRegister={handleLogin} showToast={showToast} /><ToastContainer toasts={toasts} onDismiss={dismissToast} /></>;
+    return <><RegisterPage onRegister={handleLogin} showToast={showToast} /><ToastContainer toasts={toasts} onDismiss={dismissToast} /><Analytics /><SpeedInsights /></>;
   }
   if (currentPath === '#/terms') {
-    return <><TermsPage /><ToastContainer toasts={toasts} onDismiss={dismissToast} /></>;
+    return <><TermsPage /><ToastContainer toasts={toasts} onDismiss={dismissToast} /><Analytics /><SpeedInsights /></>;
   }
   if (currentPath === '#/privacy') {
-    return <><PrivacyPage /><ToastContainer toasts={toasts} onDismiss={dismissToast} /></>;
+    return <><PrivacyPage /><ToastContainer toasts={toasts} onDismiss={dismissToast} /><Analytics /><SpeedInsights /></>;
   }
   if (currentPath === '#/contact') {
-    return <><ContactPage showToast={showToast} /><ToastContainer toasts={toasts} onDismiss={dismissToast} /></>;
+    return <><ContactPage showToast={showToast} /><ToastContainer toasts={toasts} onDismiss={dismissToast} /><Analytics /><SpeedInsights /></>;
   }
 
   // Protected routes
@@ -6145,6 +6146,7 @@ export default function App() {
         <AdminPanel currentPath={currentPath} user={user} session={session} showToast={showToast} onLogout={handleLogout} />
         <ToastContainer toasts={toasts} onDismiss={dismissToast} />
         <Analytics />
+        <SpeedInsights />
       </>
     );
   }
@@ -6184,6 +6186,7 @@ export default function App() {
       <AIChatbot />
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
       <Analytics />
+      <SpeedInsights />
     </>
   );
 }
