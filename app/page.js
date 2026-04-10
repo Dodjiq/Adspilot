@@ -10,7 +10,7 @@ import {
   Loader2, Mail, Lock, User, ArrowRight, TrendingUp, DollarSign,
   ShoppingCart, LogOut, CreditCard, Sparkles, Clock, Eye, EyeOff, Store,
   CheckCircle2, Circle, Palette, AlertCircle, Plus, ChevronRight, ChevronLeft,
-  Globe, Layers, Shield, Users, Star, MessageSquare, MousePointerClick,
+  Globe, Layers, Shield, Users, Star, MessageSquare, MessageCircle, MousePointerClick,
   Target, Image, Repeat, ChevronUp, Menu, Play, Facebook, Link2, Info,
   Trophy, Rocket, LifeBuoy, Send, Paperclip, MoreVertical, Tag, Package
 } from 'lucide-react';
