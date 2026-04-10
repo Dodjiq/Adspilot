@@ -3256,6 +3256,8 @@ function AdminTickets({ session, showToast }) {
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterPriority, setFilterPriority] = useState('all');
   const [selectedTicket, setSelectedTicket] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [loadingMessages, setLoadingMessages] = useState(false);
   const [replyMessage, setReplyMessage] = useState('');
   const [sending, setSending] = useState(false);
 
@@ -3309,7 +3311,26 @@ function AdminTickets({ session, showToast }) {
 
   const handleTicketSelect = async (ticket) => {
     setSelectedTicket(ticket);
+    setLoadingMessages(true);
     
+    // Charger les messages du ticket
+    try {
+      const response = await fetch(`/api/tickets/${ticket.id}/messages`, {
+        headers: { 'Authorization': `Bearer ${session.access_token}` }
+      });
+      const data = await response.json();
+      
+      if (data.messages) {
+        setMessages(data.messages);
+      }
+    } catch (error) {
+      console.error('Error loading messages:', error);
+      showToast('Erreur lors du chargement des messages', 'error');
+    } finally {
+      setLoadingMessages(false);
+    }
+    
+    // Marquer comme lu
     if (ticket.unread_by_admin > 0) {
       try {
         await fetch(`/api/tickets/${ticket.id}/read`, {
@@ -3354,16 +3375,50 @@ function AdminTickets({ session, showToast }) {
     }
   };
 
-  const handleSendReply = (e) => {
+  const handleSendReply = async (e) => {
     e.preventDefault();
-    if (!replyMessage.trim()) return;
+    if (!replyMessage.trim() || !selectedTicket) return;
 
     setSending(true);
-    setTimeout(() => {
+    try {
+      const response = await fetch(`/api/tickets/${selectedTicket.id}/messages`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          message: replyMessage,
+          is_admin: true 
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success && data.message) {
+        // Ajouter le message à la liste
+        setMessages([...messages, {
+          ...data.message,
+          author_name: 'Support AdsPilot'
+        }]);
+        setReplyMessage('');
+        showToast('Réponse envoyée !', 'success');
+        
+        // Mettre à jour le ticket dans la liste
+        setTickets(tickets.map(t => 
+          t.id === selectedTicket.id 
+            ? { ...t, updated_at: new Date().toISOString(), unread_by_user: (t.unread_by_user || 0) + 1 } 
+            : t
+        ));
+      } else {
+        showToast(data.error || 'Erreur lors de l\'envoi', 'error');
+      }
+    } catch (error) {
+      console.error('Error sending reply:', error);
+      showToast('Erreur lors de l\'envoi du message', 'error');
+    } finally {
       setSending(false);
-      setReplyMessage('');
-      showToast('Réponse envoyée !', 'success');
-    }, 500);
+    }
   };
 
   const filteredTickets = tickets.filter(ticket => {
@@ -3537,6 +3592,61 @@ function AdminTickets({ session, showToast }) {
                 </div>
               </div>
 
+              {/* Conversation */}
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-3">Conversation</label>
+                <div className="space-y-4 max-h-[400px] overflow-y-auto p-4 bg-white/[0.02] border border-white/[0.06] rounded-lg">
+                  {loadingMessages ? (
+                    <div className="flex justify-center py-8">
+                      <Loader2 className="w-6 h-6 text-[#5A5AFB] animate-spin" />
+                    </div>
+                  ) : messages.length === 0 ? (
+                    <p className="text-center text-gray-500 text-sm py-8">Aucun message pour le moment</p>
+                  ) : (
+                    messages.map((msg) => (
+                      <div key={msg.id} className={`flex gap-3 ${msg.is_admin ? 'flex-row' : 'flex-row-reverse'}`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                          msg.is_admin 
+                            ? 'bg-[#5A5AFB]/20 text-[#5A5AFB]' 
+                            : 'bg-gradient-to-br from-[#5A5AFB] to-[#9C5DFF] text-white'
+                        }`}>
+                          {msg.is_admin ? (
+                            <LifeBuoy className="w-4 h-4" />
+                          ) : (
+                            <span className="text-xs font-semibold">
+                              {msg.author_name?.[0]?.toUpperCase() || 'U'}
+                            </span>
+                          )}
+                        </div>
+                        
+                        <div className={`flex-1 ${msg.is_admin ? 'text-left' : 'text-right'}`}>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className={`text-xs font-medium ${msg.is_admin ? 'text-[#5A5AFB]' : 'text-white'}`}>
+                              {msg.is_admin ? 'Support AdsPilot' : msg.author_name}
+                            </span>
+                            <span className="text-xs text-gray-500">
+                              {new Date(msg.created_at).toLocaleDateString('fr-FR', { 
+                                day: 'numeric', 
+                                month: 'short',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </span>
+                          </div>
+                          <div className={`inline-block max-w-[85%] p-3 rounded-xl text-sm ${
+                            msg.is_admin 
+                              ? 'bg-white/[0.05] border border-white/[0.1] text-gray-300' 
+                              : 'bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white'
+                          }`}>
+                            {msg.message}
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
               {/* Répondre */}
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">Répondre au ticket</label>
@@ -3655,6 +3765,17 @@ function AdminTemplates({ session, showToast }) {
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingTemplate, setEditingTemplate] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    niche: 'beaute',
+    format: 'carre',
+    preview_url: '',
+    canva_template_id: '',
+    tags: '',
+    is_premium: false
+  });
 
   useEffect(() => {
     fetchTemplates();
@@ -3675,8 +3796,6 @@ function AdminTemplates({ session, showToast }) {
   };
 
   const handleDelete = async (templateId) => {
-    if (!confirm('Supprimer ce template ?')) return;
-
     try {
       const res = await fetch(`/api/admin/templates/${templateId}`, {
         method: 'DELETE',
@@ -3686,9 +3805,78 @@ function AdminTemplates({ session, showToast }) {
       if (res.ok) {
         showToast('Template supprimé', 'success');
         fetchTemplates();
+        setShowDeleteConfirm(null);
+      } else {
+        showToast('Erreur lors de la suppression', 'error');
       }
     } catch (err) {
       showToast('Erreur lors de la suppression', 'error');
+    }
+  };
+
+  const handleOpenEdit = (template) => {
+    if (template.id) {
+      // Mode édition
+      setFormData({
+        title: template.title || '',
+        description: template.description || '',
+        niche: template.niche || 'beaute',
+        format: template.format || 'carre',
+        preview_url: template.preview_url || '',
+        canva_template_id: template.canva_template_id || '',
+        tags: template.tags?.join(', ') || '',
+        is_premium: template.is_premium || false
+      });
+    } else {
+      // Mode création
+      setFormData({
+        title: '',
+        description: '',
+        niche: 'beaute',
+        format: 'carre',
+        preview_url: '',
+        canva_template_id: '',
+        tags: '',
+        is_premium: false
+      });
+    }
+    setEditingTemplate(template);
+  };
+
+  const handleSaveTemplate = async (e) => {
+    e.preventDefault();
+    
+    try {
+      const payload = {
+        ...formData,
+        tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean)
+      };
+
+      const url = editingTemplate?.id 
+        ? `/api/admin/templates/${editingTemplate.id}`
+        : '/api/admin/templates';
+      
+      const method = editingTemplate?.id ? 'PUT' : 'POST';
+
+      const res = await fetch(url, {
+        method,
+        headers: {
+          ...apiHeaders(session),
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        showToast(editingTemplate?.id ? 'Template modifié' : 'Template créé', 'success');
+        setEditingTemplate(null);
+        fetchTemplates();
+      } else {
+        const data = await res.json();
+        showToast(data.error || 'Erreur lors de la sauvegarde', 'error');
+      }
+    } catch (err) {
+      showToast('Erreur lors de la sauvegarde', 'error');
     }
   };
 
@@ -3701,8 +3889,8 @@ function AdminTemplates({ session, showToast }) {
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-white">Gestion des Templates</h2>
         <button
-          onClick={() => setEditingTemplate({})}
-          className="px-4 py-2 rounded-xl bg-brand text-white font-semibold hover:bg-brand-light transition-all flex items-center gap-2 cursor-pointer"
+          onClick={() => handleOpenEdit({})}
+          className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white font-semibold hover:opacity-90 transition-all flex items-center gap-2 cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           Nouveau Template
@@ -3720,16 +3908,184 @@ function AdminTemplates({ session, showToast }) {
             <h3 className="text-white font-semibold mb-1">{template.title}</h3>
             <p className="text-gray-400 text-sm mb-3">{template.description}</p>
             <div className="flex items-center gap-2">
-              <button onClick={() => setEditingTemplate(template)} className="flex-1 px-3 py-2 rounded-lg bg-white/5 text-gray-300 hover:bg-white/10 transition-all text-sm cursor-pointer">
+              <button onClick={() => handleOpenEdit(template)} className="flex-1 px-3 py-2 rounded-lg bg-white/5 text-gray-300 hover:bg-white/10 transition-all text-sm cursor-pointer">
                 Modifier
               </button>
-              <button onClick={() => handleDelete(template.id)} className="px-3 py-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all text-sm cursor-pointer">
+              <button onClick={() => setShowDeleteConfirm(template)} className="px-3 py-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all text-sm cursor-pointer">
                 Supprimer
               </button>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Modal: Edit/Create Template */}
+      {editingTemplate && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-[#12121A] border border-white/[0.1] rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-white">
+                {editingTemplate.id ? 'Modifier le template' : 'Nouveau template'}
+              </h3>
+              <button onClick={() => setEditingTemplate(null)} className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-all">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveTemplate} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Titre</label>
+                  <input
+                    type="text"
+                    value={formData.title}
+                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                    required
+                    className="w-full px-4 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white placeholder-gray-500 focus:outline-none focus:border-[#5A5AFB]/50 text-sm"
+                    placeholder="Ex: Glow naturel"
+                  />
+                </div>
+
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Description</label>
+                  <textarea
+                    value={formData.description}
+                    onChange={(e) => setFormData({...formData, description: e.target.value})}
+                    required
+                    rows={3}
+                    className="w-full px-4 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white placeholder-gray-500 focus:outline-none focus:border-[#5A5AFB]/50 text-sm resize-none"
+                    placeholder="Description du template"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Niche</label>
+                  <select
+                    value={formData.niche}
+                    onChange={(e) => setFormData({...formData, niche: e.target.value})}
+                    className="w-full px-4 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white focus:outline-none focus:border-[#5A5AFB]/50 text-sm"
+                    style={{ colorScheme: 'dark' }}
+                  >
+                    <option value="beaute">Beauté</option>
+                    <option value="mode">Mode</option>
+                    <option value="food">Food</option>
+                    <option value="electronique">Électronique</option>
+                    <option value="maison">Maison</option>
+                    <option value="sante">Santé</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Format</label>
+                  <select
+                    value={formData.format}
+                    onChange={(e) => setFormData({...formData, format: e.target.value})}
+                    className="w-full px-4 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white focus:outline-none focus:border-[#5A5AFB]/50 text-sm"
+                    style={{ colorScheme: 'dark' }}
+                  >
+                    <option value="carre">Carré 1:1</option>
+                    <option value="story">Story 9:16</option>
+                    <option value="landscape">Paysage 16:9</option>
+                    <option value="ugc">UGC</option>
+                  </select>
+                </div>
+
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">URL de l'image preview</label>
+                  <input
+                    type="url"
+                    value={formData.preview_url}
+                    onChange={(e) => setFormData({...formData, preview_url: e.target.value})}
+                    required
+                    className="w-full px-4 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white placeholder-gray-500 focus:outline-none focus:border-[#5A5AFB]/50 text-sm"
+                    placeholder="https://images.unsplash.com/..."
+                  />
+                </div>
+
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">ID Template Canva</label>
+                  <input
+                    type="text"
+                    value={formData.canva_template_id}
+                    onChange={(e) => setFormData({...formData, canva_template_id: e.target.value})}
+                    required
+                    className="w-full px-4 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white placeholder-gray-500 focus:outline-none focus:border-[#5A5AFB]/50 text-sm"
+                    placeholder="mock_canva_001"
+                  />
+                </div>
+
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Tags (séparés par des virgules)</label>
+                  <input
+                    type="text"
+                    value={formData.tags}
+                    onChange={(e) => setFormData({...formData, tags: e.target.value})}
+                    className="w-full px-4 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white placeholder-gray-500 focus:outline-none focus:border-[#5A5AFB]/50 text-sm"
+                    placeholder="testimonial, skincare, glow"
+                  />
+                </div>
+
+                <div className="col-span-2">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.is_premium}
+                      onChange={(e) => setFormData({...formData, is_premium: e.target.checked})}
+                      className="w-5 h-5 rounded border-white/20 bg-white/5 text-[#5A5AFB] focus:ring-[#5A5AFB] focus:ring-offset-0"
+                    />
+                    <span className="text-sm text-gray-300">Template Premium</span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex gap-3 justify-end pt-4 border-t border-white/[0.08]">
+                <button
+                  type="button"
+                  onClick={() => setEditingTemplate(null)}
+                  className="px-4 py-2.5 rounded-lg border border-white/20 text-white text-sm font-medium hover:bg-white/5 transition-all"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2.5 rounded-lg bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white text-sm font-semibold hover:opacity-90 transition-all"
+                >
+                  {editingTemplate.id ? 'Enregistrer' : 'Créer'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Delete Confirmation */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-[#12121A] border border-white/[0.1] rounded-2xl p-6 max-w-md w-full">
+            <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
+              <AlertCircle className="w-6 h-6 text-red-400" />
+            </div>
+            <h3 className="text-xl font-bold text-white text-center mb-2">Supprimer le template ?</h3>
+            <p className="text-gray-400 text-center text-sm mb-6">
+              Êtes-vous sûr de vouloir supprimer <strong className="text-white">{showDeleteConfirm.title}</strong> ? Cette action est irréversible.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowDeleteConfirm(null)}
+                className="flex-1 px-4 py-2.5 rounded-lg border border-white/20 text-white text-sm font-medium hover:bg-white/5 transition-all"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={() => handleDelete(showDeleteConfirm.id)}
+                className="flex-1 px-4 py-2.5 rounded-lg bg-red-500 text-white text-sm font-semibold hover:bg-red-600 transition-all"
+              >
+                Supprimer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -5115,6 +5471,8 @@ export default function App() {
       case '#/guides': return <GuidesPage {...pageProps} />;
       case '#/my-store': return <MyStorePage {...pageProps} />;
       case '#/analytics': return <AnalyticsPage {...pageProps} />;
+      case '#/settings': return <SettingsPage {...pageProps} />;
+      case '#/settings/billing': return <BillingPage {...pageProps} />;
       case '#/ugc': return <ComingSoonPage title="UGC à 1€" icon={Video} showToast={showToast} />;
       case '#/insights': return <ComingSoonPage title="Insights" icon={Sparkles} showToast={showToast} />;
       case '#/support': return <SupportPage {...pageProps} />;
