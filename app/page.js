@@ -5932,102 +5932,6 @@ function CreativesPage({ navigate, showToast }) {
   );
 }
 
-// ============================================
-// AI CHATBOT (Floating Modal)
-// ============================================
-function AIChatbot() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([
-    { role: 'assistant', text: 'Bonjour ! Je suis l\'assistant IA d\'AdsPilot. Comment puis-je vous aider aujourd\'hui ?' }
-  ]);
-  const [input, setInput] = useState('');
-
-  const handleSend = () => {
-    if (!input.trim()) return;
-    setMessages(prev => [...prev, { role: 'user', text: input }]);
-    setInput('');
-    setTimeout(() => {
-      setMessages(prev => [...prev, { role: 'assistant', text: "Je suis une version de démonstration. Mon moteur est en cours de création par l'équipe AdsPilot !" }]);
-    }, 1000);
-  };
-
-  return (
-    <>
-      <button 
-        onClick={() => setIsOpen(true)}
-        className={cn(
-          "fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-br from-[#7C3AED] to-[#A78BFA] text-white rounded-full flex flex-col items-center justify-center shadow-lg shadow-[#7C3AED]/30 transition-all hover:scale-105 active:scale-95 z-[100]",
-          isOpen ? "opacity-0 pointer-events-none scale-90" : "opacity-100 scale-100"
-        )}
-      >
-        <Sparkles className="w-6 h-6" />
-      </button>
-
-      {isOpen && (
-        <div className="fixed bottom-6 right-6 w-[360px] h-[520px] bg-[#12121A] border border-white/[0.08] rounded-2xl shadow-2xl z-[100] flex flex-col overflow-hidden animate-in slide-in-from-bottom-5">
-          <div className="h-16 border-b border-white/[0.08] bg-[#1A1A26] px-4 flex items-center justify-between shrink-0">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#7C3AED] to-purple-600 flex items-center justify-center">
-                <Sparkles className="w-4 h-4 text-white" />
-              </div>
-              <div>
-                <h3 className="text-white font-medium text-sm">AdsPilot IA</h3>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                  <span className="text-xs text-gray-400">En ligne</span>
-                </div>
-              </div>
-            </div>
-            <button onClick={() => setIsOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-transparent to-[#0A0A0F]/50">
-            {messages.map((msg, idx) => (
-              <div key={idx} className={cn("flex max-w-[85%]", msg.role === 'user' ? "ml-auto" : "mr-auto")}>
-                {msg.role === 'assistant' && (
-                  <div className="w-7 h-7 rounded-full bg-[#1A1A26] border border-white/[0.05] flex items-center justify-center shrink-0 mr-2 mt-auto">
-                    <Sparkles className="w-3.5 h-3.5 text-[#A78BFA]" />
-                  </div>
-                )}
-                <div className={cn(
-                  "px-4 py-2.5 rounded-2xl text-[14px] leading-relaxed",
-                  msg.role === 'user' 
-                    ? "bg-[#7C3AED] text-white rounded-br-sm" 
-                    : "bg-[#1A1A26] border border-white/[0.05] text-gray-200 rounded-bl-sm"
-                )}>
-                  {msg.text}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="p-4 border-t border-white/[0.08] bg-[#1A1A26]">
-            <div className="relative flex items-center">
-              <input 
-                type="text" 
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && handleSend()}
-                placeholder="Posez votre question à l'IA..."
-                className="w-full pl-4 pr-12 py-3 rounded-xl bg-[#0A0A0F] border border-white/[0.05] text-white text-sm focus:outline-none focus:border-[#7C3AED] transition-all"
-              />
-              <button 
-                onClick={handleSend}
-                disabled={!input.trim()}
-                className="absolute right-2 w-8 h-8 flex items-center justify-center rounded-lg bg-[#7C3AED] text-white disabled:opacity-50 disabled:bg-[#2A2A35] transition-all"
-              >
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  );
-}
-
 export default function App() {
   const { currentPath, navigate } = useHashRouter();
   const [user, setUser] = useState(null);
@@ -6183,7 +6087,6 @@ export default function App() {
       <DashboardLayout currentPath={currentPath} user={user} onLogout={handleLogout} session={session} navigate={navigate}>
         {pageContent}
       </DashboardLayout>
-      <AIChatbot />
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
       <Analytics />
       <SpeedInsights />
