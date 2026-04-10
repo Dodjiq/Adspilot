@@ -1644,67 +1644,67 @@ function ContactPage({ showToast }) {
   return (
     <div className="min-h-screen font-onest bg-grid" style={{ backgroundColor: '#070B14' }}>
       {/* Header */}
-      <header className="sticky top-0 z-50 pt-5 pb-5">
+      <header className="sticky top-0 z-50 pt-5 pb-5 bg-[#070B14]/80 backdrop-blur-xl">
         <div className="max-w-[1280px] mx-auto px-6">
-          <div className="bg-white/[0.08] backdrop-blur-xl border border-white/[0.1] rounded-full px-6 py-3 flex items-center justify-between shadow-lg">
+          <div className="bg-white/[0.12] backdrop-blur-xl border border-white/[0.15] rounded-full px-6 py-3 flex items-center justify-between shadow-lg">
             <a href="#/" className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#5A5AFB] to-[#9C5DFF] flex items-center justify-center">
                 <Zap className="w-4 h-4 text-white" />
               </div>
               <span className="text-white font-syne font-bold text-lg">AdsPilot</span>
             </a>
-            <a href="#/" className="text-gray-400 hover:text-white text-sm transition-colors">← Retour</a>
+            <a href="#/" className="text-gray-300 hover:text-white text-sm font-medium transition-colors">← Retour</a>
           </div>
         </div>
       </header>
 
       {/* Content */}
-      <div className="max-w-[800px] mx-auto px-6 py-16">
-        <div className="text-center mb-12">
-          <h1 className="font-syne font-bold text-white text-4xl mb-4">Contactez-nous</h1>
-          <p className="text-gray-400 text-lg">Une question ? Un problème ? Notre équipe est là pour vous aider.</p>
+      <div className="max-w-[900px] mx-auto px-6 py-16">
+        <div className="text-center mb-16">
+          <h1 className="font-syne font-bold text-white text-5xl mb-4">Contactez-nous</h1>
+          <p className="text-gray-300 text-xl">Une question ? Un problème ? Notre équipe est là pour vous aider.</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 mb-12">
           {/* Contact Info */}
           <div className="space-y-6">
-            <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-6">
+            <div className="bg-[#12121A] border border-white/[0.12] rounded-2xl p-6 hover:border-[#5A5AFB]/30 transition-all">
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#5A5AFB]/20 flex items-center justify-center shrink-0">
-                  <Mail className="w-5 h-5 text-[#5A5AFB]" />
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#5A5AFB] to-[#9C5DFF] flex items-center justify-center shrink-0">
+                  <Mail className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-white font-semibold mb-1">Email</h3>
-                  <p className="text-gray-400 text-sm">support@adspilot.com</p>
-                  <p className="text-gray-500 text-xs mt-1">Réponse sous 24h</p>
+                  <h3 className="text-white font-semibold text-lg mb-1">Email</h3>
+                  <p className="text-gray-300 text-sm font-medium">support@adspilot.com</p>
+                  <p className="text-gray-400 text-xs mt-1">Réponse sous 24h</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-6">
+            <div className="bg-[#12121A] border border-white/[0.12] rounded-2xl p-6 hover:border-[#5A5AFB]/30 transition-all">
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#5A5AFB]/20 flex items-center justify-center shrink-0">
-                  <MessageCircle className="w-5 h-5 text-[#5A5AFB]" />
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#5A5AFB] to-[#9C5DFF] flex items-center justify-center shrink-0">
+                  <MessageCircle className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-white font-semibold mb-1">Support</h3>
-                  <p className="text-gray-400 text-sm">Chat en direct disponible</p>
-                  <p className="text-gray-500 text-xs mt-1">Lun-Ven 9h-18h GMT</p>
+                  <h3 className="text-white font-semibold text-lg mb-1">Support</h3>
+                  <p className="text-gray-300 text-sm font-medium">Chat en direct disponible</p>
+                  <p className="text-gray-400 text-xs mt-1">Lun-Ven 9h-18h GMT</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-6">
+            <div className="bg-[#12121A] border border-white/[0.12] rounded-2xl p-6 hover:border-[#5A5AFB]/30 transition-all">
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#5A5AFB]/20 flex items-center justify-center shrink-0">
-                  <Globe className="w-5 h-5 text-[#5A5AFB]" />
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#5A5AFB] to-[#9C5DFF] flex items-center justify-center shrink-0">
+                  <Globe className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-white font-semibold mb-1">Réseaux sociaux</h3>
+                  <h3 className="text-white font-semibold text-lg mb-1">Réseaux sociaux</h3>
                   <div className="flex gap-3 mt-2">
-                    <a href="#" className="text-gray-400 hover:text-[#5A5AFB] transition-colors">Twitter</a>
-                    <a href="#" className="text-gray-400 hover:text-[#5A5AFB] transition-colors">LinkedIn</a>
-                    <a href="#" className="text-gray-400 hover:text-[#5A5AFB] transition-colors">Instagram</a>
+                    <a href="#" className="text-gray-300 hover:text-[#5A5AFB] font-medium transition-colors">Twitter</a>
+                    <a href="#" className="text-gray-300 hover:text-[#5A5AFB] font-medium transition-colors">LinkedIn</a>
+                    <a href="#" className="text-gray-300 hover:text-[#5A5AFB] font-medium transition-colors">Instagram</a>
                   </div>
                 </div>
               </div>
@@ -1712,51 +1712,51 @@ function ContactPage({ showToast }) {
           </div>
 
           {/* Contact Form */}
-          <form onSubmit={handleSubmit} className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-6 space-y-4">
+          <form onSubmit={handleSubmit} className="bg-[#12121A] border border-white/[0.12] rounded-2xl p-8 space-y-5">
             <div>
-              <label className="text-white text-sm font-medium mb-2 block">Nom</label>
+              <label className="text-white text-sm font-semibold mb-2 block">Nom</label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 required
-                className="w-full px-4 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 focus:border-[#5A5AFB] focus:outline-none transition-all"
+                className="w-full px-4 py-3 rounded-lg bg-white/[0.08] border border-white/[0.15] text-white placeholder:text-gray-400 focus:border-[#5A5AFB] focus:outline-none focus:ring-2 focus:ring-[#5A5AFB]/20 transition-all"
                 placeholder="Votre nom"
               />
             </div>
 
             <div>
-              <label className="text-white text-sm font-medium mb-2 block">Email</label>
+              <label className="text-white text-sm font-semibold mb-2 block">Email</label>
               <input
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required
-                className="w-full px-4 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 focus:border-[#5A5AFB] focus:outline-none transition-all"
+                className="w-full px-4 py-3 rounded-lg bg-white/[0.08] border border-white/[0.15] text-white placeholder:text-gray-400 focus:border-[#5A5AFB] focus:outline-none focus:ring-2 focus:ring-[#5A5AFB]/20 transition-all"
                 placeholder="votre@email.com"
               />
             </div>
 
             <div>
-              <label className="text-white text-sm font-medium mb-2 block">Sujet</label>
+              <label className="text-white text-sm font-semibold mb-2 block">Sujet</label>
               <input
                 type="text"
                 value={formData.subject}
                 onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                 required
-                className="w-full px-4 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 focus:border-[#5A5AFB] focus:outline-none transition-all"
+                className="w-full px-4 py-3 rounded-lg bg-white/[0.08] border border-white/[0.15] text-white placeholder:text-gray-400 focus:border-[#5A5AFB] focus:outline-none focus:ring-2 focus:ring-[#5A5AFB]/20 transition-all"
                 placeholder="De quoi s'agit-il ?"
               />
             </div>
 
             <div>
-              <label className="text-white text-sm font-medium mb-2 block">Message</label>
+              <label className="text-white text-sm font-semibold mb-2 block">Message</label>
               <textarea
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 required
                 rows={5}
-                className="w-full px-4 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 focus:border-[#5A5AFB] focus:outline-none transition-all resize-none"
+                className="w-full px-4 py-3 rounded-lg bg-white/[0.08] border border-white/[0.15] text-white placeholder:text-gray-400 focus:border-[#5A5AFB] focus:outline-none focus:ring-2 focus:ring-[#5A5AFB]/20 transition-all resize-none"
                 placeholder="Décrivez votre demande..."
               />
             </div>
@@ -1764,16 +1764,16 @@ function ContactPage({ showToast }) {
             <button
               type="submit"
               disabled={sending}
-              className="w-full py-3 rounded-lg bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white font-semibold hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-lg bg-gradient-to-r from-[#5A5AFB] to-[#9C5DFF] text-white font-semibold hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#5A5AFB]/25"
             >
               {sending ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-5 h-5 animate-spin" />
                   Envoi en cours...
                 </>
               ) : (
                 <>
-                  <Send className="w-4 h-4" />
+                  <Send className="w-5 h-5" />
                   Envoyer le message
                 </>
               )}
