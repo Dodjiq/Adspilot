@@ -827,6 +827,20 @@ function LandingPage() {
     if (heroEmail) window.location.hash = '#/register';
   };
 
+  // FAQ Schema for SEO
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(faq => ({
+      '@type': 'Question',
+      name: faq.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.a
+      }
+    }))
+  };
+
   // Scroll reveal effect
   useEffect(() => {
     // Wait for DOM to be ready
@@ -858,6 +872,12 @@ function LandingPage() {
 
   return (
     <div className="min-h-screen font-onest bg-grid" style={{ backgroundColor: '#070B14' }}>
+      {/* FAQ Schema for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      
       {/* ===== HEADER ===== */}
       <header className="sticky top-0 z-50 pt-5 pb-5">
         <div className="max-w-[1280px] mx-auto px-6">
