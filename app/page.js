@@ -265,18 +265,55 @@ function UserProfileMenu({ user, onLogout }) {
 }
 
 // ============================================
-// NOTIFICATION CENTER COMPONENT
+// NOTIFICATION CENTER
 // ============================================
-function NotificationCenter() {
+function NotificationCenter({ session, navigate }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [notifications, setNotifications] = useState([
-    { id: 1, type: 'success', title: 'Campagne lancée', message: 'Ta campagne "Promo Été" est maintenant active', time: 'Il y a 5 min', unread: true },
-    { id: 2, type: 'warning', title: 'Budget faible', message: 'Il reste 10€ sur la campagne "Mode Africaine"', time: 'Il y a 1h', unread: true },
-    { id: 3, type: 'info', title: 'Nouveau template', message: '5 nouveaux templates disponibles dans AfriVault', time: 'Il y a 2h', unread: false },
-  ]);
+  const [notifications, setNotifications] = useState([]);
+  const [ticketNotifications, setTicketNotifications] = useState([]);
   const menuRef = useRef(null);
 
-  const unreadCount = notifications.filter(n => n.unread).length;
+  // Fetch ticket notifications
+  useEffect(() => {
+    if (!session) return;
+    
+    const fetchTicketNotifications = async () => {
+      try {
+        const response = await fetch('/api/tickets', {
+          headers: { 'Authorization': `Bearer ${session.access_token}` }
+        });
+        const data = await response.json();
+        
+        if (data.tickets) {
+          // Filter tickets with unread messages
+          const unreadTickets = data.tickets.filter(t => t.unread_by_user > 0);
+          
+          const ticketNotifs = unreadTickets.map(ticket => ({
+            id: `ticket-${ticket.id}`,
+            type: 'ticket',
+            ticketId: ticket.id,
+            title: 'Nouveau message',
+            message: `Ticket #${ticket.id.slice(0, 8)} - ${ticket.title}`,
+            time: formatTimeAgo(ticket.updated_at),
+            unread: true
+          }));
+          
+          setTicketNotifications(ticketNotifs);
+        }
+      } catch (error) {
+        console.error('Error fetching ticket notifications:', error);
+      }
+    };
+
+    fetchTicketNotifications();
+    // Refresh every 30 seconds
+    const interval = setInterval(fetchTicketNotifications, 30000);
+    return () => clearInterval(interval);
+  }, [session]);
+
+  // Combine all notifications
+  const allNotifications = [...ticketNotifications, ...notifications];
+  const unreadCount = allNotifications.filter(n => n.unread).length;
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -290,30 +327,47 @@ function NotificationCenter() {
 
   const markAllAsRead = () => {
     setNotifications(prev => prev.map(n => ({ ...n, unread: false })));
+    setTicketNotifications(prev => prev.map(n => ({ ...n, unread: false })));
   };
 
-  const handleNotificationClick = (notifId) => {
+  const handleNotificationClick = (notif) => {
     // Marquer comme lu
-    setNotifications(prev => prev.map(n =>
-      n.id === notifId ? { ...n, unread: false } : n
-    ));
-    // Ici tu peux ajouter la logique pour naviguer vers la page concernée
-    console.log('Notification clicked:', notifId);
-  };
-
-  const viewAllNotifications = () => {
-    // Ici tu peux ajouter la logique pour ouvrir une page dédiée aux notifications
-    console.log('View all notifications');
+    if (notif.type === 'ticket') {
+      setTicketNotifications(prev => prev.map(n =>
+        n.id === notif.id ? { ...n, unread: false } : n
+      ));
+      // Redirect to ticket detail
+      if (navigate) {
+        navigate(`#/support/tickets/${notif.ticketId}`);
+      } else {
+        window.location.hash = `#/support/tickets/${notif.ticketId}`;
+      }
+    } else {
+      setNotifications(prev => prev.map(n =>
+        n.id === notif.id ? { ...n, unread: false } : n
+      ));
+    }
     setIsOpen(false);
   };
 
-  const getIcon = (type) => {
-    switch (type) {
-      case 'success': return <CheckCircle2 className="w-4 h-4 text-green-400" />;
-      case 'warning': return <AlertCircle className="w-4 h-4 text-amber-400" />;
-      case 'info': return <Info className="w-4 h-4 text-blue-400" />;
-      default: return <Bell className="w-4 h-4 text-gray-400" />;
-    }
+  const formatTimeAgo = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return 'À l\'instant';
+    if (diffMins < 60) return `Il y a ${diffMins} min`;
+    if (diffHours < 24) return `Il y a ${diffHours}h`;
+    if (diffDays < 7) return `Il y a ${diffDays}j`;
+    return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+  };
+
+  const viewAllNotifications = () => {
+    console.log('View all notifications');
+    setIsOpen(false);
   };
 
   return (
@@ -352,32 +406,36 @@ function NotificationCenter() {
 
           {/* Notifications List */}
           <div className="max-h-96 overflow-y-auto">
-            {notifications.length === 0 ? (
+            {allNotifications.length === 0 ? (
               <div className="text-center py-8">
                 <Bell className="w-8 h-8 text-gray-600 mx-auto mb-2" />
                 <p className="text-sm text-gray-500">Aucune notification</p>
               </div>
             ) : (
-              notifications.map(notif => (
+              allNotifications.map(notif => (
                 <div
                   key={notif.id}
-                  onClick={() => handleNotificationClick(notif.id)}
-                  className={cn(
-                    'px-4 py-3 hover:bg-white/5 transition-all border-b border-white/[0.04] cursor-pointer',
-                    notif.unread && 'bg-brand/5'
-                  )}
+                  onClick={() => handleNotificationClick(notif)}
+                  className={`px-4 py-3 hover:bg-white/5 transition-colors border-b border-white/[0.04] cursor-pointer ${
+                    notif.unread ? 'bg-white/[0.02]' : ''
+                  }`}
                 >
-                  <div className="flex gap-3">
-                    <div className="mt-0.5">{getIcon(notif.type)}</div>
+                  <div className="flex items-start gap-3">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+                      notif.type === 'ticket' ? 'bg-[#5A5AFB]/15 text-[#5A5AFB]' :
+                      notif.type === 'success' ? 'bg-green-500/15 text-green-400' :
+                      notif.type === 'warning' ? 'bg-amber-500/15 text-amber-400' :
+                      'bg-blue-500/15 text-blue-400'
+                    }`}>
+                      {notif.type === 'ticket' ? <MessageSquare className="w-4 h-4" /> : <Bell className="w-4 h-4" />}
+                    </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <p className="text-sm font-medium text-white truncate">{notif.title}</p>
-                        {notif.unread && (
-                          <span className="w-2 h-2 rounded-full bg-brand shrink-0" />
-                        )}
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <p className="text-sm font-medium text-white">{notif.title}</p>
+                        {notif.unread && <span className="w-2 h-2 rounded-full bg-brand" />}
                       </div>
-                      <p className="text-xs text-gray-400 mb-1">{notif.message}</p>
-                      <p className="text-xs text-gray-600">{notif.time}</p>
+                      <p className="text-xs text-gray-400 line-clamp-2">{notif.message}</p>
+                      <p className="text-xs text-gray-600 mt-1">{notif.time}</p>
                     </div>
                   </div>
                 </div>
@@ -386,7 +444,7 @@ function NotificationCenter() {
           </div>
 
           {/* Footer */}
-          {notifications.length > 0 && (
+          {allNotifications.length > 0 && (
             <div className="px-4 py-3 border-t border-white/[0.06]">
               <button
                 onClick={viewAllNotifications}
@@ -405,11 +463,41 @@ function NotificationCenter() {
 // ============================================
 // SIDEBAR (AdsPilot Style - Expanded)
 // ============================================
-function Sidebar({ currentPath, user, onLogout }) {
+function Sidebar({ currentPath, user, onLogout, session }) {
   const [collapsed, setCollapsed] = useState(false);
+  const [unreadTicketsCount, setUnreadTicketsCount] = useState(0);
+
+  // Fetch unread tickets count
+  useEffect(() => {
+    if (!session) return;
+    
+    const fetchUnreadCount = async () => {
+      try {
+        const response = await fetch('/api/tickets', {
+          headers: { 'Authorization': `Bearer ${session.access_token}` }
+        });
+        const data = await response.json();
+        
+        if (data.tickets) {
+          const unreadCount = data.tickets.reduce((sum, ticket) => sum + (ticket.unread_by_user || 0), 0);
+          setUnreadTicketsCount(unreadCount);
+        }
+      } catch (error) {
+        console.error('Error fetching unread tickets count:', error);
+      }
+    };
+
+    fetchUnreadCount();
+    // Refresh every 30 seconds
+    const interval = setInterval(fetchUnreadCount, 30000);
+    return () => clearInterval(interval);
+  }, [session]);
   
   const NavItem = ({ item, isActive }) => {
     const isDisabled = item.soon && !item.highlight;
+    const isSupportItem = item.path === '#/support';
+    const displayCount = isSupportItem && unreadTicketsCount > 0 ? unreadTicketsCount : item.count;
+    
     return (
       <Link
         href={isDisabled ? undefined : item.path}
@@ -433,8 +521,13 @@ function Sidebar({ currentPath, user, onLogout }) {
         {item.soon && !item.highlight && (
           <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-500/20 text-amber-400">SOON</span>
         )}
-        {item.count && (
-          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-white/10 text-gray-300">{item.count}</span>
+        {displayCount && (
+          <span className={cn(
+            "px-1.5 py-0.5 rounded text-[10px] font-medium",
+            isSupportItem && unreadTicketsCount > 0
+              ? "bg-red-500 text-white"
+              : "bg-white/10 text-gray-300"
+          )}>{displayCount}</span>
         )}
       </Link>
     );
@@ -504,7 +597,7 @@ function Sidebar({ currentPath, user, onLogout }) {
 // ============================================
 // TOP NAV (AdsPilot Style - French)
 // ============================================
-function TopNav({ title, subtitle, showDatePicker = false }) {
+function TopNav({ title, subtitle, showDatePicker = false, session, navigate }) {
   const [selectedPeriod, setSelectedPeriod] = useState('7J');
   const [dateRange, setDateRange] = useState('');
   const [location, setLocation] = useState('Localisation...');
@@ -599,7 +692,7 @@ function TopNav({ title, subtitle, showDatePicker = false }) {
         </div>
         <div className="flex items-center gap-3">
           {/* Notification Center */}
-          <NotificationCenter />
+          <NotificationCenter session={session} navigate={navigate} />
           {showDatePicker && (
             <>
               {/* Period Selector */}
@@ -645,7 +738,7 @@ function TopNav({ title, subtitle, showDatePicker = false }) {
 // ============================================
 // DASHBOARD LAYOUT (AdsPilot Style)
 // ============================================
-function DashboardLayout({ children, user, currentPath, onLogout }) {
+function DashboardLayout({ children, user, currentPath, onLogout, session, navigate }) {
   const pageConfigs = {
     '#/dashboard': { title: 'Dashboard', subtitle: 'Vue d\'ensemble de tes performances publicitaires', showDatePicker: true },
     '#/afrivault': { title: 'AfriVault', subtitle: 'Parcours les templates gagnants', showDatePicker: false },
@@ -668,9 +761,9 @@ function DashboardLayout({ children, user, currentPath, onLogout }) {
   
   return (
     <div className="min-h-screen font-onest transition-colors duration-200" style={{ backgroundColor: '#070B14' }}>
-      <Sidebar currentPath={currentPath} user={user} onLogout={onLogout} />
+      <Sidebar currentPath={currentPath} user={user} onLogout={onLogout} session={session} />
       <div className="ml-[200px]">
-        <TopNav title={config.title} subtitle={config.subtitle} showDatePicker={config.showDatePicker} />
+        <TopNav title={config.title} subtitle={config.subtitle} showDatePicker={config.showDatePicker} session={session} navigate={navigate} />
         <main className="p-6 animate-fade-in">
           <div className="max-w-[1280px] mx-auto">
             {children}
@@ -3960,34 +4053,40 @@ function AdminTemplates({ session, showToast }) {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">Niche</label>
-                  <select
-                    value={formData.niche}
-                    onChange={(e) => setFormData({...formData, niche: e.target.value})}
-                    className="w-full px-4 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white focus:outline-none focus:border-[#5A5AFB]/50 text-sm"
-                    style={{ colorScheme: 'dark' }}
-                  >
-                    <option value="beaute">Beauté</option>
-                    <option value="mode">Mode</option>
-                    <option value="food">Food</option>
-                    <option value="electronique">Électronique</option>
-                    <option value="maison">Maison</option>
-                    <option value="sante">Santé</option>
-                  </select>
+                  <div className="relative">
+                    <select
+                      value={formData.niche}
+                      onChange={(e) => setFormData({...formData, niche: e.target.value})}
+                      className="w-full px-4 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white focus:outline-none focus:border-[#5A5AFB]/50 focus:ring-2 focus:ring-[#5A5AFB]/20 text-sm appearance-none cursor-pointer hover:bg-white/[0.08] transition-all"
+                      style={{ colorScheme: 'dark' }}
+                    >
+                      <option value="beaute">💄 Beauté</option>
+                      <option value="mode">👗 Mode</option>
+                      <option value="food">🍔 Food</option>
+                      <option value="electronique">📱 Électronique</option>
+                      <option value="maison">🏠 Maison</option>
+                      <option value="sante">❤️ Santé</option>
+                    </select>
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                  </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">Format</label>
-                  <select
-                    value={formData.format}
-                    onChange={(e) => setFormData({...formData, format: e.target.value})}
-                    className="w-full px-4 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white focus:outline-none focus:border-[#5A5AFB]/50 text-sm"
-                    style={{ colorScheme: 'dark' }}
-                  >
-                    <option value="carre">Carré 1:1</option>
-                    <option value="story">Story 9:16</option>
-                    <option value="landscape">Paysage 16:9</option>
-                    <option value="ugc">UGC</option>
-                  </select>
+                  <div className="relative">
+                    <select
+                      value={formData.format}
+                      onChange={(e) => setFormData({...formData, format: e.target.value})}
+                      className="w-full px-4 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white focus:outline-none focus:border-[#5A5AFB]/50 focus:ring-2 focus:ring-[#5A5AFB]/20 text-sm appearance-none cursor-pointer hover:bg-white/[0.08] transition-all"
+                      style={{ colorScheme: 'dark' }}
+                    >
+                      <option value="carre">■ Carré 1:1</option>
+                      <option value="story">📱 Story 9:16</option>
+                      <option value="landscape">📺 Paysage 16:9</option>
+                      <option value="ugc">🎥 UGC</option>
+                    </select>
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                  </div>
                 </div>
 
                 <div className="col-span-2">
@@ -5482,7 +5581,7 @@ export default function App() {
 
   return (
     <>
-      <DashboardLayout currentPath={currentPath} user={user} onLogout={handleLogout}>
+      <DashboardLayout currentPath={currentPath} user={user} onLogout={handleLogout} session={session} navigate={navigate}>
         {pageContent}
       </DashboardLayout>
       <AIChatbot />
