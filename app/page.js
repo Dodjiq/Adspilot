@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { createClient } from '@supabase/supabase-js';
+import { Analytics } from '@vercel/analytics/react';
 import {
   LayoutDashboard, FolderOpen, ShoppingBag, BarChart2, Search, Video,
   Settings, Zap, Bell, Heart, Check, X, ChevronDown, Filter, ExternalLink,
@@ -6176,6 +6177,7 @@ export default function App() {
       </DashboardLayout>
       <AIChatbot />
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
+      <Analytics />
     </>
   );
 }
