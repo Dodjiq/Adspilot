@@ -1,0 +1,26 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background with gradient -->
+  <defs>
+    <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#5A5AFB" />
+      <stop offset="100%" style="stop-color:#9C5DFF" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Rounded square background -->
+  <rect width="512" height="512" rx="120" fill="url(#iconGradient)"/>
+  
+  <!-- Lightning bolt icon (centered) -->
+  <g transform="translate(256, 256)">
+    <!-- Main lightning bolt -->
+    <path d="M 0 -140 L 60 -20 L 20 -20 L 20 140 L -60 20 L -20 20 L -20 -140 Z" 
+          fill="white" 
+          stroke="white" 
+          stroke-width="8" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"/>
+  </g>
+  
+  <!-- Subtle glow effect -->
+  <circle cx="256" cy="256" r="180" fill="white" opacity="0.1"/>
+</svg>

@@ -1,0 +1,76 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#070B14"/>
+  
+  <!-- Gradient overlay -->
+  <defs>
+    <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#5A5AFB;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#9C5DFF;stop-opacity:0.05" />
+    </linearGradient>
+    <linearGradient id="brandGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#5A5AFB" />
+      <stop offset="100%" style="stop-color:#9C5DFF" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="1200" height="630" fill="url(#gradient1)"/>
+  
+  <!-- Grid pattern -->
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="1"/>
+  </pattern>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  
+  <!-- Logo icon (top left) -->
+  <g transform="translate(80, 60)">
+    <rect width="48" height="48" rx="12" fill="url(#brandGradient)"/>
+    <path d="M 24 14 L 34 24 L 24 34 L 14 24 Z" fill="white" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  
+  <!-- Brand name -->
+  <text x="145" y="100" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="white">
+    AdsPilot
+  </text>
+  
+  <!-- Main title -->
+  <text x="80" y="240" font-family="Arial, sans-serif" font-size="64" font-weight="700" fill="white">
+    Créez des Pubs qui
+  </text>
+  <text x="80" y="310" font-family="Arial, sans-serif" font-size="64" font-weight="700" fill="url(#brandGradient)">
+    Convertissent
+  </text>
+  <text x="80" y="370" font-family="Arial, sans-serif" font-size="48" font-weight="600" fill="white">
+    pour le Marché Africain
+  </text>
+  
+  <!-- Features -->
+  <g transform="translate(80, 430)">
+    <!-- Feature 1 -->
+    <circle cx="8" cy="8" r="4" fill="#5A5AFB"/>
+    <text x="25" y="14" font-family="Arial, sans-serif" font-size="20" fill="rgba(255,255,255,0.8)">
+      +500 Templates Optimisés
+    </text>
+    
+    <!-- Feature 2 -->
+    <circle cx="8" cy="48" r="4" fill="#5A5AFB"/>
+    <text x="25" y="54" font-family="Arial, sans-serif" font-size="20" fill="rgba(255,255,255,0.8)">
+      Connexion Shopify
+    </text>
+    
+    <!-- Feature 3 -->
+    <circle cx="8" cy="88" r="4" fill="#5A5AFB"/>
+    <text x="25" y="94" font-family="Arial, sans-serif" font-size="20" fill="rgba(255,255,255,0.8)">
+      Lancement Campagnes Meta
+    </text>
+  </g>
+  
+  <!-- URL at bottom -->
+  <text x="80" y="590" font-family="Arial, sans-serif" font-size="24" font-weight="600" fill="url(#brandGradient)">
+    ads-pilot.app
+  </text>
+  
+  <!-- Decorative elements -->
+  <circle cx="1050" cy="150" r="80" fill="url(#brandGradient)" opacity="0.1"/>
+  <circle cx="1100" cy="450" r="120" fill="url(#brandGradient)" opacity="0.08"/>
+</svg>
