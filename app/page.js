@@ -873,7 +873,7 @@ function LandingPage() {
               <a href="#fonctionnalites" className="text-gray-300 hover:text-white text-sm font-medium transition-colors">
                 Fonctionnalités
               </a>
-              <a href="#/pricing" className="text-gray-300 hover:text-white text-sm font-medium transition-colors">
+              <a href="#tarifs" className="text-gray-300 hover:text-white text-sm font-medium transition-colors">
                 Tarifs
               </a>
               <a href="#faq" className="text-gray-300 hover:text-white text-sm font-medium transition-colors">
@@ -1287,7 +1287,7 @@ function LandingPage() {
       </section>
 
       {/* ===== PRICING ===== */}
-      <section className="py-16 scroll-reveal">
+      <section id="tarifs" className="py-16 scroll-reveal">
         <div className="max-w-[1000px] mx-auto px-6">
           <div className="text-center mb-10">
             <p className="text-[#5A5AFB] text-xs font-semibold uppercase tracking-[0.15em]">Tarifs</p>
